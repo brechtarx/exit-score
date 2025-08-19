@@ -41,8 +41,11 @@
             --arx-gray: #64748b;
         }
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Open Sans', sans-serif;
             -webkit-tap-highlight-color: transparent;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Inter', sans-serif;
         }
         .progress-bar {
             transition: width 0.3s ease;
@@ -250,18 +253,51 @@
                 <div class="text-6xl font-bold text-orange-600 my-8">
                     <span id="scoreValue">0</span>%
                 </div>
-                <div id="scoreInterpretation" class="text-lg text-gray-700 mb-6"></div>
+                <div id="scoreInterpretation" class="text-lg text-gray-700 mb-4"></div>
                 
-                <div class="space-y-4 mb-8">
-                    <button onclick="showBasicScore()" class="w-full p-4 rounded-lg border-2 border-gray-200 hover:border-orange-500 transition-all">
-                        <div class="font-semibold">Just Show My Score</div>
-                        <div class="text-sm text-gray-500">See your overall readiness level</div>
-                    </button>
-                    <button onclick="showDetailedReport()" class="btn-primary w-full p-4 rounded-lg text-white">
-                        <div class="font-semibold">Get Full Report & Recommendations</div>
-                        <div class="text-sm opacity-90">Personalized insights to improve your score</div>
-                    </button>
+                <div class="bg-gray-50 rounded-lg p-6 mb-6">
+                    <h3 class="text-xl font-semibold text-slate-900 mb-3">Get Your Complete Analysis</h3>
+                    <p class="text-gray-700 mb-4">Your personalized report will include:</p>
+                    <ul class="space-y-2 text-gray-700 mb-4">
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>Detailed breakdown of each assessment category with specific scores</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>Industry-specific benchmarks and insights for your business sector</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>Priority action plan to address your biggest opportunities</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>Estimated timeline and investment required for improvements</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>Potential valuation impact of implementing our recommendations</span>
+                        </li>
+                    </ul>
                 </div>
+                
+                <button onclick="showDetailedReport()" class="btn-primary w-full py-4 px-6 rounded-lg text-white font-semibold text-lg">
+                    Get My Complete Analysis →
+                </button>
+                <p class="text-sm text-gray-500 mt-3 text-center">
+                    Prepared by experienced M&A professionals • Delivered within 1 business day
+                </p>
             </div>
         </div>
 
@@ -310,17 +346,28 @@
         <!-- Thank You Screen -->
         <div id="thankYou" class="hidden">
             <div class="bg-white rounded-xl shadow-lg p-8 mt-8 fade-in text-center">
-                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                     </svg>
                 </div>
-                <h2 class="text-2xl font-bold text-slate-900 mb-2">Report Requested!</h2>
-                <p class="text-gray-600 mb-6">
-                    We're preparing your personalized sales readiness report. You'll receive it within 24 hours.
+                <h2 class="text-2xl font-bold text-slate-900 mb-4">Your Report is Being Prepared</h2>
+                <p class="text-lg text-gray-700 mb-6">
+                    Thank you for completing the assessment! Your personalized analysis is now being reviewed by one of our experienced M&A professionals.
+                </p>
+                <div class="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-6">
+                    <h3 class="font-semibold text-orange-800 mb-2">What happens next:</h3>
+                    <ul class="text-left text-orange-700 space-y-1">
+                        <li>• Our team reviews your responses and industry context</li>
+                        <li>• We prepare your customized recommendations</li>
+                        <li>• Your complete report arrives in your inbox within 1 business day</li>
+                    </ul>
+                </div>
+                <p class="text-gray-600 mb-4">
+                    <strong>Can't wait?</strong> One of our senior advisors may reach out to discuss your preliminary results and answer any immediate questions about your business sale preparation.
                 </p>
                 <p class="text-sm text-gray-500">
-                    A business advisor may also reach out to discuss your results and answer any questions.
+                    Check your email (including spam folder) for your detailed analysis report.
                 </p>
             </div>
         </div>
@@ -807,17 +854,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function showBasicScore() {
-            // Track basic score view
-            trackEvent('view_basic_score');
-            
-            // Attempt upsell after 3 seconds
-            setTimeout(() => {
-                if (confirm("Would you like to see specific recommendations to improve your score?")) {
-                    showDetailedReport();
-                }
-            }, 3000);
-        }
 
         function showDetailedReport() {
             document.getElementById('results').classList.add('hidden');
