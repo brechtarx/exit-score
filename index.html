@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Business Sales Readiness Assessment | ARX Business Brokers</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'GA_MEASUREMENT_ID');
+    </script>
+    
+    <!-- Facebook Pixel -->
+    <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', 'YOUR_PIXEL_ID');
+        fbq('track', 'PageView');
+    </script>
+    
+    <style>
+        :root {
+            --arx-navy: #0f172a;
+            --arx-blue: #1e293b;
+            --arx-orange: #ea580c;
+            --arx-light: #f8fafc;
+            --arx-gray: #64748b;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .progress-bar {
+            transition: width 0.3s ease;
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #ea580c, #dc2626);
+            transition: all 0.2s;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(234, 88, 12, 0.3);
+        }
+        .logo-text {
+            font-family: 'Inter', 'Arial Black', sans-serif;
+            font-weight: 900;
+            letter-spacing: -0.05em;
+        }
+        /* Prevent sticky focus states on mobile */
+        .answer-btn:focus {
+            outline: none;
+        }
+        .answer-btn:active {
+            transform: scale(0.98);
+        }
+        @media (hover: hover) {
+            /* Only apply hover styles on devices that support hover */
+            .answer-btn:hover {
+                border-color: currentColor;
+            }
+        }
+        /* Remove tap highlight on mobile */
+        button {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen" tabindex="-1">
+    <!-- Header -->
+    <header class="bg-slate-900 text-white sticky top-0 z-50 shadow-lg">
+        <div class="container max-w-6xl mx-auto px-4">
+            <div class="flex items-center justify-between h-20 sm:h-16">
+                <div class="flex items-center py-2">
+                    <!-- Actual logo image - replace /logo.png with your uploaded logo path -->
+                    <img src="/logo.png" alt="ARX Business Brokers" class="h-10 sm:h-8 w-auto" 
+                         onerror="this.onerror=null; this.src='/logo-white.png'; if(!this.src.includes('logo-white')) { this.style.display='none'; document.getElementById('fallbackLogo').style.display='block'; }">
+                    <!-- Fallback text logo if image fails -->
+                    <div id="fallbackLogo" style="display:none;" class="logo-text text-3xl sm:text-4xl text-white lowercase">arx</div>
+                </div>
+                <div class="text-right">
+                    <div class="text-xs uppercase tracking-wider opacity-75 hidden sm:block">Business</div>
+                    <div class="text-sm sm:text-base font-semibold uppercase tracking-wide">Sales Readiness Score</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="bg-gray-200 h-2">
+        <div id="progressBar" class="progress-bar bg-orange-600 h-full" style="width: 0%"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="max-w-3xl mx-auto px-4 pb-8 min-h-screen">
+        
+        <!-- Welcome Screen -->
+        <div id="welcome" class="question-screen fade-in">
+            <div class="bg-white rounded-xl shadow-xl p-8 sm:p-10 mt-8 max-w-2xl mx-auto">
+                <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">
+                    Is Your Business Ready to Sell?
+                </h1>
+                <p class="text-base sm:text-lg text-gray-700 mb-6 leading-relaxed">
+                    Discover your business's true market position with our comprehensive 26-point assessment. 
+                    Get an instant score and personalized recommendations in under 3 minutes.
+                </p>
+                <div class="space-y-4 mb-8">
+                    <div class="flex items-start">
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-green-500 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-gray-700 text-sm sm:text-base">26 strategic questions across 6 critical areas</span>
+                    </div>
+                    <div class="flex items-start">
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-green-500 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-gray-700 text-sm sm:text-base">Instant score with market-based valuation insights</span>
+                    </div>
+                    <div class="flex items-start">
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-green-500 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-gray-700 text-sm sm:text-base">Personalized improvement recommendations</span>
+                    </div>
+                </div>
+                <button onclick="startAssessment()" class="btn-primary w-full py-4 px-6 rounded-xl text-white font-semibold text-base sm:text-lg shadow-lg">
+                    Start Assessment →
+                </button>
+                <p class="text-xs sm:text-sm text-gray-500 mt-4 text-center">
+                    No payment required • 100% confidential
+                </p>
+            </div>
+        </div>
+
+        <!-- Question Template (Hidden, will be cloned) -->
+        <div id="questionTemplate" class="question-screen hidden">
+            <div class="bg-white rounded-xl shadow-xl p-6 sm:p-8 mt-8 fade-in max-w-2xl mx-auto">
+                <div class="mb-6">
+                    <span class="text-xs sm:text-sm text-orange-600 font-bold uppercase tracking-wider category-label">Category</span>
+                    <div class="text-sm text-gray-500 mt-1">
+                        Question <span class="current-q">1</span> of <span class="total-q">26</span>
+                    </div>
+                </div>
+                <h2 class="text-lg sm:text-xl font-semibold text-slate-900 mb-8 leading-relaxed question-text">
+                    Question goes here?
+                </h2>
+                <div class="space-y-3">
+                    <button onclick="answerQuestion(true, event)" class="answer-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 transition-all group">
+                        <div class="flex items-center pointer-events-none">
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-green-100 group-hover:bg-green-200 flex items-center justify-center mr-4 flex-shrink-0 transition-colors">
+                                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="font-semibold text-gray-900 text-base">Yes</div>
+                                <div class="text-sm text-gray-600 yes-description">Positive indicator</div>
+                            </div>
+                        </div>
+                    </button>
+                    <button onclick="answerQuestion(false, event)" class="answer-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-red-500 hover:bg-red-50 transition-all group">
+                        <div class="flex items-center pointer-events-none">
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-red-100 group-hover:bg-red-200 flex items-center justify-center mr-4 flex-shrink-0 transition-colors">
+                                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="font-semibold text-gray-900 text-base">No</div>
+                                <div class="text-sm text-gray-600 no-description">Area for improvement</div>
+                            </div>
+                        </div>
+                    </button>
+                    <button onclick="answerQuestion(null, event)" class="answer-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-gray-400 hover:bg-gray-50 transition-all group">
+                        <div class="flex items-center pointer-events-none">
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-100 group-hover:bg-gray-200 flex items-center justify-center mr-4 flex-shrink-0 transition-colors">
+                                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="font-semibold text-gray-900 text-base">Not Sure / Not Applicable</div>
+                                <div class="text-sm text-gray-600">Skip this question</div>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+                <button onclick="goBack()" class="mt-6 text-gray-500 hover:text-gray-700 text-sm flex items-center transition-colors">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    Back
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results" class="hidden">
+            <div class="bg-white rounded-xl shadow-lg p-8 mt-8 fade-in">
+                <h2 class="text-3xl font-bold text-slate-900 mb-2">Your Sales Readiness Score</h2>
+                <div class="text-6xl font-bold text-orange-600 my-8">
+                    <span id="scoreValue">0</span>%
+                </div>
+                <div id="scoreInterpretation" class="text-lg text-gray-700 mb-6"></div>
+                
+                <div class="space-y-4 mb-8">
+                    <button onclick="showBasicScore()" class="w-full p-4 rounded-lg border-2 border-gray-200 hover:border-orange-500 transition-all">
+                        <div class="font-semibold">Just Show My Score</div>
+                        <div class="text-sm text-gray-500">See your overall readiness level</div>
+                    </button>
+                    <button onclick="showDetailedReport()" class="btn-primary w-full p-4 rounded-lg text-white">
+                        <div class="font-semibold">Get Full Report & Recommendations</div>
+                        <div class="text-sm opacity-90">Personalized insights to improve your score</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lead Capture Form -->
+        <div id="leadCapture" class="hidden">
+            <div class="bg-white rounded-xl shadow-lg p-8 mt-8 fade-in">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">Get Your Personalized Report</h2>
+                <p class="text-gray-600 mb-6">
+                    We'll send you a detailed analysis with specific recommendations to improve your business's sale readiness.
+                </p>
+                <form id="leadForm" onsubmit="submitLeadForm(event)">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                            <input type="text" name="name" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                            <input type="email" name="email" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Company Name *</label>
+                            <input type="text" name="company" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                            <input type="tel" name="phone" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary w-full py-4 px-6 rounded-lg text-white font-semibold text-lg mt-6">
+                        Get My Report →
+                    </button>
+                    <p class="text-xs text-gray-500 mt-4 text-center">
+                        Your information is 100% confidential and will never be shared.
+                    </p>
+                </form>
+            </div>
+        </div>
+
+        <!-- Thank You Screen -->
+        <div id="thankYou" class="hidden">
+            <div class="bg-white rounded-xl shadow-lg p-8 mt-8 fade-in text-center">
+                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">Report Requested!</h2>
+                <p class="text-gray-600 mb-6">
+                    We're preparing your personalized sales readiness report. You'll receive it within 24 hours.
+                </p>
+                <p class="text-sm text-gray-500">
+                    A business advisor may also reach out to discuss your results and answer any questions.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Assessment Data
+        const categories = [
+            {
+                name: "Transferability Risk",
+                weight: 0.30,
+                questions: [
+                    {
+                        text: "Does the business operate without requiring the owner's unique skills or knowledge?",
+                        weight: 0.35,
+                        yesText: "Business runs on systems",
+                        noText: "Owner is the business"
+                    },
+                    {
+                        text: "Are key customer relationships maintained by at least two non-owner employees?",
+                        weight: 0.20,
+                        yesText: "Relationships are institutional",
+                        noText: "Owner holds relationships"
+                    },
+                    {
+                        text: "Would the business survive losing any single employee (including the owner)?",
+                        weight: 0.15,
+                        yesText: "No single point of failure",
+                        noText: "Dangerous dependencies"
+                    },
+                    {
+                        text: "Is the owner working less than 25 hours per week in the business?",
+                        weight: 0.10,
+                        yesText: "Business runs itself",
+                        noText: "Owner is overinvolved"
+                    },
+                    {
+                        text: "Are all critical processes documented in writing?",
+                        weight: 0.10,
+                        yesText: "Trainable systems",
+                        noText: "Tribal knowledge"
+                    },
+                    {
+                        text: "Could the business operate profitably with an absentee owner for 60+ days?",
+                        weight: 0.10,
+                        yesText: "True business",
+                        noText: "Glorified job"
+                    }
+                ]
+            },
+            {
+                name: "Growth Track Record",
+                weight: 0.20,
+                questions: [
+                    {
+                        text: "Did the company grow revenue year-over-year in the most recent 12 months?",
+                        weight: 0.40,
+                        yesText: "Growing now",
+                        noText: "Stagnant or declining"
+                    },
+                    {
+                        text: "Did revenue increase in at least 4 of the last 5 years?",
+                        weight: 0.25,
+                        yesText: "Proven growth",
+                        noText: "Sporadic performance"
+                    },
+                    {
+                        text: "Do you feel your business has grown faster than most of your competitors?",
+                        weight: 0.20,
+                        yesText: "Taking share",
+                        noText: "Losing ground"
+                    },
+                    {
+                        text: "Do you regularly attract new customers to replace any you might lose?",
+                        weight: 0.15,
+                        yesText: "Healthy new business",
+                        noText: "Aging customer base"
+                    }
+                ]
+            },
+            {
+                name: "Market Dynamics",
+                weight: 0.15,
+                questions: [
+                    {
+                        text: "Is demand for your products/services generally increasing each year?",
+                        weight: 0.40,
+                        yesText: "Growth industry",
+                        noText: "Stagnant/declining"
+                    },
+                    {
+                        text: "Would it take a new competitor more than $100k to start competing with you?",
+                        weight: 0.30,
+                        yesText: "Protected",
+                        noText: "Easy entry"
+                    },
+                    {
+                        text: "Would it be difficult for someone to replace your service with a computer or app?",
+                        weight: 0.30,
+                        yesText: "Disruption resistant",
+                        noText: "Vulnerable"
+                    }
+                ]
+            },
+            {
+                name: "Business Model Attractiveness",
+                weight: 0.15,
+                questions: [
+                    {
+                        text: "Is your revenue predictable through contracts, subscriptions, or repeat customers?",
+                        weight: 0.35,
+                        yesText: "Stable revenue",
+                        noText: "Unpredictable"
+                    },
+                    {
+                        text: "After paying all expenses, do you typically keep more than 15 cents of every dollar in revenue?",
+                        weight: 0.25,
+                        yesText: "Healthy margins",
+                        noText: "Thin margins"
+                    },
+                    {
+                        text: "Did the business revenue drop less than 15% during 2008 or 2020?",
+                        weight: 0.20,
+                        yesText: "Recession resistant",
+                        noText: "Cyclical"
+                    },
+                    {
+                        text: "Is your equipment investment less than 50% of annual revenue?",
+                        weight: 0.20,
+                        yesText: "Asset light",
+                        noText: "Capital intensive"
+                    }
+                ]
+            },
+            {
+                name: "Financial Integrity & Operations",
+                weight: 0.10,
+                questions: [
+                    {
+                        text: "Are your financial records clean and prepared by a professional?",
+                        weight: 0.30,
+                        yesText: "Bankable",
+                        noText: "Requires normalization"
+                    },
+                    {
+                        text: "Does no single customer represent more than 15% of revenue?",
+                        weight: 0.25,
+                        yesText: "Diversified",
+                        noText: "Concentration risk"
+                    },
+                    {
+                        text: "Do you keep personal expenses separate from business expenses?",
+                        weight: 0.20,
+                        yesText: "Clean operations",
+                        noText: "Lifestyle business"
+                    },
+                    {
+                        text: "Has a CPA reviewed or prepared your financial statements?",
+                        weight: 0.15,
+                        yesText: "Verified",
+                        noText: "Unverified"
+                    },
+                    {
+                        text: "Do most of your customers come back year after year?",
+                        weight: 0.10,
+                        yesText: "Sticky customers",
+                        noText: "High churn"
+                    }
+                ]
+            },
+            {
+                name: "Competitive Moat",
+                weight: 0.10,
+                questions: [
+                    {
+                        text: "Do you have 4.0+ stars online OR can you provide 10+ positive customer references?",
+                        weight: 0.30,
+                        yesText: "Strong reputation",
+                        noText: "Reputation issues"
+                    },
+                    {
+                        text: "Do potential customers regularly contact you without you having to chase them?",
+                        weight: 0.25,
+                        yesText: "Strong marketing",
+                        noText: "Weak presence"
+                    },
+                    {
+                        text: "Can you charge 10%+ more than competitors and keep customers?",
+                        weight: 0.25,
+                        yesText: "Premium position",
+                        noText: "Commodity"
+                    },
+                    {
+                        text: "Have you won 5+ new accounts from competitors in the last 12 months?",
+                        weight: 0.20,
+                        yesText: "Winning",
+                        noText: "Not competing"
+                    }
+                ]
+            }
+        ];
+
+        // State Management
+        let currentCategoryIndex = 0;
+        let currentQuestionIndex = 0;
+        let answers = [];
+        let totalQuestions = categories.reduce((sum, cat) => sum + cat.questions.length, 0);
+        let currentQuestionNumber = 0;
+
+        // Safe analytics tracking
+        function trackEvent(eventName, parameters) {
+            if (typeof gtag !== 'undefined') {
+                gtag('event', eventName, parameters);
+            }
+        }
+        
+        function trackFBEvent(eventName, parameters) {
+            if (typeof fbq !== 'undefined') {
+                fbq('track', eventName, parameters);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Track page view
+            trackEvent('page_view', {
+                page_title: 'Sales Readiness Assessment',
+                page_location: window.location.href
+            });
+        });
+
+        function startAssessment() {
+            document.getElementById('welcome').classList.add('hidden');
+            showQuestion();
+            trackEvent('begin_checkout', {
+                value: 0,
+                currency: 'USD',
+                items: [{
+                    item_name: 'Sales Readiness Assessment',
+                    item_category: 'Lead Generation'
+                }]
+            });
+        }
+
+        function showQuestion() {
+            const category = categories[currentCategoryIndex];
+            const question = category.questions[currentQuestionIndex];
+            currentQuestionNumber = getCurrentQuestionNumber();
+            
+            console.log('Showing question:', currentQuestionNumber, 'of', totalQuestions);
+            
+            // Hide all screens
+            document.querySelectorAll('.question-screen').forEach(el => el.classList.add('hidden'));
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('leadCapture').classList.add('hidden');
+            document.getElementById('thankYou').classList.add('hidden');
+            
+            // Remove any existing question display
+            const existing = document.getElementById('currentQuestion');
+            if (existing) {
+                existing.remove();
+            }
+            
+            // Clone template and prepare new question
+            const template = document.getElementById('questionTemplate');
+            const questionDiv = template.cloneNode(true);
+            questionDiv.id = 'currentQuestion';
+            questionDiv.classList.remove('hidden');
+            questionDiv.classList.add('fade-in');
+            
+            // Update content
+            questionDiv.querySelector('.category-label').textContent = category.name.toUpperCase();
+            questionDiv.querySelector('.current-q').textContent = currentQuestionNumber;
+            questionDiv.querySelector('.total-q').textContent = totalQuestions;
+            questionDiv.querySelector('.question-text').textContent = question.text;
+            questionDiv.querySelector('.yes-description').textContent = question.yesText;
+            questionDiv.querySelector('.no-description').textContent = question.noText;
+            
+            // Add to DOM
+            const container = document.querySelector('.max-w-3xl');
+            if (!container) {
+                console.error('Container not found! Looking for .max-w-3xl');
+                return;
+            }
+            container.appendChild(questionDiv);
+            
+            // Update progress
+            updateProgress();
+            
+            // Reset focus to prevent mobile highlight issue
+            document.body.focus();
+            
+            // Scroll to top smoothly
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function getCurrentQuestionNumber() {
+            let num = 0;
+            for (let i = 0; i < currentCategoryIndex; i++) {
+                num += categories[i].questions.length;
+            }
+            return num + currentQuestionIndex + 1;
+        }
+
+        function answerQuestion(answer, event) {
+            // Prevent default and stop propagation
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            // Remove focus from the clicked button (fixes mobile highlight issue)
+            if (document.activeElement) {
+                document.activeElement.blur();
+            }
+            
+            // Store answer
+            answers.push({
+                category: currentCategoryIndex,
+                question: currentQuestionIndex,
+                answer: answer
+            });
+            
+            // Track answer
+            trackEvent('assessment_answer', {
+                question_number: currentQuestionNumber,
+                category: categories[currentCategoryIndex].name,
+                answer: answer === true ? 'yes' : answer === false ? 'no' : 'skip'
+            });
+            
+            // Move to next question
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= categories[currentCategoryIndex].questions.length) {
+                currentCategoryIndex++;
+                currentQuestionIndex = 0;
+            }
+            
+            if (currentCategoryIndex >= categories.length) {
+                calculateResults();
+            } else {
+                // Small delay to ensure blur completes before showing next question
+                setTimeout(() => {
+                    showQuestion();
+                }, 50);
+            }
+        }
+
+        function goBack() {
+            if (answers.length > 0) {
+                // Remove last answer
+                answers.pop();
+                
+                // Move back one question
+                currentQuestionIndex--;
+                if (currentQuestionIndex < 0) {
+                    currentCategoryIndex--;
+                    if (currentCategoryIndex >= 0) {
+                        currentQuestionIndex = categories[currentCategoryIndex].questions.length - 1;
+                    }
+                }
+                
+                // Check if we're back at the beginning
+                if (currentCategoryIndex < 0) {
+                    // Reset to beginning
+                    currentCategoryIndex = 0;
+                    currentQuestionIndex = 0;
+                    
+                    // Hide current question and show welcome
+                    const currentQuestion = document.getElementById('currentQuestion');
+                    if (currentQuestion) {
+                        currentQuestion.remove();
+                    }
+                    document.getElementById('welcome').classList.remove('hidden');
+                    
+                    // Reset progress bar
+                    document.getElementById('progressBar').style.width = '0%';
+                } else {
+                    // Show previous question
+                    showQuestion();
+                }
+            } else {
+                // No answers yet, ensure we're on welcome screen
+                const currentQuestion = document.getElementById('currentQuestion');
+                if (currentQuestion) {
+                    currentQuestion.remove();
+                }
+                document.getElementById('welcome').classList.remove('hidden');
+                document.getElementById('progressBar').style.width = '0%';
+            }
+        }
+
+        function updateProgress() {
+            const progress = (currentQuestionNumber / totalQuestions) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function calculateResults() {
+            let totalScore = 0;
+            
+            categories.forEach((category, catIndex) => {
+                let categoryScore = 0;
+                category.questions.forEach((question, qIndex) => {
+                    const answer = answers.find(a => 
+                        a.category === catIndex && a.question === qIndex
+                    );
+                    if (answer && answer.answer === true) {
+                        categoryScore += question.weight;
+                    }
+                });
+                totalScore += categoryScore * category.weight;
+            });
+            
+            const finalScore = Math.round(totalScore * 100);
+            showResults(finalScore);
+        }
+
+        function showResults(score) {
+            // Hide current question if exists
+            const currentQuestion = document.getElementById('currentQuestion');
+            if (currentQuestion) {
+                currentQuestion.classList.add('hidden');
+            }
+            
+            // Show results
+            document.getElementById('results').classList.remove('hidden');
+            document.getElementById('progressBar').style.width = '100%';
+            
+            // Animate score
+            const scoreElement = document.getElementById('scoreValue');
+            let displayScore = 0;
+            const increment = score / 20;
+            const timer = setInterval(() => {
+                displayScore += increment;
+                if (displayScore >= score) {
+                    displayScore = score;
+                    clearInterval(timer);
+                }
+                scoreElement.textContent = Math.round(displayScore);
+            }, 50);
+            
+            let interpretation = '';
+            if (score >= 80) {
+                interpretation = "Excellent! Your business is in the top quartile for sale readiness. You're positioned for a premium valuation.";
+            } else if (score >= 60) {
+                interpretation = "Good position! Your business is above average in sale readiness, with some areas for improvement.";
+            } else if (score >= 40) {
+                interpretation = "Average readiness. There are significant opportunities to improve your business value before selling.";
+            } else if (score >= 20) {
+                interpretation = "Below average readiness. Consider implementing improvements before going to market.";
+            } else {
+                interpretation = "Your business needs significant improvements to be market-ready. Let's discuss a preparation strategy.";
+            }
+            
+            document.getElementById('scoreInterpretation').textContent = interpretation;
+            
+            // Track completion
+            trackEvent('assessment_complete', {
+                score: score,
+                score_category: score >= 80 ? 'premium' : score >= 60 ? 'above_average' : score >= 40 ? 'average' : score >= 20 ? 'below_average' : 'needs_improvement'
+            });
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showBasicScore() {
+            // Track basic score view
+            trackEvent('view_basic_score');
+            
+            // Attempt upsell after 3 seconds
+            setTimeout(() => {
+                if (confirm("Would you like to see specific recommendations to improve your score?")) {
+                    showDetailedReport();
+                }
+            }, 3000);
+        }
+
+        function showDetailedReport() {
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('leadCapture').classList.remove('hidden');
+            
+            trackEvent('begin_lead_capture');
+        }
+
+        function submitLeadForm(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const data = {
+                name: formData.get('name'),
+                email: formData.get('email'),
+                company: formData.get('company'),
+                phone: formData.get('phone'),
+                score: parseInt(document.getElementById('scoreValue').textContent),
+                answers: answers,
+                timestamp: new Date().toISOString(),
+                source: window.location.href,
+                referrer: document.referrer
+            };
+            
+            // SECURITY: Use Netlify Forms instead of exposed webhook
+            // This prevents webhook abuse and spam
+            
+            // Option 1: Netlify Forms (Recommended - Most Secure)
+            // Uncomment this section and add data-netlify="true" to your form
+            /*
+            const form = document.getElementById('leadForm');
+            form.setAttribute('data-netlify', 'true');
+            form.setAttribute('data-netlify-honeypot', 'bot-field');
+            */
+            
+            // Option 2: Netlify Functions (Secure Proxy)
+            // Create /.netlify/functions/submit-lead.js to hide webhook
+            fetch('/.netlify/functions/submit-lead', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            }).then(response => {
+                if (!response.ok) throw new Error('Submission failed');
+                console.log('Lead submitted successfully');
+            }).catch(error => {
+                console.error('Error submitting lead:', error);
+                // Fallback: still show success to user
+            });
+            
+            // Track conversion
+            trackEvent('generate_lead', {
+                currency: 'USD',
+                value: 100
+            });
+            
+            trackFBEvent('Lead', {
+                currency: 'USD',
+                value: 100
+            });
+            
+            // Show thank you
+            document.getElementById('leadCapture').classList.add('hidden');
+            document.getElementById('thankYou').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
