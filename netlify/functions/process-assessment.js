@@ -11,21 +11,20 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    console.log('Assessment processing triggered');
+    console.log('Assessment submission received');
     
-    // Parse the webhook payload from Supabase
-    const payload = JSON.parse(event.body);
+    // Parse the form submission from frontend
+    const assessment = JSON.parse(event.body);
     
-    // Validate payload has required data
-    if (!payload.record || !payload.record.id) {
-      console.error('Invalid payload received:', payload);
+    // Validate required fields
+    if (!assessment.email || !assessment.name || !assessment.company) {
+      console.error('Missing required fields:', assessment);
       return {
         statusCode: 400,
-        body: JSON.stringify({ error: 'Invalid payload' })
+        body: JSON.stringify({ error: 'Missing required fields' })
       };
     }
 
-    const assessment = payload.record;
     console.log(`Processing assessment for ${assessment.email}`);
 
     // Initialize Supabase client
@@ -34,17 +33,25 @@ exports.handler = async (event, context) => {
       process.env.SUPABASE_SERVICE_KEY
     );
 
-    // Check if already processed to avoid duplicates
-    if (assessment.processed) {
-      console.log('Assessment already processed, skipping');
+    // Save to Supabase first
+    const { data: savedAssessment, error: supabaseError } = await supabase
+      .from('assessments')
+      .insert([assessment])
+      .select()
+      .single();
+
+    if (supabaseError) {
+      console.error('Supabase error:', supabaseError);
       return {
-        statusCode: 200,
-        body: JSON.stringify({ message: 'Already processed' })
+        statusCode: 500,
+        body: JSON.stringify({ error: 'Failed to save assessment' })
       };
     }
 
-    // Process the assessment
-    const results = await processAssessment(assessment, supabase);
+    console.log('Assessment saved to Supabase successfully');
+
+    // Process the assessment (generate report, etc.)
+    const results = await processAssessment(savedAssessment, supabase);
     
     // Mark as processed
     await supabase
@@ -54,12 +61,13 @@ exports.handler = async (event, context) => {
         gmail_draft_created: results.gmailSuccess,
         pipedrive_created: results.pipediveSuccess
       })
-      .eq('id', assessment.id);
+      .eq('id', savedAssessment.id);
 
     return {
       statusCode: 200,
       body: JSON.stringify({ 
-        message: 'Assessment processed successfully',
+        message: 'Assessment submitted and processed successfully',
+        id: savedAssessment.id,
         results 
       })
     };

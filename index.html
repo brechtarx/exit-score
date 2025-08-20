@@ -572,9 +572,7 @@
             }
         ];
 
-        // Supabase Configuration - using public anon key (safe for frontend)
-        const SUPABASE_URL = 'https://qbctmoqhpytlzjoxzpvq.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiY3Rtb3FocHl0bHpqb3h6cHZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2MzI5NzEsImV4cCI6MjA3MTIwODk3MX0.dzK11Jy_up_C-oyPZ-5Q-uC-u6YlUn44lCmWOGhmMz4';
+        // No hardcoded credentials - all API calls go through our secure Netlify function
 
         // State Management
         let currentCategoryIndex = 0;
@@ -899,13 +897,11 @@
             };
             
             try {
-                // Submit to Supabase
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/assessments`, {
+                // Submit to our secure Netlify function
+                const response = await fetch('/.netlify/functions/process-assessment', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'apikey': SUPABASE_ANON_KEY,
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
                     },
                     body: JSON.stringify(submissionData)
                 });
@@ -914,7 +910,8 @@
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
-                console.log('Lead submitted successfully to Supabase');
+                const result = await response.json();
+                console.log('Assessment submitted and processed successfully:', result);
                 
                 // Track conversion
                 trackEvent('generate_lead', {
