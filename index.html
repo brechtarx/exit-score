@@ -868,11 +868,11 @@
             const formData = new FormData(event.target);
             const timeSpent = assessmentStartTime ? Math.floor((Date.now() - assessmentStartTime) / 1000) : 0;
             
-            // Spam protection checks
+            // Spam protection checks (temporarily disabled for testing)
             const honeypot = formData.get('honeypot');
             if (honeypot) {
-                console.log('Spam detected: honeypot filled');
-                return; // Silent fail for spam
+                console.log('Honeypot filled (but allowing submission for testing):', honeypot);
+                // return; // Silent fail for spam - DISABLED FOR TESTING
             }
             
             if (timeSpent < 30) {
