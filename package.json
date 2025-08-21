@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Business Sales Readiness Assessment Tool",
   "dependencies": {
-    "@supabase/supabase-js": "^2.39.0"
+    "@supabase/supabase-js": "^2.39.0",
+    "node-fetch": "^3.3.2"
   },
   "engines": {
     "node": ">=18.0.0"
