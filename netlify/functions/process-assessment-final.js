@@ -42,6 +42,7 @@ exports.handler = async (event, context) => {
         phone: assessment.phone || null,
         industry: assessment.industry || null,
         website: assessment.website || null,
+        zipcode: assessment.zipcode || null,
         score: assessment.score || 0,
         responses: assessment.responses || [],
         time_spent: assessment.time_spent || 0,
@@ -170,22 +171,54 @@ exports.handler = async (event, context) => {
 async function generateAIReport(assessment) {
   console.log('Building prompt for Claude API...');
   
-  const prompt = `You are an expert M&A advisor preparing a personalized business readiness report.
+  const prompt = `You are an expert M&A advisor from ARX Business Brokers preparing a personalized business sale readiness report.
 
 BUSINESS CONTEXT:
 - Company: ${assessment.company}
 - Industry: ${assessment.industry || 'Not specified'}
+- Location: ${assessment.zipcode ? `Zip Code ${assessment.zipcode}` : 'Not provided'}
 - Website: ${assessment.website || 'Not provided'}
 - Overall Score: ${assessment.score}%
 
-Create a professional 4-paragraph business sale readiness report that includes:
+ASSESSMENT STRUCTURE:
+The assessment evaluates 6 categories with specific weightings:
 
-1. EXECUTIVE SUMMARY - Overall readiness and key findings
-2. STRENGTHS & CHALLENGES - What's working well and what needs improvement  
-3. PRIORITY RECOMMENDATIONS - Top 3 specific actions to take
-4. NEXT STEPS - Immediate actions for the next 30-60 days
+1. TRANSFERABILITY RISK (30% weight) - Can business operate without owner?
+2. GROWTH TRACK RECORD (20% weight) - Recent and historical growth patterns
+3. MARKET DYNAMICS (15% weight) - Industry trends and competitive barriers
+4. BUSINESS MODEL ATTRACTIVENESS (15% weight) - Revenue predictability and margins
+5. FINANCIAL INTEGRITY & OPERATIONS (10% weight) - Clean books and customer concentration
+6. COMPETITIVE MOAT (10% weight) - Brand strength and market position
 
-Keep it concise but valuable for a business owner considering a sale.`;
+ASSESSMENT RESPONSES:
+${JSON.stringify(assessment.responses, null, 2)}
+
+Create a comprehensive, respectful business sale readiness report that acknowledges this business owner's lifetime achievement while providing honest buyer perspective. Use encouraging language and frame weaknesses as "opportunities for value enhancement."
+
+Structure the report as follows:
+
+**EXECUTIVE SUMMARY**
+Overall readiness assessment and what the ${assessment.score}% score means for sale prospects.
+
+**CATEGORY ANALYSIS**
+For each category that shows specific strengths or opportunities, explain:
+- What the responses indicate from a buyer's perspective
+- How this impacts valuation and buyer interest
+- Use positive framing like "buyers value" rather than "buyers are concerned"
+
+**KEY STRENGTHS**
+Highlight what's working well that will attract buyers (lead with positives).
+
+**PRIORITY OPPORTUNITIES**
+Top 3 specific areas that would most enhance buyer appeal and valuation.
+
+**LOCATION & MARKET CONTEXT**
+${assessment.zipcode ? `Brief insights about the market area and how location affects sale prospects.` : 'General market considerations for this business type.'}
+
+**NEXT STEPS**
+Concrete 30-60 day action items. Mention that ARX Business Brokers can help guide the process.
+
+Keep it professional, encouraging, and actionable for a business owner who has built something significant.`;
 
   console.log('Prompt length:', prompt.length);
   console.log('Making Claude API request...');
