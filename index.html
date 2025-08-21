@@ -186,6 +186,138 @@
             </div>
         </div>
 
+        <!-- Revenue Selection Screen -->
+        <div id="revenueSelection" class="question-screen hidden">
+            <div class="bg-white rounded-xl shadow-xl p-8 sm:p-10 mt-8 max-w-2xl mx-auto">
+                <div class="mb-6">
+                    <span class="text-xs sm:text-sm text-orange-600 font-bold uppercase tracking-wider">Business Profile</span>
+                    <div class="text-sm text-gray-500 mt-1">Step 1 of 3</div>
+                </div>
+                <h2 class="text-xl sm:text-2xl font-semibold text-slate-900 mb-6">
+                    What is your approximate annual revenue?
+                </h2>
+                <p class="text-gray-600 mb-8 text-sm sm:text-base">
+                    This helps us provide more accurate recommendations for your business size.
+                </p>
+                <div class="space-y-3">
+                    <button onclick="selectRevenue('Under $100K', 50000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium text-gray-900">Under $100K</span>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                        </div>
+                    </button>
+                    <button onclick="selectRevenue('$100K - $500K', 300000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium text-gray-900">$100K - $500K</span>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                        </div>
+                    </button>
+                    <button onclick="selectRevenue('$500K - $1M', 750000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium text-gray-900">$500K - $1M</span>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                        </div>
+                    </button>
+                    <button onclick="selectRevenue('$1M - $2M', 1500000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium text-gray-900">$1M - $2M</span>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                        </div>
+                    </button>
+                    <button onclick="selectRevenue('$2M - $5M', 3500000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium text-gray-900">$2M - $5M</span>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                        </div>
+                    </button>
+                    <button onclick="selectRevenue('$5M - $10M', 7500000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium text-gray-900">$5M - $10M</span>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                        </div>
+                    </button>
+                    <button onclick="selectRevenue('$10M - $25M', 17500000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium text-gray-900">$10M - $25M</span>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                        </div>
+                    </button>
+                    <button onclick="selectRevenue('$25M - $50M', 37500000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium text-gray-900">$25M - $50M</span>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                        </div>
+                    </button>
+                    <button onclick="selectRevenue('Over $50M', 75000000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium text-gray-900">Over $50M</span>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Employee Count Selection Screen -->
+        <div id="employeeSelection" class="question-screen hidden">
+            <div class="bg-white rounded-xl shadow-xl p-8 sm:p-10 mt-8 max-w-2xl mx-auto">
+                <div class="mb-6">
+                    <span class="text-xs sm:text-sm text-orange-600 font-bold uppercase tracking-wider">Business Profile</span>
+                    <div class="text-sm text-gray-500 mt-1">Step 2 of 3</div>
+                </div>
+                <h2 class="text-xl sm:text-2xl font-semibold text-slate-900 mb-6">
+                    How many employees does your business have?
+                </h2>
+                <p class="text-gray-600 mb-8 text-sm sm:text-base">
+                    Include yourself and any full-time, part-time, or contract workers.
+                </p>
+                <div class="space-y-3">
+                    <button onclick="selectEmployees('Just me', 1)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium text-gray-900">Just me (sole proprietor)</span>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                        </div>
+                    </button>
+                    <button onclick="selectEmployees('2-5 employees', 3)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium text-gray-900">2-5 employees</span>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                        </div>
+                    </button>
+                    <button onclick="selectEmployees('6-10 employees', 8)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium text-gray-900">6-10 employees</span>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                        </div>
+                    </button>
+                    <button onclick="selectEmployees('11-25 employees', 18)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium text-gray-900">11-25 employees</span>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                        </div>
+                    </button>
+                    <button onclick="selectEmployees('26-50 employees', 38)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium text-gray-900">26-50 employees</span>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                        </div>
+                    </button>
+                    <button onclick="selectEmployees('51-100 employees', 75)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium text-gray-900">51-100 employees</span>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                        </div>
+                    </button>
+                    <button onclick="selectEmployees('Over 100 employees', 150)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium text-gray-900">Over 100 employees</span>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- Question Template (Hidden, will be cloned) -->
         <div id="questionTemplate" class="question-screen hidden">
             <div class="bg-white rounded-xl shadow-xl p-6 sm:p-8 mt-8 fade-in max-w-2xl mx-auto">
@@ -621,12 +753,16 @@
             // Store business information
             businessInfo = {
                 industry: industry,
-                website: null // Will be set from lead form
+                website: null, // Will be set from lead form
+                revenue: null,
+                revenueNumeric: null,
+                employees: null,
+                employeesNumeric: null
             };
             
             document.getElementById('welcome').classList.add('hidden');
             assessmentStartTime = Date.now(); // Track start time for spam protection
-            showQuestion();
+            showScreen('revenueSelection');
             trackEvent('begin_checkout', {
                 value: 0,
                 currency: 'USD',
@@ -635,6 +771,60 @@
                     item_category: 'Lead Generation'
                 }]
             });
+        }
+        
+        function selectRevenue(displayText, numericValue) {
+            businessInfo.revenue = displayText;
+            businessInfo.revenueNumeric = numericValue;
+            
+            // Add visual feedback
+            document.querySelectorAll('.revenue-btn').forEach(btn => {
+                btn.classList.remove('border-orange-500', 'bg-orange-50');
+                btn.classList.add('border-gray-200');
+                btn.querySelector('.w-6').classList.remove('bg-orange-500');
+                btn.querySelector('.w-6').classList.add('border-gray-300');
+            });
+            
+            event.target.closest('.revenue-btn').classList.add('border-orange-500', 'bg-orange-50');
+            event.target.closest('.revenue-btn').querySelector('.w-6').classList.add('bg-orange-500');
+            event.target.closest('.revenue-btn').querySelector('.w-6').classList.remove('border-gray-300');
+            
+            // Auto-advance after selection
+            setTimeout(() => {
+                showScreen('employeeSelection');
+            }, 500);
+        }
+        
+        function selectEmployees(displayText, numericValue) {
+            businessInfo.employees = displayText;
+            businessInfo.employeesNumeric = numericValue;
+            
+            // Add visual feedback
+            document.querySelectorAll('.employee-btn').forEach(btn => {
+                btn.classList.remove('border-orange-500', 'bg-orange-50');
+                btn.classList.add('border-gray-200');
+                btn.querySelector('.w-6').classList.remove('bg-orange-500');
+                btn.querySelector('.w-6').classList.add('border-gray-300');
+            });
+            
+            event.target.closest('.employee-btn').classList.add('border-orange-500', 'bg-orange-50');
+            event.target.closest('.employee-btn').querySelector('.w-6').classList.add('bg-orange-500');
+            event.target.closest('.employee-btn').querySelector('.w-6').classList.remove('border-gray-300');
+            
+            // Auto-advance after selection
+            setTimeout(() => {
+                showQuestion();
+            }, 500);
+        }
+        
+        function showScreen(screenId) {
+            // Hide all screens
+            document.querySelectorAll('.question-screen').forEach(screen => {
+                screen.classList.add('hidden');
+            });
+            
+            // Show requested screen
+            document.getElementById(screenId).classList.remove('hidden');
         }
 
         function showQuestion() {
@@ -893,6 +1083,10 @@
                 industry: businessInfo.industry,
                 website: formData.get('website') || null,
                 zipcode: formData.get('zipcode'),
+                revenue: businessInfo.revenue,
+                revenue_numeric: businessInfo.revenueNumeric,
+                employees: businessInfo.employees,
+                employees_numeric: businessInfo.employeesNumeric,
                 score: parseInt(document.getElementById('scoreValue').textContent),
                 responses: answers,
                 time_spent: timeSpent,

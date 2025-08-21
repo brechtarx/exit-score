@@ -45,6 +45,10 @@ exports.handler = async (event, context) => {
         industry: assessment.industry || null,
         website: assessment.website || null,
         zipcode: assessment.zipcode || null,
+        revenue: assessment.revenue || null,
+        revenue_numeric: assessment.revenue_numeric || null,
+        employees: assessment.employees || null,
+        employees_numeric: assessment.employees_numeric || null,
         score: assessment.score || 0,
         responses: assessment.responses || [],
         time_spent: assessment.time_spent || 0,
@@ -530,7 +534,19 @@ async function createPipedriveLead(assessment) {
           person_id: contactId,
           deal_id: dealId,
           user_id: userId,
-          note: `Follow up with ${assessment.name} regarding their business exit assessment. Score: ${assessment.score}%. Industry: ${assessment.industry || 'Not specified'}.`
+          note: `Follow up with ${assessment.name} regarding their business exit assessment.
+
+Company: ${assessment.company}
+Industry: ${assessment.industry || 'Not specified'}
+Revenue: ${assessment.revenue || 'Not specified'}
+Employees: ${assessment.employees || 'Not specified'}
+Overall Score: ${assessment.score}%
+
+ASSESSMENT RESPONSES:
+${assessment.responses ? assessment.responses.map(r => `• ${r.question}: ${r.answer} (${r.score} points)`).join('\n') : 'No responses available'}
+
+Location: ${assessment.zipcode ? `Zip ${assessment.zipcode}` : 'Not provided'}
+Website: ${assessment.website || 'Not provided'}`
         })
       });
       
