@@ -1,17 +1,20 @@
 // Test script to check Claude API directly
 const testData = {
-  name: "Test User",
-  email: "test@example.com", 
-  company: "Test Company",
+  name: "John Smith",
+  email: "john@example.com", 
+  company: "Smith Manufacturing",
   phone: "555-1234",
-  industry: "Technology",
-  website: "https://test.com",
-  score: 75,
+  industry: "Manufacturing",
+  website: "https://smithmfg.com",
+  zipcode: "90210",
+  score: 65,
   responses: [
-    { question: "Financial records", answer: "Yes", score: 5 },
-    { question: "Management team", answer: "Partially", score: 3 }
+    { question: "Does the business operate without requiring the owner's unique skills?", answer: "No", score: 0 },
+    { question: "Are key customer relationships maintained by employees?", answer: "Yes", score: 5 },
+    { question: "Did the company grow revenue in the last 12 months?", answer: "Yes", score: 5 },
+    { question: "Is demand for your products generally increasing?", answer: "No", score: 0 }
   ],
-  time_spent: 300,
+  time_spent: 420,
   user_agent: "Test Browser",
   referrer: "direct"
 };

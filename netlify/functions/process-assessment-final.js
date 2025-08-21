@@ -1,4 +1,6 @@
 // Final working version - direct HTTP calls to Supabase API
+const { google } = require('googleapis');
+
 exports.handler = async (event, context) => {
   // Only allow POST requests
   if (event.httpMethod !== 'POST') {
@@ -104,14 +106,23 @@ exports.handler = async (event, context) => {
       // Continue even if AI fails
     }
 
-    // Log Gmail integration (placeholder for now)
-    console.log('Gmail integration - would create draft:', {
-      to: savedData[0].email,
-      subject: `Your Business Sale Readiness Report - ${savedData[0].score}% Score`,
-      hasReport: reportGenerated,
-      reportLength: aiReport.length,
-      preview: aiReport ? aiReport.substring(0, 200) + '...' : 'No report generated'
-    });
+    // Create Gmail draft
+    let gmailSuccess = false;
+    let gmailError = null;
+    
+    if (reportGenerated) {
+      try {
+        console.log('Creating Gmail draft...');
+        await createGmailDraft(savedData[0], aiReport);
+        gmailSuccess = true;
+        console.log('Gmail draft created successfully');
+      } catch (error) {
+        gmailError = error;
+        console.error('Gmail draft creation failed:', error.message);
+      }
+    } else {
+      console.log('Skipping Gmail draft - no report generated');
+    }
 
     // Log Pipedrive integration (placeholder for now)
     console.log('Pipedrive integration - would create lead:', {
@@ -135,7 +146,7 @@ exports.handler = async (event, context) => {
       },
       body: JSON.stringify({
         processed: true,
-        gmail_draft_created: true,
+        gmail_draft_created: gmailSuccess,
         pipedrive_created: true,
         report_text: reportGenerated ? aiReport : null
       })
@@ -261,4 +272,99 @@ Keep it professional, encouraging, and actionable for a business owner who has b
   });
 
   return data.content[0].text;
+}
+
+// Create Gmail draft
+async function createGmailDraft(assessment, report) {
+  try {
+    // Parse the service account key from environment
+    const serviceAccountKey = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
+    
+    // Create JWT auth client
+    const auth = new google.auth.JWT(
+      serviceAccountKey.client_email,
+      null,
+      serviceAccountKey.private_key,
+      ['https://www.googleapis.com/auth/gmail.compose'],
+      process.env.GMAIL_USER_EMAIL // Impersonate the Gmail user
+    );
+    
+    // Create Gmail API client
+    const gmail = google.gmail({ version: 'v1', auth });
+    
+    // Compose email content
+    const subject = `Your Business Sale Readiness Report - ${assessment.score}% Score`;
+    const htmlBody = `
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .header { background-color: #f8f9fa; padding: 20px; text-align: center; }
+        .content { padding: 20px; }
+        .score { font-size: 24px; color: #ff6b35; font-weight: bold; }
+        .report { background-color: #f8f9fa; padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .footer { background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Business Sale Readiness Report</h1>
+        <div class="score">Score: ${assessment.score}%</div>
+    </div>
+    
+    <div class="content">
+        <p>Dear ${assessment.name},</p>
+        
+        <p>Thank you for completing the Business Sale Readiness Assessment for <strong>${assessment.company}</strong>. Your personalized report is ready.</p>
+        
+        <div class="report">
+            ${report.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}
+        </div>
+        
+        <p>This assessment provides valuable insights into your business's current sale readiness and actionable steps to enhance its value.</p>
+        
+        <p>If you'd like to discuss these findings or explore next steps, please don't hesitate to reach out.</p>
+        
+        <p>Best regards,<br>
+        <strong>ARX Business Brokers</strong><br>
+        Phone: ${assessment.phone ? assessment.phone : 'Contact us'}<br>
+        Email: sales@arxbrokers.com</p>
+    </div>
+    
+    <div class="footer">
+        <p>This report was generated based on your assessment responses. For the most accurate valuation and sale guidance, we recommend a comprehensive business evaluation.</p>
+    </div>
+</body>
+</html>`;
+    
+    // Create email message
+    const message = [
+      `To: ${assessment.email}`,
+      `Subject: ${subject}`,
+      'Content-Type: text/html; charset=utf-8',
+      '',
+      htmlBody
+    ].join('\r\n');
+    
+    // Base64 encode the message
+    const encodedMessage = Buffer.from(message).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    
+    // Create draft
+    const draft = await gmail.users.drafts.create({
+      userId: 'me',
+      requestBody: {
+        message: {
+          raw: encodedMessage
+        }
+      }
+    });
+    
+    console.log('Gmail draft created:', draft.data.id);
+    return draft.data;
+    
+  } catch (error) {
+    console.error('Gmail draft creation error:', error);
+    throw error;
+  }
 }
