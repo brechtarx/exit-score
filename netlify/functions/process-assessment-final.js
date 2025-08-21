@@ -470,15 +470,11 @@ async function createPipedriveLead(assessment) {
       stage_id: stageId
     };
     
-    // Add custom fields if available
-    // Note: You'll need to get the actual field keys from Pipedrive after creating the Exit Score field
-    if (assessment.industry) {
-      // dealData.industry_field_key = assessment.industry; // Replace with actual field key
-    }
+    // Add custom fields
     if (assessment.score) {
-      // dealData.exit_score_field_key = assessment.score; // Replace with actual Exit Score field key
+      dealData['cd731d6cf78b3b67f7a492ff4dc6e62f1277caea'] = assessment.score; // Exit Score field
     }
-    // dealData.source_channel_field_key = "Score App"; // Replace with actual Source Channel field key
+    dealData.channel = 284; // Source Channel = "Score App" (option ID 284)
     
     const dealResponse = await fetch(`${baseUrl}/deals?api_token=${apiToken}`, {
       method: 'POST',
