@@ -190,7 +190,7 @@ Keep it concise but valuable for a business owner considering a sale.`;
   console.log('Making Claude API request...');
   
   const requestBody = {
-    model: 'claude-3-5-sonnet-20241022',
+    model: 'claude-3-5-sonnet-20241020',
     max_tokens: 2000,
     messages: [{
       role: 'user',
