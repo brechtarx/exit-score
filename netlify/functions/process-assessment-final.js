@@ -124,7 +124,7 @@ exports.handler = async (event, context) => {
       source: 'Exit Score Assessment'
     });
 
-    // Update processed status
+    // Update processed status and save report
     await fetch(`${process.env.SUPABASE_URL}/rest/v1/assessments?id=eq.${savedData[0].id}`, {
       method: 'PATCH',
       headers: {
@@ -135,7 +135,8 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({
         processed: true,
         gmail_draft_created: true,
-        pipedrive_created: true
+        pipedrive_created: true,
+        report_text: reportGenerated ? aiReport : null
       })
     });
 
