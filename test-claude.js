@@ -1,11 +1,11 @@
 // Test script to check Claude API directly
 const testData = {
   name: "John Smith",
-  email: "brecht@arxbrokers.com", 
-  company: "Smith Manufacturing",
-  phone: "555-1234",
+  email: "john.smith@testcompany123.com", 
+  company: "Test Manufacturing Co",
+  phone: "5551234567",
   industry: "Manufacturing",
-  website: "https://smithmfg.com",
+  website: "https://testmfg.com",
   zipcode: "90210",
   score: 65,
   responses: [
