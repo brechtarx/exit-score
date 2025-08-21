@@ -72,31 +72,56 @@ exports.handler = async (event, context) => {
     // Generate AI report
     let aiReport = '';
     let reportGenerated = false;
+    let aiError = null;
     
     try {
-      console.log('Generating AI report...');
+      console.log('Starting AI report generation...');
+      console.log('Assessment data for AI:', {
+        company: savedData[0].company,
+        industry: savedData[0].industry,
+        score: savedData[0].score,
+        responsesCount: savedData[0].responses?.length || 0
+      });
+      
+      const startTime = Date.now();
       aiReport = await generateAIReport(savedData[0]);
+      const endTime = Date.now();
+      
       reportGenerated = true;
-      console.log('AI report generated successfully');
-    } catch (aiError) {
-      console.error('AI report generation failed:', aiError);
+      console.log(`AI report generated successfully in ${endTime - startTime}ms`);
+      console.log('Report preview:', aiReport.substring(0, 200) + '...');
+    } catch (error) {
+      aiError = error;
+      console.error('AI report generation failed:');
+      console.error('Error name:', error.name);
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+      if (error.response) {
+        console.error('API response status:', error.response.status);
+        console.error('API response headers:', error.response.headers);
+      }
       // Continue even if AI fails
     }
 
-    // Log what would be sent to Gmail (placeholder)
-    console.log('Gmail draft content:', {
+    // Log Gmail integration (placeholder for now)
+    console.log('Gmail integration - would create draft:', {
       to: savedData[0].email,
       subject: `Your Business Sale Readiness Report - ${savedData[0].score}% Score`,
-      preview: aiReport.substring(0, 200) + '...'
+      hasReport: reportGenerated,
+      reportLength: aiReport.length,
+      preview: aiReport ? aiReport.substring(0, 200) + '...' : 'No report generated'
     });
 
-    // Log what would be sent to Pipedrive (placeholder)
-    console.log('Pipedrive lead data:', {
+    // Log Pipedrive integration (placeholder for now)
+    console.log('Pipedrive integration - would create lead:', {
       name: savedData[0].name,
       email: savedData[0].email,
       company: savedData[0].company,
+      phone: savedData[0].phone,
       score: savedData[0].score,
-      industry: savedData[0].industry
+      industry: savedData[0].industry,
+      website: savedData[0].website,
+      source: 'Exit Score Assessment'
     });
 
     // Update processed status
@@ -121,7 +146,9 @@ exports.handler = async (event, context) => {
         message: 'Assessment processed successfully',
         id: savedData[0].id,
         reportGenerated: reportGenerated,
-        score: savedData[0].score
+        score: savedData[0].score,
+        aiError: aiError ? aiError.message : null,
+        reportPreview: aiReport ? aiReport.substring(0, 100) : null
       })
     };
 
@@ -140,6 +167,8 @@ exports.handler = async (event, context) => {
 
 // Generate AI report
 async function generateAIReport(assessment) {
+  console.log('Building prompt for Claude API...');
+  
   const prompt = `You are an expert M&A advisor preparing a personalized business readiness report.
 
 BUSINESS CONTEXT:
@@ -157,6 +186,20 @@ Create a professional 4-paragraph business sale readiness report that includes:
 
 Keep it concise but valuable for a business owner considering a sale.`;
 
+  console.log('Prompt length:', prompt.length);
+  console.log('Making Claude API request...');
+  
+  const requestBody = {
+    model: 'claude-3-5-sonnet-20241022',
+    max_tokens: 2000,
+    messages: [{
+      role: 'user',
+      content: prompt
+    }]
+  };
+
+  console.log('Request body size:', JSON.stringify(requestBody).length);
+
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -164,20 +207,24 @@ Keep it concise but valuable for a business owner considering a sale.`;
       'x-api-key': process.env.CLAUDE_API_KEY,
       'anthropic-version': '2023-06-01'
     },
-    body: JSON.stringify({
-      model: 'claude-3-5-sonnet-20241022',
-      max_tokens: 2000,
-      messages: [{
-        role: 'user',
-        content: prompt
-      }]
-    })
+    body: JSON.stringify(requestBody)
   });
 
+  console.log('Claude API response status:', response.status);
+  console.log('Claude API response headers:', Object.fromEntries(response.headers.entries()));
+
   if (!response.ok) {
-    throw new Error(`Claude API error: ${response.status}`);
+    const errorText = await response.text();
+    console.error('Claude API error response:', errorText);
+    throw new Error(`Claude API error: ${response.status} - ${errorText}`);
   }
 
   const data = await response.json();
+  console.log('Claude API response structure:', {
+    hasContent: !!data.content,
+    contentLength: data.content?.[0]?.text?.length || 0,
+    type: data.content?.[0]?.type
+  });
+
   return data.content[0].text;
 }
