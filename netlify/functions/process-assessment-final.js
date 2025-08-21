@@ -124,17 +124,19 @@ exports.handler = async (event, context) => {
       console.log('Skipping Gmail draft - no report generated');
     }
 
-    // Log Pipedrive integration (placeholder for now)
-    console.log('Pipedrive integration - would create lead:', {
-      name: savedData[0].name,
-      email: savedData[0].email,
-      company: savedData[0].company,
-      phone: savedData[0].phone,
-      score: savedData[0].score,
-      industry: savedData[0].industry,
-      website: savedData[0].website,
-      source: 'Exit Score Assessment'
-    });
+    // Create Pipedrive lead
+    let pipediveSuccess = false;
+    let pipediveError = null;
+    
+    try {
+      console.log('Creating Pipedrive lead...');
+      await createPipedriveLead(savedData[0]);
+      pipediveSuccess = true;
+      console.log('Pipedrive lead created successfully');
+    } catch (error) {
+      pipediveError = error;
+      console.error('Pipedrive lead creation failed:', error.message);
+    }
 
     // Update processed status and save report
     await fetch(`${process.env.SUPABASE_URL}/rest/v1/assessments?id=eq.${savedData[0].id}`, {
@@ -147,7 +149,7 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({
         processed: true,
         gmail_draft_created: gmailSuccess,
-        pipedrive_created: true,
+        pipedrive_created: pipediveSuccess,
         report_text: reportGenerated ? aiReport : null
       })
     });
@@ -365,6 +367,189 @@ async function createGmailDraft(assessment, report) {
     
   } catch (error) {
     console.error('Gmail draft creation error:', error);
+    throw error;
+  }
+}
+
+// Create Pipedrive lead
+async function createPipedriveLead(assessment) {
+  const baseUrl = 'https://arx.pipedrive.com/api/v1';
+  const apiToken = process.env.PIPEDRIVE_KEY;
+  
+  try {
+    // 1. Look for existing contact by email
+    console.log('Searching for existing contact...');
+    const searchResponse = await fetch(`${baseUrl}/persons/search?term=${encodeURIComponent(assessment.email)}&fields=email&api_token=${apiToken}`);
+    const searchData = await searchResponse.json();
+    
+    let contactId = null;
+    let orgId = null;
+    
+    // Check if contact exists
+    if (searchData.success && searchData.data && searchData.data.items && searchData.data.items.length > 0) {
+      const existingContact = searchData.data.items.find(item => 
+        item.item && item.item.emails && item.item.emails.includes(assessment.email)
+      );
+      
+      if (existingContact) {
+        contactId = existingContact.item.id;
+        orgId = existingContact.item.organization && existingContact.item.organization.id;
+        console.log('Found existing contact:', contactId);
+      }
+    }
+    
+    // 2. Create organization if it doesn't exist
+    if (!orgId) {
+      console.log('Creating organization...');
+      const orgResponse = await fetch(`${baseUrl}/organizations?api_token=${apiToken}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: assessment.company,
+          address: assessment.zipcode || null
+        })
+      });
+      
+      const orgData = await orgResponse.json();
+      if (orgData.success) {
+        orgId = orgData.data.id;
+        console.log('Created organization:', orgId);
+      } else {
+        console.error('Failed to create organization:', orgData);
+      }
+    }
+    
+    // 3. Create contact if it doesn't exist
+    if (!contactId) {
+      console.log('Creating contact...');
+      const contactResponse = await fetch(`${baseUrl}/persons?api_token=${apiToken}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: assessment.name,
+          email: [assessment.email],
+          phone: assessment.phone ? [assessment.phone] : [],
+          org_id: orgId
+        })
+      });
+      
+      const contactData = await contactResponse.json();
+      if (contactData.success) {
+        contactId = contactData.data.id;
+        console.log('Created contact:', contactId);
+      } else {
+        console.error('Failed to create contact:', contactData);
+      }
+    }
+    
+    // 4. Get pipeline ID for "Projects"
+    console.log('Getting pipeline information...');
+    const pipelinesResponse = await fetch(`${baseUrl}/pipelines?api_token=${apiToken}`);
+    const pipelinesData = await pipelinesResponse.json();
+    
+    let pipelineId = null;
+    let stageId = null;
+    
+    if (pipelinesData.success && pipelinesData.data) {
+      const projectsPipeline = pipelinesData.data.find(p => p.name === 'Projects');
+      if (projectsPipeline) {
+        pipelineId = projectsPipeline.id;
+        // Use first stage as default
+        stageId = projectsPipeline.stages && projectsPipeline.stages[0] ? projectsPipeline.stages[0].id : null;
+        console.log('Found Projects pipeline:', pipelineId, 'stage:', stageId);
+      }
+    }
+    
+    // 5. Create deal
+    console.log('Creating deal...');
+    const dealData = {
+      title: `${assessment.company} - Exit Assessment`,
+      person_id: contactId,
+      org_id: orgId,
+      pipeline_id: pipelineId,
+      stage_id: stageId
+    };
+    
+    // Add custom fields if available
+    // Note: You'll need to get the actual field keys from Pipedrive after creating the Exit Score field
+    if (assessment.industry) {
+      // dealData.industry_field_key = assessment.industry; // Replace with actual field key
+    }
+    if (assessment.score) {
+      // dealData.exit_score_field_key = assessment.score; // Replace with actual Exit Score field key
+    }
+    // dealData.source_channel_field_key = "Score App"; // Replace with actual Source Channel field key
+    
+    const dealResponse = await fetch(`${baseUrl}/deals?api_token=${apiToken}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dealData)
+    });
+    
+    const dealResult = await dealResponse.json();
+    let dealId = null;
+    
+    if (dealResult.success) {
+      dealId = dealResult.data.id;
+      console.log('Created deal:', dealId);
+    } else {
+      console.error('Failed to create deal:', dealResult);
+    }
+    
+    // 6. Get user ID for Brecht Palombo
+    console.log('Getting user information...');
+    const usersResponse = await fetch(`${baseUrl}/users?api_token=${apiToken}`);
+    const usersData = await usersResponse.json();
+    
+    let userId = null;
+    if (usersData.success && usersData.data) {
+      const brecht = usersData.data.find(u => 
+        u.name && u.name.toLowerCase().includes('brecht') && u.name.toLowerCase().includes('palombo')
+      );
+      if (brecht) {
+        userId = brecht.id;
+        console.log('Found user Brecht Palombo:', userId);
+      } else {
+        // Fallback to first active user
+        const activeUser = usersData.data.find(u => u.active_flag);
+        if (activeUser) {
+          userId = activeUser.id;
+          console.log('Using fallback user:', activeUser.name, userId);
+        }
+      }
+    }
+    
+    // 7. Create follow-up task
+    if (contactId && userId) {
+      console.log('Creating follow-up task...');
+      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+      
+      const taskResponse = await fetch(`${baseUrl}/activities?api_token=${apiToken}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          subject: `Follow up on exit assessment - ${assessment.company}`,
+          type: 'email',
+          due_date: today,
+          person_id: contactId,
+          deal_id: dealId,
+          user_id: userId,
+          note: `Follow up with ${assessment.name} regarding their business exit assessment. Score: ${assessment.score}%. Industry: ${assessment.industry || 'Not specified'}.`
+        })
+      });
+      
+      const taskResult = await taskResponse.json();
+      if (taskResult.success) {
+        console.log('Created follow-up task:', taskResult.data.id);
+      } else {
+        console.error('Failed to create task:', taskResult);
+      }
+    }
+    
+    return { contactId, orgId, dealId, taskCreated: !!userId };
+    
+  } catch (error) {
+    console.error('Pipedrive integration error:', error);
     throw error;
   }
 }

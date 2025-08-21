@@ -1,7 +1,7 @@
 // Test script to check Claude API directly
 const testData = {
   name: "John Smith",
-  email: "john@example.com", 
+  email: "brecht@arxbrokers.com", 
   company: "Smith Manufacturing",
   phone: "555-1234",
   industry: "Manufacturing",
