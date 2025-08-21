@@ -1,12 +1,16 @@
 // Test script to check Claude API directly
 const testData = {
   name: "John Smith",
-  email: "jane.doe@testcompany456.com", 
+  email: "test.user@testcompany789.com", 
   company: "Test Manufacturing Co",
   phone: "5551234567",
   industry: "Manufacturing",
   website: "https://testmfg.com",
   zipcode: "90210",
+  revenue: "$2M - $5M",
+  revenue_numeric: 3500000,
+  employees: "11-25 employees", 
+  employees_numeric: 18,
   score: 65,
   responses: [
     { question: "Does the business operate without requiring the owner's unique skills?", answer: "No", score: 0 },

@@ -124,7 +124,7 @@
         
         <!-- Welcome Screen -->
         <div id="welcome" class="question-screen fade-in">
-            <div class="bg-white rounded-xl shadow-xl p-8 sm:p-10 mt-8 max-w-2xl mx-auto">
+            <div class="bg-white rounded-xl shadow-xl p-4 sm:p-10 mt-4 sm:mt-8 max-w-2xl mx-auto">
                 <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">
                     Is Your Business Ready to Sell?
                 </h1>
@@ -188,7 +188,7 @@
 
         <!-- Revenue Selection Screen -->
         <div id="revenueSelection" class="question-screen hidden">
-            <div class="bg-white rounded-xl shadow-xl p-8 sm:p-10 mt-8 max-w-2xl mx-auto">
+            <div class="bg-white rounded-xl shadow-xl p-4 sm:p-10 mt-4 sm:mt-8 max-w-2xl mx-auto">
                 <div class="mb-6">
                     <span class="text-xs sm:text-sm text-orange-600 font-bold uppercase tracking-wider">Business Profile</span>
                     <div class="text-sm text-gray-500 mt-1">Step 1 of 3</div>
@@ -260,7 +260,7 @@
 
         <!-- Employee Count Selection Screen -->
         <div id="employeeSelection" class="question-screen hidden">
-            <div class="bg-white rounded-xl shadow-xl p-8 sm:p-10 mt-8 max-w-2xl mx-auto">
+            <div class="bg-white rounded-xl shadow-xl p-4 sm:p-10 mt-4 sm:mt-8 max-w-2xl mx-auto">
                 <div class="mb-6">
                     <span class="text-xs sm:text-sm text-orange-600 font-bold uppercase tracking-wider">Business Profile</span>
                     <div class="text-sm text-gray-500 mt-1">Step 2 of 3</div>
@@ -320,14 +320,14 @@
 
         <!-- Question Template (Hidden, will be cloned) -->
         <div id="questionTemplate" class="question-screen hidden">
-            <div class="bg-white rounded-xl shadow-xl p-6 sm:p-8 mt-8 fade-in max-w-2xl mx-auto">
+            <div class="bg-white rounded-xl shadow-xl p-4 sm:p-8 mt-4 sm:mt-8 fade-in max-w-2xl mx-auto">
                 <div class="mb-6">
                     <span class="text-xs sm:text-sm text-orange-600 font-bold uppercase tracking-wider category-label">Category</span>
                     <div class="text-sm text-gray-500 mt-1">
                         Question <span class="current-q">1</span> of <span class="total-q">26</span>
                     </div>
                 </div>
-                <h2 class="text-lg sm:text-xl font-semibold text-slate-900 mb-8 leading-relaxed question-text">
+                <h2 class="text-xl sm:text-2xl font-semibold text-slate-900 mb-8 leading-snug question-text">
                     Question goes here?
                 </h2>
                 <div class="space-y-3">
@@ -853,6 +853,24 @@
             questionDiv.classList.remove('hidden');
             questionDiv.classList.add('fade-in');
             
+            // Reset all button states to prevent carryover on mobile
+            questionDiv.querySelectorAll('.answer-btn').forEach(btn => {
+                btn.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50', 'border-gray-400', 'bg-gray-50');
+                btn.classList.add('border-gray-200');
+                // Reset button icon backgrounds
+                const iconDiv = btn.querySelector('.w-10, .w-12');
+                if (iconDiv) {
+                    iconDiv.classList.remove('bg-green-200', 'bg-red-200', 'bg-gray-200');
+                    if (btn.classList.contains('hover:border-green-500')) {
+                        iconDiv.classList.add('bg-green-100');
+                    } else if (btn.classList.contains('hover:border-red-500')) {
+                        iconDiv.classList.add('bg-red-100');
+                    } else {
+                        iconDiv.classList.add('bg-gray-100');
+                    }
+                }
+            });
+            
             // Update content
             questionDiv.querySelector('.category-label').textContent = category.name.toUpperCase();
             questionDiv.querySelector('.current-q').textContent = currentQuestionNumber;
@@ -1133,5 +1151,28 @@
             }
         }
     </script>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-white py-8 mt-12">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <div class="flex items-center justify-center mb-4">
+                <img src="/logo-white.png" alt="ARX Business Brokers" class="h-8 w-auto" 
+                     onerror="this.style.display='none'; document.getElementById('footerFallbackLogo').style.display='block';">
+                <div id="footerFallbackLogo" style="display:none;" class="logo-text text-2xl text-white lowercase">arx</div>
+            </div>
+            <p class="text-sm text-gray-300 mb-4">
+                Professional business brokerage services for successful exits
+            </p>
+            <div class="space-y-2">
+                <a href="https://arxbrokers.com" class="text-orange-400 hover:text-orange-300 transition-colors font-medium">
+                    Visit ARX Business Brokers →
+                </a>
+                <p class="text-xs text-gray-400">
+                    © 2025 ARX Business Brokers. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
 </body>
 </html>
