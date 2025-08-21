@@ -1,4 +1,11 @@
-const { createClient } = require('@supabase/supabase-js');
+// Import Supabase client with error handling
+let createClient;
+try {
+  createClient = require('@supabase/supabase-js').createClient;
+} catch (error) {
+  console.error('Failed to load Supabase client:', error);
+  createClient = null;
+}
 
 // Main handler function
 exports.handler = async (event, context) => {
@@ -26,6 +33,15 @@ exports.handler = async (event, context) => {
     }
 
     console.log(`Processing assessment for ${assessment.email}`);
+
+    // Check if Supabase client is available
+    if (!createClient) {
+      console.error('Supabase client not available');
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: 'Database connection not available' })
+      };
+    }
 
     // Initialize Supabase client
     const supabase = createClient(

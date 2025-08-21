@@ -898,7 +898,7 @@
             
             try {
                 // Submit to our secure Netlify function
-                const response = await fetch('/.netlify/functions/process-assessment', {
+                const response = await fetch('/.netlify/functions/process-assessment-http', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
