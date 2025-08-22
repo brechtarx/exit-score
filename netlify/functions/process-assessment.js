@@ -534,23 +534,24 @@ async function createPipedriveLead(assessment) {
     // 2. Create organization if it doesn't exist
     if (!orgId) {
       console.log('Creating organization for:', assessment.company);
-      console.log('Organization data:', {
+      
+      const orgCreateData = {
         name: assessment.company,
-        address: assessment.zipcode,
-        people_count: assessment.employees_numeric,
-        annual_revenue: assessment.revenue_numeric
-      });
+        address: assessment.zipcode ? {
+          postal_code: assessment.zipcode,
+          country: "USA"
+        } : null,
+        website: assessment.website || null,
+        annual_revenue: assessment.revenue_numeric || null,
+        employee_count: assessment.employees_numeric || null
+      };
+      
+      console.log('Organization creation data:', JSON.stringify(orgCreateData, null, 2));
       
       const orgResponse = await fetch(`${baseUrl}/organizations?api_token=${apiToken}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: assessment.company,
-          address: assessment.zipcode || null,
-          website: assessment.website || null,
-          annual_revenue: assessment.revenue_numeric || null,
-          employee_count: assessment.employees_numeric || null
-        })
+        body: JSON.stringify(orgCreateData)
       });
       
       const orgData = await orgResponse.json();
@@ -575,6 +576,10 @@ async function createPipedriveLead(assessment) {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            address: assessment.zipcode ? {
+              postal_code: assessment.zipcode,
+              country: "USA"
+            } : null,
             website: assessment.website || null,
             annual_revenue: assessment.revenue_numeric || null,
             employee_count: assessment.employees_numeric || null
