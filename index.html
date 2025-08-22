@@ -142,6 +142,28 @@
             -webkit-user-select: none;
             user-select: none;
         }
+        
+        /* Loading spinner animation */
+        .loading-spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #ffffff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .btn-loading {
+            opacity: 0.8;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen" tabindex="-1">
@@ -527,8 +549,12 @@
                     <!-- reCAPTCHA v3 (Invisible) -->
                     <input type="hidden" id="recaptcha-token" name="recaptcha-token">
                     
-                    <button type="submit" class="btn-primary w-full py-4 px-6 rounded-lg text-white font-semibold text-lg mt-6">
-                        Get My Report →
+                    <button type="submit" id="submitBtn" class="btn-primary w-full py-4 px-6 rounded-lg text-white font-semibold text-lg mt-6">
+                        <span id="submitBtnText">Get My Report →</span>
+                        <span id="submitBtnLoading" class="hidden">
+                            <div class="loading-spinner"></div>
+                            Processing Assessment...
+                        </span>
                     </button>
                     <p class="text-xs text-gray-500 mt-4 text-center">
                         Your information is 100% confidential and will never be shared.
@@ -564,6 +590,29 @@
                     Check your email (including spam folder) for your detailed analysis report.
                 </p>
             </div>
+        </div>
+    </div>
+
+    <!-- Processing Overlay -->
+    <div id="processingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-8 max-w-md mx-4 text-center">
+            <div class="loading-spinner mx-auto mb-4" style="border-top-color: #000; width: 40px; height: 40px;"></div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Processing Your Assessment</h3>
+            <div id="processingSteps" class="text-sm text-gray-600 space-y-1">
+                <div id="step1" class="flex items-center justify-center">
+                    <span class="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                    Analyzing your responses
+                </div>
+                <div id="step2" class="flex items-center justify-center opacity-50">
+                    <span class="inline-block w-2 h-2 bg-gray-300 rounded-full mr-2"></span>
+                    Generating AI recommendations
+                </div>
+                <div id="step3" class="flex items-center justify-center opacity-50">
+                    <span class="inline-block w-2 h-2 bg-gray-300 rounded-full mr-2"></span>
+                    Preparing your report
+                </div>
+            </div>
+            <p class="text-xs text-gray-500 mt-4">This may take 10-15 seconds</p>
         </div>
     </div>
 
@@ -1135,6 +1184,9 @@
         async function submitLeadForm(event) {
             event.preventDefault();
             
+            // Show loading state immediately
+            showLoadingState();
+            
             const formData = new FormData(event.target);
             const timeSpent = assessmentStartTime ? Math.floor((Date.now() - assessmentStartTime) / 1000) : 0;
             
@@ -1142,6 +1194,7 @@
             const honeypot = formData.get('honeypot');
             if (honeypot) {
                 // Silent fail for spam protection
+                hideLoadingState();
                 return;
             }
             
@@ -1150,11 +1203,13 @@
             try {
                 recaptchaResponse = await grecaptcha.execute('6LdrH68rAAAAADuJOKxj-FLpKB8fUNFX-I6mYeAA', {action: 'submit_assessment'});
             } catch (error) {
+                hideLoadingState();
                 alert('reCAPTCHA verification failed. Please try again.');
                 return;
             }
             
             if (timeSpent < 30) {
+                hideLoadingState();
                 alert('Please take your time to complete the assessment properly.');
                 return;
             }
@@ -1182,6 +1237,9 @@
             };
             
             try {
+                // Step 2: AI Processing
+                setTimeout(() => updateProcessingStep(2), 2000);
+                
                 // Submit to our secure Netlify function
                 const response = await fetch('/.netlify/functions/process-assessment-final', {
                     method: 'POST',
@@ -1197,6 +1255,9 @@
                 
                 const result = await response.json();
                 
+                // Step 3: Report preparation
+                setTimeout(() => updateProcessingStep(3), 500);
+                
                 // Track conversion
                 trackEvent('generate_lead', {
                     currency: 'USD',
@@ -1210,13 +1271,79 @@
                     value: 100
                 });
                 
-                // Show thank you
-                document.getElementById('leadCapture').classList.add('hidden');
-                document.getElementById('thankYou').classList.remove('hidden');
+                // Small delay to show final step
+                setTimeout(() => {
+                    hideLoadingState();
+                    // Show thank you
+                    document.getElementById('leadCapture').classList.add('hidden');
+                    document.getElementById('thankYou').classList.remove('hidden');
+                }, 1000);
                 
             } catch (error) {
                 console.error('Error submitting lead:', error);
+                hideLoadingState();
                 alert('There was an error submitting your information. Please try again or contact us directly.');
+            }
+        }
+        
+        // Loading state functions
+        function showLoadingState() {
+            // Disable submit button and show loading
+            const submitBtn = document.getElementById('submitBtn');
+            const submitBtnText = document.getElementById('submitBtnText');
+            const submitBtnLoading = document.getElementById('submitBtnLoading');
+            
+            submitBtn.disabled = true;
+            submitBtn.classList.add('btn-loading');
+            submitBtnText.classList.add('hidden');
+            submitBtnLoading.classList.remove('hidden');
+            
+            // Show processing overlay
+            document.getElementById('processingOverlay').classList.remove('hidden');
+            
+            // Reset all steps
+            resetProcessingSteps();
+        }
+        
+        function hideLoadingState() {
+            // Re-enable submit button
+            const submitBtn = document.getElementById('submitBtn');
+            const submitBtnText = document.getElementById('submitBtnText');
+            const submitBtnLoading = document.getElementById('submitBtnLoading');
+            
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('btn-loading');
+            submitBtnText.classList.remove('hidden');
+            submitBtnLoading.classList.add('hidden');
+            
+            // Hide processing overlay
+            document.getElementById('processingOverlay').classList.add('hidden');
+        }
+        
+        function resetProcessingSteps() {
+            // Reset to step 1 active
+            document.getElementById('step1').classList.remove('opacity-50');
+            document.getElementById('step1').querySelector('.w-2').classList.remove('bg-gray-300');
+            document.getElementById('step1').querySelector('.w-2').classList.add('bg-green-500');
+            
+            document.getElementById('step2').classList.add('opacity-50');
+            document.getElementById('step2').querySelector('.w-2').classList.add('bg-gray-300');
+            document.getElementById('step2').querySelector('.w-2').classList.remove('bg-green-500');
+            
+            document.getElementById('step3').classList.add('opacity-50');
+            document.getElementById('step3').querySelector('.w-2').classList.add('bg-gray-300');
+            document.getElementById('step3').querySelector('.w-2').classList.remove('bg-green-500');
+        }
+        
+        function updateProcessingStep(step) {
+            if (step === 2) {
+                document.getElementById('step2').classList.remove('opacity-50');
+                document.getElementById('step2').querySelector('.w-2').classList.remove('bg-gray-300');
+                document.getElementById('step2').querySelector('.w-2').classList.add('bg-green-500');
+            } else if (step === 3) {
+                document.getElementById('step3').classList.remove('opacity-50');
+                document.getElementById('step3').querySelector('.w-2').classList.remove('bg-gray-300');
+                document.getElementById('step3').querySelector('.w-2').classList.add('bg-green-500');
             }
         }
     </script>
