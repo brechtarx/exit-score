@@ -1,6 +1,72 @@
 // Final working version - direct HTTP calls to Supabase API
 const { google } = require('googleapis');
 
+// Assessment categories and questions structure (matches frontend)
+const categories = [
+  {
+    name: "Transferability Risk",
+    weight: 0.30,
+    questions: [
+      "Does the business operate without requiring the owner's unique skills or knowledge?",
+      "Are key customer relationships maintained by at least two non-owner employees?",
+      "Would the business survive losing any single employee (including the owner)?",
+      "Is the owner working less than 25 hours per week in the business?",
+      "Are all critical processes documented in writing?",
+      "Could the business operate profitably with an absentee owner for 60+ days?"
+    ]
+  },
+  {
+    name: "Growth Track Record", 
+    weight: 0.20,
+    questions: [
+      "Did the company grow revenue year-over-year in the most recent 12 months?",
+      "Did revenue increase in at least 4 of the last 5 years?",
+      "Do you feel your business has grown faster than most of your competitors?",
+      "Do you regularly attract new customers to replace any you might lose?"
+    ]
+  },
+  {
+    name: "Market Dynamics",
+    weight: 0.15,
+    questions: [
+      "Is demand for your products/services generally increasing each year?",
+      "Would it take a new competitor more than $100k to start competing with you?",
+      "Would it be difficult for someone to replace your service with a computer or app?"
+    ]
+  },
+  {
+    name: "Business Model Attractiveness",
+    weight: 0.15,
+    questions: [
+      "Is your revenue predictable through contracts, subscriptions, or repeat customers?",
+      "After paying all expenses, do you typically keep more than 15 cents of every dollar in revenue?",
+      "Did the business revenue drop less than 15% during 2008 or 2020?",
+      "Is your equipment investment less than 50% of annual revenue?"
+    ]
+  },
+  {
+    name: "Financial Integrity & Operations",
+    weight: 0.10,
+    questions: [
+      "Are your financial records clean and prepared by a professional?",
+      "Does no single customer represent more than 15% of revenue?",
+      "Do you keep personal expenses separate from business expenses?",
+      "Has a CPA reviewed or prepared your financial statements?",
+      "Do most of your customers come back year after year?"
+    ]
+  },
+  {
+    name: "Competitive Moat",
+    weight: 0.10,
+    questions: [
+      "Do you have 4.0+ stars online OR can you provide 10+ positive customer references?",
+      "Do potential customers regularly contact you without you having to chase them?",
+      "Can you charge 10%+ more than competitors and keep customers?",
+      "Have you won 5+ new accounts from competitors in the last 12 months?"
+    ]
+  }
+];
+
 exports.handler = async (event, context) => {
   // Only allow POST requests
   if (event.httpMethod !== 'POST') {
@@ -473,7 +539,10 @@ async function createPipedriveLead(assessment) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: assessment.company,
-          address: assessment.zipcode || null
+          address: assessment.zipcode || null,
+          // Add revenue and employee data to organization
+          'people_count': assessment.employees_numeric || null,
+          'annual_revenue': assessment.revenue_numeric || null
         })
       });
       
@@ -483,6 +552,25 @@ async function createPipedriveLead(assessment) {
         console.log('Created organization:', orgId);
       } else {
         console.error('Failed to create organization:', orgData);
+      }
+    } else if (orgId && (assessment.revenue_numeric || assessment.employees_numeric)) {
+      // Update existing organization with new revenue/employee data
+      console.log('Updating existing organization with revenue/employee data...');
+      try {
+        const updateOrgResponse = await fetch(`${baseUrl}/organizations/${orgId}?api_token=${apiToken}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            'people_count': assessment.employees_numeric || null,
+            'annual_revenue': assessment.revenue_numeric || null
+          })
+        });
+        
+        if (updateOrgResponse.ok) {
+          console.log('Organization updated with revenue/employee data');
+        }
+      } catch (error) {
+        console.error('Failed to update organization:', error);
       }
     }
     
@@ -597,19 +685,7 @@ async function createPipedriveLead(assessment) {
           person_id: contactId,
           deal_id: dealId,
           user_id: userId,
-          note: `Follow up with ${assessment.name} regarding their business exit assessment.
-
-Company: ${assessment.company}
-Industry: ${assessment.industry || 'Not specified'}
-Revenue: ${assessment.revenue || 'Not specified'}
-Employees: ${assessment.employees || 'Not specified'}
-Overall Score: ${assessment.score}%
-
-ASSESSMENT RESPONSES:
-${assessment.responses ? assessment.responses.map(r => `• ${r.question}: ${r.answer} (${r.score} points)`).join('\n') : 'No responses available'}
-
-Location: ${assessment.zipcode ? `Zip ${assessment.zipcode}` : 'Not provided'}
-Website: ${assessment.website || 'Not provided'}`
+          note: generateDetailedAssessmentNote(assessment)
         })
       });
       
@@ -727,4 +803,81 @@ This lead was automatically processed and added to Pipedrive.`;
   }
   
   console.log('No notification service configured or all failed');
+}
+
+// Generate detailed assessment note with category scores and Q&A
+function generateDetailedAssessmentNote(assessment) {
+  // Calculate category scores
+  const categoryScores = calculateCategoryScores(assessment.responses || []);
+  
+  let note = `Follow up with ${assessment.name} regarding their business exit assessment.
+
+COMPANY INFORMATION:
+• Company: ${assessment.company}
+• Industry: ${assessment.industry || 'Not specified'}  
+• Revenue: ${assessment.revenue || 'Not specified'}
+• Employees: ${assessment.employees || 'Not specified'}
+• Location: ${assessment.zipcode ? `Zip ${assessment.zipcode}` : 'Not provided'}
+• Website: ${assessment.website || 'Not provided'}
+
+OVERALL ASSESSMENT SCORE: ${assessment.score}%
+
+CATEGORY BREAKDOWN:`;
+
+  // Add category scores
+  categories.forEach((category, catIndex) => {
+    const score = categoryScores[catIndex];
+    const percentage = Math.round((score.points / score.maxPoints) * 100);
+    note += `\n• ${category.name}: ${percentage}% (${score.points}/${score.maxPoints} points, weight: ${Math.round(category.weight * 100)}%)`;
+  });
+
+  note += '\n\nDETAILED RESPONSES:';
+
+  // Add questions and answers by category
+  categories.forEach((category, catIndex) => {
+    note += `\n\n${category.name.toUpperCase()}:`;
+    
+    category.questions.forEach((question, qIndex) => {
+      // Find the response for this question
+      const response = (assessment.responses || []).find(r => 
+        r.category === catIndex && r.question === qIndex
+      );
+      
+      if (response) {
+        const answerText = response.answer === true ? 'YES' : 
+                          response.answer === false ? 'NO' : 'SKIPPED';
+        const points = response.answer === true ? '5 points' :
+                      response.answer === false ? '0 points' : '0 points';
+        note += `\n  ${qIndex + 1}. ${question}`;
+        note += `\n     Answer: ${answerText} (${points})`;
+      }
+    });
+  });
+
+  note += '\n\nNEXT STEPS:';
+  note += '\n• Follow up within 24-48 hours';
+  note += '\n• Discuss assessment results and improvement opportunities';
+  note += '\n• Explore ARX services for sale preparation';
+
+  return note;
+}
+
+// Calculate scores by category
+function calculateCategoryScores(responses) {
+  return categories.map((category, catIndex) => {
+    let points = 0;
+    let maxPoints = category.questions.length * 5; // 5 points per question
+    
+    category.questions.forEach((question, qIndex) => {
+      const response = responses.find(r => 
+        r.category === catIndex && r.question === qIndex
+      );
+      
+      if (response && response.answer === true) {
+        points += 5;
+      }
+    });
+    
+    return { points, maxPoints };
+  });
 }
