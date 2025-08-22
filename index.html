@@ -14,16 +14,23 @@
     <!-- Google reCAPTCHA -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     
-    <!-- Analytics scripts disabled until proper IDs are configured -->
-    <!--
-    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-23SV7KW5WM"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', 'GA_MEASUREMENT_ID');
+        gtag('config', 'G-23SV7KW5WM', {
+            // Enhanced ecommerce and cross-domain tracking
+            'custom_map': {
+                'custom_parameter_1': 'assessment_score',
+                'custom_parameter_2': 'industry'
+            }
+        });
     </script>
     
+    <!-- Facebook Pixel disabled until proper ID is configured -->
+    <!--
     <script>
         !function(f,b,e,v,n,t,s)
         {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -820,7 +827,8 @@
                 items: [{
                     item_name: 'Sales Readiness Assessment',
                     item_category: 'Lead Generation'
-                }]
+                }],
+                custom_parameter_2: industry
             });
         }
         
@@ -1109,7 +1117,9 @@
             // Track completion
             trackEvent('assessment_complete', {
                 score: score,
-                score_category: score >= 80 ? 'premium' : score >= 60 ? 'above_average' : score >= 40 ? 'average' : score >= 20 ? 'below_average' : 'needs_improvement'
+                score_category: score >= 80 ? 'premium' : score >= 60 ? 'above_average' : score >= 40 ? 'average' : score >= 20 ? 'below_average' : 'needs_improvement',
+                custom_parameter_1: score,
+                custom_parameter_2: businessInfo.industry
             });
             
             // Scroll to top
@@ -1190,7 +1200,9 @@
                 // Track conversion
                 trackEvent('generate_lead', {
                     currency: 'USD',
-                    value: 100
+                    value: 100,
+                    custom_parameter_1: parseInt(document.getElementById('scoreValue').textContent),
+                    custom_parameter_2: businessInfo.industry
                 });
                 
                 trackFBEvent('Lead', {
