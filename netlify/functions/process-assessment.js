@@ -547,6 +547,7 @@ async function createPipedriveLead(assessment) {
         body: JSON.stringify({
           name: assessment.company,
           address: assessment.zipcode || null,
+          website: assessment.website || null,
           annual_revenue: assessment.revenue_numeric || null,
           employee_count: assessment.employees_numeric || null
         })
@@ -574,6 +575,7 @@ async function createPipedriveLead(assessment) {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            website: assessment.website || null,
             annual_revenue: assessment.revenue_numeric || null,
             employee_count: assessment.employees_numeric || null
           })
