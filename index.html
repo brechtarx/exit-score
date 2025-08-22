@@ -69,12 +69,11 @@
             to { opacity: 1; transform: translateY(0); }
         }
         .btn-primary {
-            background: linear-gradient(135deg, #ea580c, #dc2626);
+            background: #000000;
             transition: all 0.2s;
         }
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(234, 88, 12, 0.3);
+            background: #1a1a1a;
         }
         .logo-text {
             font-family: 'Inter', 'Arial Black', sans-serif;
@@ -132,14 +131,14 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen" tabindex="-1">
+<body class="bg-gray-50 min-h-screen" tabindex="-1">
     <!-- Header -->
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div class="container max-w-6xl mx-auto px-4">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center">
                     <a href="https://arxbrokers.com" class="flex items-center">
-                        <img src="/arx-logo.png" alt="ARX Business Brokers" class="h-8 w-auto" 
+                        <img src="/arx_website_blueblack.webp" alt="ARX Business Brokers" class="h-8 w-auto" 
                              onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='block';">
                         <div id="fallbackLogo" style="display:none;" class="logo-text text-2xl text-slate-900 lowercase font-bold">arx</div>
                     </a>
@@ -154,7 +153,7 @@
 
     <!-- Progress Bar -->
     <div class="bg-gray-200 h-2">
-        <div id="progressBar" class="progress-bar bg-orange-600 h-full" style="width: 0%"></div>
+        <div id="progressBar" class="progress-bar bg-dark-anchor h-full" style="width: 0%"></div>
     </div>
 
     <!-- Main Container -->
@@ -162,7 +161,7 @@
         
         <!-- Welcome Screen -->
         <div id="welcome" class="question-screen fade-in">
-            <div class="bg-white rounded-xl shadow-xl p-4 sm:p-10 mt-4 sm:mt-8 max-w-2xl mx-auto">
+            <div class="bg-white rounded-lg border border-gray-200 p-4 sm:p-10 mt-4 sm:mt-8 max-w-2xl mx-auto">
                 <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">
                     Is Your Business Ready to Sell?
                 </h1>
@@ -226,7 +225,7 @@
 
         <!-- Revenue Selection Screen -->
         <div id="revenueSelection" class="question-screen hidden">
-            <div class="bg-white rounded-xl shadow-xl p-4 sm:p-10 mt-4 sm:mt-8 max-w-2xl mx-auto">
+            <div class="bg-white rounded-lg border border-gray-200 p-4 sm:p-10 mt-4 sm:mt-8 max-w-2xl mx-auto">
                 <div class="mb-6">
                     <span class="text-xs sm:text-sm text-orange-600 font-bold uppercase tracking-wider">Business Profile</span>
                     <div class="text-sm text-gray-500 mt-1">Step 1 of 3</div>
@@ -298,7 +297,7 @@
 
         <!-- Employee Count Selection Screen -->
         <div id="employeeSelection" class="question-screen hidden">
-            <div class="bg-white rounded-xl shadow-xl p-4 sm:p-10 mt-4 sm:mt-8 max-w-2xl mx-auto">
+            <div class="bg-white rounded-lg border border-gray-200 p-4 sm:p-10 mt-4 sm:mt-8 max-w-2xl mx-auto">
                 <div class="mb-6">
                     <span class="text-xs sm:text-sm text-orange-600 font-bold uppercase tracking-wider">Business Profile</span>
                     <div class="text-sm text-gray-500 mt-1">Step 2 of 3</div>
@@ -358,7 +357,7 @@
 
         <!-- Question Template (Hidden, will be cloned) -->
         <div id="questionTemplate" class="question-screen hidden">
-            <div class="bg-white rounded-xl shadow-xl p-4 sm:p-8 mt-4 sm:mt-8 fade-in max-w-2xl mx-auto">
+            <div class="bg-white rounded-lg border border-gray-200 p-4 sm:p-8 mt-4 sm:mt-8 fade-in max-w-2xl mx-auto">
                 <div class="mb-6">
                     <span class="text-xs sm:text-sm text-orange-600 font-bold uppercase tracking-wider category-label">Category</span>
                     <div class="text-sm text-gray-500 mt-1">
