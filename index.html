@@ -874,7 +874,6 @@
             const question = category.questions[currentQuestionIndex];
             currentQuestionNumber = getCurrentQuestionNumber();
             
-            console.log('Showing question:', currentQuestionNumber, 'of', totalQuestions);
             
             // Hide all screens
             document.querySelectorAll('.question-screen').forEach(el => el.classList.add('hidden'));
@@ -1122,11 +1121,11 @@
             const formData = new FormData(event.target);
             const timeSpent = assessmentStartTime ? Math.floor((Date.now() - assessmentStartTime) / 1000) : 0;
             
-            // Spam protection checks (temporarily disabled for testing)
+            // Spam protection - honeypot check
             const honeypot = formData.get('honeypot');
             if (honeypot) {
-                console.log('Honeypot filled (but allowing submission for testing):', honeypot);
-                // return; // Silent fail for spam - DISABLED FOR TESTING
+                // Silent fail for spam protection
+                return;
             }
             
             if (timeSpent < 30) {
@@ -1170,7 +1169,6 @@
                 }
                 
                 const result = await response.json();
-                console.log('Assessment submitted and processed successfully:', result);
                 
                 // Track conversion
                 trackEvent('generate_lead', {

@@ -17,14 +17,38 @@ exports.handler = async (event, context) => {
     // Parse the form submission
     const assessment = JSON.parse(event.body);
     
-    // Validate required fields
-    if (!assessment.email || !assessment.name || !assessment.company) {
+    // Enhanced server-side validation
+    if (!assessment.email || !assessment.name || !assessment.company || !assessment.zipcode) {
       return {
         statusCode: 400,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ error: 'Missing required fields' })
       };
     }
+    
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(assessment.email)) {
+      return {
+        statusCode: 400,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ error: 'Invalid email format' })
+      };
+    }
+    
+    // Rate limiting check (basic)
+    if (assessment.time_spent && assessment.time_spent < 30) {
+      return {
+        statusCode: 400,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ error: 'Submission too fast' })
+      };
+    }
+    
+    // Data sanitization
+    assessment.name = assessment.name?.toString().trim().substring(0, 100);
+    assessment.company = assessment.company?.toString().trim().substring(0, 100);
+    assessment.email = assessment.email?.toString().trim().toLowerCase().substring(0, 254);
 
     console.log(`Processing assessment for ${assessment.email}`);
 
