@@ -547,12 +547,8 @@ async function createPipedriveLead(assessment) {
         body: JSON.stringify({
           name: assessment.company,
           address: assessment.zipcode || null,
-          // Add revenue and employee data to organization (try different field names)
-          people_count: assessment.employees_numeric || null,
           annual_revenue: assessment.revenue_numeric || null,
-          // Alternative field names to try
-          employees: assessment.employees_numeric || null,
-          revenue: assessment.revenue_numeric || null
+          employee_count: assessment.employees_numeric || null
         })
       });
       
@@ -566,11 +562,11 @@ async function createPipedriveLead(assessment) {
         console.error('Failed to create organization:', orgData);
       }
     } else if (orgId && (assessment.revenue_numeric || assessment.employees_numeric)) {
-      // Update existing organization with new revenue/employee data
+      // Update existing organization with correct field names
       console.log('Updating existing organization ID:', orgId);
       console.log('Update data:', {
-        people_count: assessment.employees_numeric,
-        annual_revenue: assessment.revenue_numeric
+        annual_revenue: assessment.revenue_numeric,
+        employee_count: assessment.employees_numeric
       });
       
       try {
@@ -578,11 +574,8 @@ async function createPipedriveLead(assessment) {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            people_count: assessment.employees_numeric || null,
             annual_revenue: assessment.revenue_numeric || null,
-            // Alternative field names to try
-            employees: assessment.employees_numeric || null,
-            revenue: assessment.revenue_numeric || null
+            employee_count: assessment.employees_numeric || null
           })
         });
         
