@@ -533,41 +533,66 @@ async function createPipedriveLead(assessment) {
     
     // 2. Create organization if it doesn't exist
     if (!orgId) {
-      console.log('Creating organization...');
+      console.log('Creating organization for:', assessment.company);
+      console.log('Organization data:', {
+        name: assessment.company,
+        address: assessment.zipcode,
+        people_count: assessment.employees_numeric,
+        annual_revenue: assessment.revenue_numeric
+      });
+      
       const orgResponse = await fetch(`${baseUrl}/organizations?api_token=${apiToken}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: assessment.company,
           address: assessment.zipcode || null,
-          // Add revenue and employee data to organization
-          'people_count': assessment.employees_numeric || null,
-          'annual_revenue': assessment.revenue_numeric || null
+          // Add revenue and employee data to organization (try different field names)
+          people_count: assessment.employees_numeric || null,
+          annual_revenue: assessment.revenue_numeric || null,
+          // Alternative field names to try
+          employees: assessment.employees_numeric || null,
+          revenue: assessment.revenue_numeric || null
         })
       });
       
       const orgData = await orgResponse.json();
+      console.log('Organization creation response:', orgData);
+      
       if (orgData.success) {
         orgId = orgData.data.id;
-        console.log('Created organization:', orgId);
+        console.log('Created organization with ID:', orgId);
       } else {
         console.error('Failed to create organization:', orgData);
       }
     } else if (orgId && (assessment.revenue_numeric || assessment.employees_numeric)) {
       // Update existing organization with new revenue/employee data
-      console.log('Updating existing organization with revenue/employee data...');
+      console.log('Updating existing organization ID:', orgId);
+      console.log('Update data:', {
+        people_count: assessment.employees_numeric,
+        annual_revenue: assessment.revenue_numeric
+      });
+      
       try {
         const updateOrgResponse = await fetch(`${baseUrl}/organizations/${orgId}?api_token=${apiToken}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            'people_count': assessment.employees_numeric || null,
-            'annual_revenue': assessment.revenue_numeric || null
+            people_count: assessment.employees_numeric || null,
+            annual_revenue: assessment.revenue_numeric || null,
+            // Alternative field names to try
+            employees: assessment.employees_numeric || null,
+            revenue: assessment.revenue_numeric || null
           })
         });
         
-        if (updateOrgResponse.ok) {
-          console.log('Organization updated with revenue/employee data');
+        const updateResult = await updateOrgResponse.json();
+        console.log('Organization update response:', updateResult);
+        
+        if (updateResult.success) {
+          console.log('Organization updated successfully with revenue/employee data');
+        } else {
+          console.error('Organization update failed:', updateResult);
         }
       } catch (error) {
         console.error('Failed to update organization:', error);
@@ -850,6 +875,7 @@ CATEGORY BREAKDOWN:`;
                       response.answer === false ? '0 points' : '0 points';
         note += `\n  ${qIndex + 1}. ${question}`;
         note += `\n     Answer: ${answerText} (${points})`;
+        note += '\n'; // Add extra line break between questions
       }
     });
   });
