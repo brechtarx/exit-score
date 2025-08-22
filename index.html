@@ -847,7 +847,47 @@
             
             // Try to restore saved progress
             restoreProgress();
+            
+            // Set up engagement tracking
+            setupEngagementTracking();
         });
+        
+        // Engagement tracking setup
+        function setupEngagementTracking() {
+            let engagedTracked = false;
+            let abandonmentTracked = false;
+            let pageLoadTime = Date.now();
+            
+            // Track engaged user at 60 seconds
+            setTimeout(() => {
+                if (!engagedTracked) {
+                    trackEvent('engaged_user', {
+                        time_on_page: 60
+                    });
+                    engagedTracked = true;
+                }
+            }, 60000);
+            
+            // Track quick abandonment at 30 seconds if user hasn't started
+            setTimeout(() => {
+                if (!abandonmentTracked && !assessmentStartTime) {
+                    trackEvent('quick_abandonment', {
+                        time_on_page: 30
+                    });
+                    abandonmentTracked = true;
+                }
+            }, 30000);
+            
+            // Track when user leaves page
+            window.addEventListener('beforeunload', function() {
+                const timeOnPage = Math.floor((Date.now() - pageLoadTime) / 1000);
+                trackEvent('page_exit', {
+                    time_on_page: timeOnPage,
+                    assessment_started: !!assessmentStartTime,
+                    answers_given: answers.length
+                });
+            });
+        }
 
         function startAssessment() {
             // Validate industry selection
@@ -874,6 +914,11 @@
             
             // Save progress
             saveProgress();
+            
+            // Track revenue selection start
+            trackEvent('revenue_selection_start', {
+                industry: industry
+            });
             trackEvent('begin_checkout', {
                 value: 0,
                 currency: 'USD',
@@ -903,7 +948,19 @@
             
             // Auto-advance after selection
             setTimeout(() => {
+                // Track revenue selection completion
+                trackEvent('revenue_selection_complete', {
+                    revenue_range: displayText,
+                    revenue_numeric: numericValue
+                });
+                
                 showScreen('employeeSelection');
+                
+                // Track employee selection start
+                trackEvent('employee_selection_start', {
+                    revenue_range: displayText
+                });
+                
                 // Save progress
                 saveProgress();
             }, 500);
@@ -927,6 +984,12 @@
             
             // Auto-advance after selection
             setTimeout(() => {
+                // Track employee selection completion
+                trackEvent('employee_selection_complete', {
+                    employee_range: displayText,
+                    employee_numeric: numericValue
+                });
+                
                 showQuestion();
                 // Save progress
                 saveProgress();
@@ -1049,9 +1112,25 @@
                 answer: answer === true ? 'yes' : answer === false ? 'no' : 'skip'
             });
             
+            // Track progress every 5 questions
+            if (answers.length % 5 === 0) {
+                trackEvent('assessment_progress', {
+                    questions_answered: answers.length,
+                    total_questions: totalQuestions,
+                    progress_percentage: Math.round((answers.length / totalQuestions) * 100)
+                });
+            }
+            
             // Move to next question
             currentQuestionIndex++;
             if (currentQuestionIndex >= categories[currentCategoryIndex].questions.length) {
+                // Track category completion
+                trackEvent('category_complete', {
+                    category_name: categories[currentCategoryIndex].name,
+                    category_index: currentCategoryIndex,
+                    questions_in_category: categories[currentCategoryIndex].questions.length
+                });
+                
                 currentCategoryIndex++;
                 currentQuestionIndex = 0;
             }
@@ -1192,6 +1271,33 @@
             document.getElementById('leadCapture').classList.remove('hidden');
             
             trackEvent('begin_lead_capture');
+            
+            // Track form field interactions
+            setupFormTracking();
+        }
+        
+        function setupFormTracking() {
+            const formFields = ['name', 'email', 'phone', 'company', 'website', 'zipcode'];
+            
+            formFields.forEach(fieldName => {
+                const field = document.querySelector(`input[name="${fieldName}"]`);
+                if (field) {
+                    field.addEventListener('focus', () => {
+                        trackEvent('form_field_focus', {
+                            field_name: fieldName
+                        });
+                    });
+                    
+                    field.addEventListener('blur', () => {
+                        if (field.validity.valueMissing || !field.validity.valid) {
+                            trackEvent('form_validation_error', {
+                                field_name: fieldName,
+                                error_type: field.validity.valueMissing ? 'required' : 'invalid'
+                            });
+                        }
+                    });
+                }
+            });
         }
 
         async function submitLeadForm(event) {
@@ -1215,8 +1321,19 @@
             let recaptchaResponse;
             try {
                 recaptchaResponse = await grecaptcha.execute('6LdrH68rAAAAADuJOKxj-FLpKB8fUNFX-I6mYeAA', {action: 'submit_assessment'});
+                
+                // Track successful reCAPTCHA completion
+                trackEvent('recaptcha_completed', {
+                    action: 'submit_assessment'
+                });
             } catch (error) {
                 hideLoadingState();
+                
+                // Track reCAPTCHA failure
+                trackEvent('recaptcha_failed', {
+                    error: error.message || 'Unknown error'
+                });
+                
                 alert('reCAPTCHA verification failed. Please try again.');
                 return;
             }
@@ -1250,11 +1367,17 @@
             };
             
             try {
+                // Track processing start
+                const processingStartTime = Date.now();
+                trackEvent('processing_started', {
+                    assessment_score: parseInt(document.getElementById('scoreValue').textContent)
+                });
+                
                 // Step 2: AI Processing
                 setTimeout(() => updateProcessingStep(2), 2000);
                 
                 // Submit to our secure Netlify function
-                const response = await fetch('/.netlify/functions/process-assessment-final', {
+                const response = await fetch('/.netlify/functions/process-assessment', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1267,6 +1390,13 @@
                 }
                 
                 const result = await response.json();
+                
+                // Track processing completion
+                const processingTime = Date.now() - processingStartTime;
+                trackEvent('processing_completed', {
+                    processing_time_ms: processingTime,
+                    processing_time_seconds: Math.round(processingTime / 1000)
+                });
                 
                 // Step 3: Report preparation
                 setTimeout(() => updateProcessingStep(3), 500);
@@ -1296,6 +1426,13 @@
                 
             } catch (error) {
                 console.error('Error submitting lead:', error);
+                
+                // Track processing failure
+                trackEvent('processing_failed', {
+                    error_message: error.message || 'Unknown error',
+                    assessment_score: parseInt(document.getElementById('scoreValue').textContent)
+                });
+                
                 hideLoadingState();
                 alert('There was an error submitting your information. Please try again or contact us directly.');
             }
@@ -1376,18 +1513,25 @@
             
             try {
                 sessionStorage.setItem('assessmentProgress', JSON.stringify(progress));
+                console.log('Progress saved:', {
+                    categoryIndex: currentCategoryIndex,
+                    questionIndex: currentQuestionIndex,
+                    answersCount: answers.length,
+                    businessInfo: Object.keys(businessInfo)
+                });
             } catch (error) {
-                // Silently fail if sessionStorage is not available
-                console.log('Could not save progress:', error);
+                console.error('Could not save progress:', error);
             }
         }
         
         function restoreProgress() {
             try {
                 const savedProgress = sessionStorage.getItem('assessmentProgress');
+                console.log('Attempting to restore progress:', savedProgress ? 'Found saved data' : 'No saved data');
                 if (!savedProgress) return;
                 
                 const progress = JSON.parse(savedProgress);
+                console.log('Parsed progress:', progress);
                 
                 // Check if progress is recent (within 24 hours)
                 const hoursSinceLastSave = (Date.now() - progress.timestamp) / (1000 * 60 * 60);
@@ -1406,6 +1550,13 @@
                 
                 // Show restoration notification and continue from saved point
                 if (answers.length > 0 || Object.keys(businessInfo).length > 0) {
+                    // Track progress restoration
+                    trackEvent('progress_restored', {
+                        answers_restored: answers.length,
+                        time_since_save: Math.round(hoursSinceLastSave * 60), // minutes
+                        business_info_complete: !!(businessInfo.industry && businessInfo.revenue && businessInfo.employees)
+                    });
+                    
                     showRestorationNotification();
                     
                     // Restore industry selection if available
@@ -1475,6 +1626,12 @@
         }
         
         function startOver() {
+            // Track fresh start choice
+            trackEvent('fresh_start_chosen', {
+                previous_answers: answers.length,
+                previous_business_info: Object.keys(businessInfo).length
+            });
+            
             // Clear progress and reload page
             clearProgress();
             window.location.reload();
