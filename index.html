@@ -115,6 +115,9 @@
         .text-bright-white {
             color: var(--bright-white);
         }
+        .bg-hyperlink-blue {
+            background-color: var(--hyperlink-blue);
+        }
         .font-headline {
             font-family: 'Inter', sans-serif;
         }
@@ -137,11 +140,9 @@
         <div class="container max-w-6xl mx-auto px-4">
             <div class="flex items-center justify-between h-20">
                 <div class="flex items-center">
-                    <a href="https://arxbrokers.com" class="flex items-center">
-                        <img src="/arx_website_blueblack.webp" alt="ARX Business Brokers" style="height: 50px; width: auto;" 
-                             onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='block';">
-                        <div id="fallbackLogo" style="display:none;" class="logo-text text-2xl text-slate-900 lowercase font-bold">arx</div>
-                    </a>
+                    <img src="/arx_website_blueblack.webp" alt="ARX Business Brokers" style="height: 50px; width: auto;" 
+                         onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='block';">
+                    <div id="fallbackLogo" style="display:none;" class="logo-text text-2xl text-slate-900 lowercase font-bold">arx</div>
                 </div>
                 <div class="text-right">
                     <div class="text-sm font-medium text-slate-900">Business Sales Readiness Assessment</div>
@@ -153,7 +154,9 @@
 
     <!-- Progress Bar -->
     <div class="bg-gray-200 h-2">
-        <div id="progressBar" class="progress-bar bg-dark-anchor h-full" style="width: 0%"></div>
+        <div class="max-w-6xl mx-auto">
+            <div id="progressBar" class="progress-bar bg-hyperlink-blue h-full" style="width: 0%"></div>
+        </div>
     </div>
 
     <!-- Main Container -->
@@ -161,7 +164,7 @@
         
         <!-- Welcome Screen -->
         <div id="welcome" class="question-screen fade-in">
-            <div class="bg-white rounded-lg border border-gray-200 p-4 sm:p-10 mt-4 sm:mt-8 max-w-2xl mx-auto">
+            <div class="sm:bg-white sm:rounded-lg sm:border sm:border-gray-200 p-4 sm:p-10 mt-0 sm:mt-8 max-w-2xl mx-auto">
                 <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">
                     Is Your Business Ready to Sell?
                 </h1>
@@ -225,7 +228,7 @@
 
         <!-- Revenue Selection Screen -->
         <div id="revenueSelection" class="question-screen hidden">
-            <div class="bg-white rounded-lg border border-gray-200 p-4 sm:p-10 mt-4 sm:mt-8 max-w-2xl mx-auto">
+            <div class="sm:bg-white sm:rounded-lg sm:border sm:border-gray-200 p-4 sm:p-10 mt-0 sm:mt-8 max-w-2xl mx-auto">
                 <div class="mb-6">
                     <span class="text-xs sm:text-sm text-orange-600 font-bold uppercase tracking-wider">Business Profile</span>
                     <div class="text-sm text-gray-500 mt-1">Step 1 of 3</div>
@@ -237,58 +240,58 @@
                     This helps us provide more accurate recommendations for your business size.
                 </p>
                 <div class="space-y-3">
-                    <button onclick="selectRevenue('Under $100K', 50000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                    <button onclick="selectRevenue('Under $100K', 50000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">Under $100K</span>
-                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectRevenue('$100K - $500K', 300000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                    <button onclick="selectRevenue('$100K - $500K', 300000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">$100K - $500K</span>
-                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectRevenue('$500K - $1M', 750000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                    <button onclick="selectRevenue('$500K - $1M', 750000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">$500K - $1M</span>
-                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectRevenue('$1M - $2M', 1500000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                    <button onclick="selectRevenue('$1M - $2M', 1500000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">$1M - $2M</span>
-                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectRevenue('$2M - $5M', 3500000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                    <button onclick="selectRevenue('$2M - $5M', 3500000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">$2M - $5M</span>
-                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectRevenue('$5M - $10M', 7500000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                    <button onclick="selectRevenue('$5M - $10M', 7500000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">$5M - $10M</span>
-                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectRevenue('$10M - $25M', 17500000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                    <button onclick="selectRevenue('$10M - $25M', 17500000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">$10M - $25M</span>
-                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectRevenue('$25M - $50M', 37500000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                    <button onclick="selectRevenue('$25M - $50M', 37500000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">$25M - $50M</span>
-                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectRevenue('Over $50M', 75000000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                    <button onclick="selectRevenue('Over $50M', 75000000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">Over $50M</span>
-                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
                 </div>
@@ -297,7 +300,7 @@
 
         <!-- Employee Count Selection Screen -->
         <div id="employeeSelection" class="question-screen hidden">
-            <div class="bg-white rounded-lg border border-gray-200 p-4 sm:p-10 mt-4 sm:mt-8 max-w-2xl mx-auto">
+            <div class="sm:bg-white sm:rounded-lg sm:border sm:border-gray-200 p-4 sm:p-10 mt-0 sm:mt-8 max-w-2xl mx-auto">
                 <div class="mb-6">
                     <span class="text-xs sm:text-sm text-orange-600 font-bold uppercase tracking-wider">Business Profile</span>
                     <div class="text-sm text-gray-500 mt-1">Step 2 of 3</div>
@@ -309,46 +312,46 @@
                     Include yourself and any full-time, part-time, or contract workers.
                 </p>
                 <div class="space-y-3">
-                    <button onclick="selectEmployees('Just me', 1)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                    <button onclick="selectEmployees('Just me', 1)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">Just me (sole proprietor)</span>
-                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectEmployees('2-5 employees', 3)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                    <button onclick="selectEmployees('2-5 employees', 3)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">2-5 employees</span>
-                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectEmployees('6-10 employees', 8)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                    <button onclick="selectEmployees('6-10 employees', 8)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">6-10 employees</span>
-                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectEmployees('11-25 employees', 18)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                    <button onclick="selectEmployees('11-25 employees', 18)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">11-25 employees</span>
-                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectEmployees('26-50 employees', 38)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                    <button onclick="selectEmployees('26-50 employees', 38)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">26-50 employees</span>
-                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectEmployees('51-100 employees', 75)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                    <button onclick="selectEmployees('51-100 employees', 75)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">51-100 employees</span>
-                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectEmployees('Over 100 employees', 150)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all group">
+                    <button onclick="selectEmployees('Over 100 employees', 150)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">Over 100 employees</span>
-                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-orange-500 transition-colors"></div>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
                 </div>
@@ -357,9 +360,9 @@
 
         <!-- Question Template (Hidden, will be cloned) -->
         <div id="questionTemplate" class="question-screen hidden">
-            <div class="bg-white rounded-lg border border-gray-200 p-4 sm:p-8 mt-4 sm:mt-8 fade-in max-w-2xl mx-auto">
+            <div class="sm:bg-white sm:rounded-lg sm:border sm:border-gray-200 p-4 sm:p-8 mt-0 sm:mt-8 fade-in max-w-2xl mx-auto">
                 <div class="mb-6">
-                    <span class="text-xs sm:text-sm text-orange-600 font-bold uppercase tracking-wider category-label">Category</span>
+                    <span class="text-xs sm:text-sm text-hyperlink-blue font-bold uppercase tracking-wider category-label">Category</span>
                     <div class="text-sm text-gray-500 mt-1">
                         Question <span class="current-q">1</span> of <span class="total-q">26</span>
                     </div>
@@ -419,7 +422,7 @@
 
         <!-- Results Screen -->
         <div id="results" class="hidden">
-            <div class="bg-white rounded-xl shadow-lg p-8 mt-8 fade-in">
+            <div class="sm:bg-white sm:rounded-xl sm:shadow-lg p-6 sm:p-8 mt-0 sm:mt-8 fade-in">
                 <h2 class="text-3xl font-bold text-slate-900 mb-2">Your Sales Readiness Score</h2>
                 <div class="text-6xl font-bold text-orange-600 my-8">
                     <span id="scoreValue">0</span>%
@@ -474,7 +477,7 @@
 
         <!-- Lead Capture Form -->
         <div id="leadCapture" class="hidden">
-            <div class="bg-white rounded-xl shadow-lg p-8 mt-8 fade-in">
+            <div class="sm:bg-white sm:rounded-xl sm:shadow-lg p-6 sm:p-8 mt-0 sm:mt-8 fade-in">
                 <h2 class="text-2xl font-bold text-slate-900 mb-2">Get Your Personalized Report</h2>
                 <p class="text-gray-600 mb-6">
                     We'll send you a detailed analysis with specific recommendations to improve your business's sale readiness.
@@ -520,7 +523,7 @@
 
         <!-- Thank You Screen -->
         <div id="thankYou" class="hidden">
-            <div class="bg-white rounded-xl shadow-lg p-8 mt-8 fade-in text-center">
+            <div class="sm:bg-white sm:rounded-xl sm:shadow-lg p-6 sm:p-8 mt-0 sm:mt-8 fade-in text-center">
                 <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
@@ -816,14 +819,14 @@
             
             // Add visual feedback
             document.querySelectorAll('.revenue-btn').forEach(btn => {
-                btn.classList.remove('border-orange-500', 'bg-orange-50');
+                btn.classList.remove('border-green-500', 'bg-green-50');
                 btn.classList.add('border-gray-200');
-                btn.querySelector('.w-6').classList.remove('bg-orange-500');
+                btn.querySelector('.w-6').classList.remove('bg-green-500');
                 btn.querySelector('.w-6').classList.add('border-gray-300');
             });
             
-            event.target.closest('.revenue-btn').classList.add('border-orange-500', 'bg-orange-50');
-            event.target.closest('.revenue-btn').querySelector('.w-6').classList.add('bg-orange-500');
+            event.target.closest('.revenue-btn').classList.add('border-green-500', 'bg-green-50');
+            event.target.closest('.revenue-btn').querySelector('.w-6').classList.add('bg-green-500');
             event.target.closest('.revenue-btn').querySelector('.w-6').classList.remove('border-gray-300');
             
             // Auto-advance after selection
