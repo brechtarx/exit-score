@@ -185,9 +185,13 @@
     </header>
 
     <!-- Progress Bar -->
-    <div class="bg-gray-200 h-2">
+    <div class="bg-gray-200 h-2 relative">
         <div class="max-w-6xl mx-auto">
-            <div id="progressBar" class="progress-bar bg-hyperlink-blue h-full" style="width: 0%"></div>
+            <div id="progressBar" class="progress-bar bg-hyperlink-blue h-full transition-all duration-300" style="width: 0%"></div>
+        </div>
+        <!-- Progress Text -->
+        <div id="progressText" class="absolute top-3 left-1/2 transform -translate-x-1/2 text-xs text-gray-600 font-medium hidden">
+            <span id="progressCounter">0 of 26</span> questions completed
         </div>
     </div>
 
@@ -972,14 +976,14 @@
             
             // Add visual feedback
             document.querySelectorAll('.employee-btn').forEach(btn => {
-                btn.classList.remove('border-orange-500', 'bg-orange-50');
+                btn.classList.remove('border-green-500', 'bg-green-50');
                 btn.classList.add('border-gray-200');
-                btn.querySelector('.w-6').classList.remove('bg-orange-500');
+                btn.querySelector('.w-6').classList.remove('bg-green-500');
                 btn.querySelector('.w-6').classList.add('border-gray-300');
             });
             
-            event.target.closest('.employee-btn').classList.add('border-orange-500', 'bg-orange-50');
-            event.target.closest('.employee-btn').querySelector('.w-6').classList.add('bg-orange-500');
+            event.target.closest('.employee-btn').classList.add('border-green-500', 'bg-green-50');
+            event.target.closest('.employee-btn').querySelector('.w-6').classList.add('bg-green-500');
             event.target.closest('.employee-btn').querySelector('.w-6').classList.remove('border-gray-300');
             
             // Auto-advance after selection
@@ -1192,6 +1196,17 @@
         function updateProgress() {
             const progress = (currentQuestionNumber / totalQuestions) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
+            
+            // Update progress text
+            const progressText = document.getElementById('progressText');
+            const progressCounter = document.getElementById('progressCounter');
+            
+            if (currentQuestionNumber > 0) {
+                progressText.classList.remove('hidden');
+                progressCounter.textContent = `${currentQuestionNumber} of ${totalQuestions}`;
+            } else {
+                progressText.classList.add('hidden');
+            }
         }
 
         function calculateResults() {
@@ -1513,25 +1528,17 @@
             
             try {
                 sessionStorage.setItem('assessmentProgress', JSON.stringify(progress));
-                console.log('Progress saved:', {
-                    categoryIndex: currentCategoryIndex,
-                    questionIndex: currentQuestionIndex,
-                    answersCount: answers.length,
-                    businessInfo: Object.keys(businessInfo)
-                });
             } catch (error) {
-                console.error('Could not save progress:', error);
+                // Silently fail if sessionStorage is not available
             }
         }
         
         function restoreProgress() {
             try {
                 const savedProgress = sessionStorage.getItem('assessmentProgress');
-                console.log('Attempting to restore progress:', savedProgress ? 'Found saved data' : 'No saved data');
                 if (!savedProgress) return;
                 
                 const progress = JSON.parse(savedProgress);
-                console.log('Parsed progress:', progress);
                 
                 // Check if progress is recent (within 24 hours)
                 const hoursSinceLastSave = (Date.now() - progress.timestamp) / (1000 * 60 * 60);
