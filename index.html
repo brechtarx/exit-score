@@ -844,6 +844,9 @@
                 page_title: 'Sales Readiness Assessment',
                 page_location: window.location.href
             });
+            
+            // Try to restore saved progress
+            restoreProgress();
         });
 
         function startAssessment() {
@@ -868,6 +871,9 @@
             document.getElementById('welcome').classList.add('hidden');
             assessmentStartTime = Date.now(); // Track start time for spam protection
             showScreen('revenueSelection');
+            
+            // Save progress
+            saveProgress();
             trackEvent('begin_checkout', {
                 value: 0,
                 currency: 'USD',
@@ -898,6 +904,8 @@
             // Auto-advance after selection
             setTimeout(() => {
                 showScreen('employeeSelection');
+                // Save progress
+                saveProgress();
             }, 500);
         }
         
@@ -920,6 +928,8 @@
             // Auto-advance after selection
             setTimeout(() => {
                 showQuestion();
+                // Save progress
+                saveProgress();
             }, 500);
         }
         
@@ -1028,6 +1038,9 @@
                 question: currentQuestionIndex,
                 answer: answer
             });
+            
+            // Save progress after each answer
+            saveProgress();
             
             // Track answer
             trackEvent('assessment_answer', {
@@ -1274,6 +1287,8 @@
                 // Small delay to show final step
                 setTimeout(() => {
                     hideLoadingState();
+                    // Clear saved progress since assessment is complete
+                    clearProgress();
                     // Show thank you
                     document.getElementById('leadCapture').classList.add('hidden');
                     document.getElementById('thankYou').classList.remove('hidden');
@@ -1345,6 +1360,124 @@
                 document.getElementById('step3').querySelector('.w-2').classList.remove('bg-gray-300');
                 document.getElementById('step3').querySelector('.w-2').classList.add('bg-green-500');
             }
+        }
+        
+        // Progress saving and restoration
+        function saveProgress() {
+            const progress = {
+                currentCategoryIndex,
+                currentQuestionIndex,
+                answers,
+                businessInfo,
+                assessmentStartTime,
+                currentQuestionNumber,
+                timestamp: Date.now()
+            };
+            
+            try {
+                sessionStorage.setItem('assessmentProgress', JSON.stringify(progress));
+            } catch (error) {
+                // Silently fail if sessionStorage is not available
+                console.log('Could not save progress:', error);
+            }
+        }
+        
+        function restoreProgress() {
+            try {
+                const savedProgress = sessionStorage.getItem('assessmentProgress');
+                if (!savedProgress) return;
+                
+                const progress = JSON.parse(savedProgress);
+                
+                // Check if progress is recent (within 24 hours)
+                const hoursSinceLastSave = (Date.now() - progress.timestamp) / (1000 * 60 * 60);
+                if (hoursSinceLastSave > 24) {
+                    clearProgress();
+                    return;
+                }
+                
+                // Restore state
+                currentCategoryIndex = progress.currentCategoryIndex || 0;
+                currentQuestionIndex = progress.currentQuestionIndex || 0;
+                answers = progress.answers || [];
+                businessInfo = progress.businessInfo || {};
+                assessmentStartTime = progress.assessmentStartTime || null;
+                currentQuestionNumber = progress.currentQuestionNumber || 0;
+                
+                // Show restoration notification and continue from saved point
+                if (answers.length > 0 || Object.keys(businessInfo).length > 0) {
+                    showRestorationNotification();
+                    
+                    // Restore industry selection if available
+                    if (businessInfo.industry) {
+                        document.getElementById('industry').value = businessInfo.industry;
+                    }
+                    
+                    // Resume from the appropriate screen
+                    if (businessInfo.industry && !businessInfo.revenue) {
+                        document.getElementById('welcome').classList.add('hidden');
+                        showScreen('revenueSelection');
+                    } else if (businessInfo.revenue && !businessInfo.employees) {
+                        document.getElementById('welcome').classList.add('hidden');
+                        showScreen('employeeSelection');
+                    } else if (businessInfo.employees && answers.length < totalQuestions) {
+                        document.getElementById('welcome').classList.add('hidden');
+                        showQuestion();
+                    }
+                    
+                    // Update progress bar
+                    updateProgress();
+                }
+            } catch (error) {
+                // If there's an error, clear the corrupted progress
+                clearProgress();
+            }
+        }
+        
+        function clearProgress() {
+            try {
+                sessionStorage.removeItem('assessmentProgress');
+            } catch (error) {
+                // Silently fail if sessionStorage is not available
+            }
+        }
+        
+        function showRestorationNotification() {
+            // Create a temporary notification
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-green-100 border border-green-300 text-green-800 px-4 py-3 rounded-lg shadow-lg z-50 max-w-sm';
+            notification.innerHTML = `
+                <div class="flex items-start">
+                    <svg class="w-5 h-5 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div class="flex-1">
+                        <div class="font-medium">Progress Restored</div>
+                        <div class="text-sm mb-2">Continuing from where you left off</div>
+                        <button onclick="startOver()" class="text-xs underline hover:no-underline">Start over instead</button>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-2 text-green-600 hover:text-green-800">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remove after 8 seconds (longer since there's a start over option)
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 8000);
+        }
+        
+        function startOver() {
+            // Clear progress and reload page
+            clearProgress();
+            window.location.reload();
         }
     </script>
 
