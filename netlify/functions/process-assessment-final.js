@@ -64,11 +64,14 @@ exports.handler = async (event, context) => {
     });
     
     const recaptchaResult = await recaptchaVerifyResponse.json();
-    if (!recaptchaResult.success) {
+    if (!recaptchaResult.success || recaptchaResult.score < 0.5) {
       return {
         statusCode: 400,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ error: 'reCAPTCHA verification failed' })
+        body: JSON.stringify({ 
+          error: 'reCAPTCHA verification failed',
+          score: recaptchaResult.score || 0
+        })
       };
     }
 
