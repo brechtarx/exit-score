@@ -146,7 +146,7 @@ exports.handler = async (event, context) => {
     assessment.company = assessment.company?.toString().trim().substring(0, 100);
     assessment.email = assessment.email?.toString().trim().toLowerCase().substring(0, 254);
 
-    console.log(`Processing assessment for ${assessment.email}`);
+    console.log(`Processing assessment for ${assessment.email} - v2024`);
 
     // Save directly to Supabase using REST API
     const supabaseResponse = await fetch(`${process.env.SUPABASE_URL}/rest/v1/assessments`, {
