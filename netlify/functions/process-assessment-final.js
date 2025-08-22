@@ -45,6 +45,33 @@ exports.handler = async (event, context) => {
       };
     }
     
+    // reCAPTCHA verification
+    if (!assessment.recaptcha_token) {
+      return {
+        statusCode: 400,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ error: 'reCAPTCHA verification required' })
+      };
+    }
+    
+    // Verify reCAPTCHA with Google
+    const recaptchaVerifyResponse = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${assessment.recaptcha_token}`
+    });
+    
+    const recaptchaResult = await recaptchaVerifyResponse.json();
+    if (!recaptchaResult.success) {
+      return {
+        statusCode: 400,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ error: 'reCAPTCHA verification failed' })
+      };
+    }
+
     // Data sanitization
     assessment.name = assessment.name?.toString().trim().substring(0, 100);
     assessment.company = assessment.company?.toString().trim().substring(0, 100);
