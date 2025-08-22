@@ -37,6 +37,14 @@
     
     <style>
         :root {
+            /* ARX Brand Colors */
+            --bright-white: #FAFAFA;
+            --light-stone-white: #F0F1F2;
+            --cool-gray: #B3B6B8;
+            --hyperlink-blue: #416EA6;
+            --dark-anchor: #101620;
+            
+            /* Legacy colors (to be phased out) */
             --arx-navy: #0f172a;
             --arx-blue: #1e293b;
             --arx-orange: #ea580c;
@@ -86,6 +94,32 @@
                 border-color: currentColor;
             }
         }
+        /* Brand utility classes */
+        .bg-dark-anchor {
+            background-color: var(--dark-anchor);
+        }
+        .bg-bright-white {
+            background-color: var(--bright-white);
+        }
+        .bg-light-stone-white {
+            background-color: var(--light-stone-white);
+        }
+        .text-cool-gray {
+            color: var(--cool-gray);
+        }
+        .text-hyperlink-blue {
+            color: var(--hyperlink-blue);
+        }
+        .text-dark-anchor {
+            color: var(--dark-anchor);
+        }
+        .font-headline {
+            font-family: 'Inter', sans-serif;
+        }
+        .font-body {
+            font-family: 'Open Sans', sans-serif;
+        }
+        
         /* Remove tap highlight on mobile */
         button {
             -webkit-tap-highlight-color: transparent;
@@ -1154,21 +1188,21 @@
     </script>
 
     <!-- Footer -->
-    <footer class="bg-slate-900 text-white py-12 mt-16">
+    <footer class="bg-dark-anchor text-white py-12 mt-16">
         <div class="max-w-6xl mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
                 <!-- Company Info -->
                 <div>
-                    <h2 class="text-2xl font-medium text-white mb-4" style="font-family: Inter, sans-serif;">Arx Brokers</h2>
-                    <p class="text-sm text-gray-300 leading-relaxed">
+                    <h2 class="text-2xl font-medium text-white mb-4 font-headline">Arx Brokers</h2>
+                    <p class="text-sm text-cool-gray leading-relaxed font-body">
                         Arx Brokers is a sell-side business brokerage and mergers and acquisitions advisory firm for business owners with $1M - $25M in sales or more than $300k in EBITDA.
                     </p>
                 </div>
                 
                 <!-- Headquarters -->
                 <div>
-                    <h3 class="text-lg font-medium text-white mb-4">Headquarters</h3>
-                    <div class="text-sm text-gray-300">
+                    <h3 class="text-lg font-medium text-white mb-4 font-headline">Headquarters</h3>
+                    <div class="text-sm text-cool-gray font-body">
                         <p>2900 NW Clearwater Dr.</p>
                         <p>Bend, OR 97703</p>
                     </div>
@@ -1176,8 +1210,8 @@
                 
                 <!-- Contact -->
                 <div>
-                    <h3 class="text-lg font-medium text-white mb-4">Contact</h3>
-                    <div class="text-sm text-gray-300 space-y-1">
+                    <h3 class="text-lg font-medium text-white mb-4 font-headline">Contact</h3>
+                    <div class="text-sm text-cool-gray space-y-1 font-body">
                         <p><a href="mailto:sales@arxbrokers.com" class="hover:text-white transition-colors">sales@arxbrokers.com</a></p>
                         <p><a href="tel:8558582130" class="hover:text-white transition-colors">(855) 858-2130</a></p>
                     </div>
