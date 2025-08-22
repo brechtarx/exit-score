@@ -534,7 +534,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
-                            <input type="tel" name="phone" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                            <input type="tel" name="phone" id="phoneInput" placeholder="(555) 123-4567" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Company Name *</label>
@@ -1313,6 +1313,55 @@
                     });
                 }
             });
+            
+            // Set up phone number masking
+            setupPhoneMask();
+        }
+        
+        function setupPhoneMask() {
+            const phoneInput = document.getElementById('phoneInput');
+            if (!phoneInput) return;
+            
+            phoneInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, ''); // Remove all non-digits
+                
+                if (value.length >= 6) {
+                    // Format as (XXX) XXX-XXXX
+                    value = `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6, 10)}`;
+                } else if (value.length >= 3) {
+                    // Format as (XXX) XXX
+                    value = `(${value.slice(0, 3)}) ${value.slice(3)}`;
+                } else if (value.length > 0) {
+                    // Format as (XXX
+                    value = `(${value}`;
+                }
+                
+                e.target.value = value;
+            });
+            
+            // Handle backspace to remove formatting
+            phoneInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace') {
+                    let value = e.target.value;
+                    // If we're deleting a formatting character, delete the digit before it too
+                    if (value.endsWith(') ') || value.endsWith('-')) {
+                        e.preventDefault();
+                        e.target.value = value.slice(0, -2);
+                        // Trigger input event to reformat
+                        e.target.dispatchEvent(new Event('input'));
+                    }
+                }
+            });
+            
+            // Validation
+            phoneInput.addEventListener('blur', function(e) {
+                const value = e.target.value.replace(/\D/g, '');
+                if (value.length !== 10) {
+                    e.target.setCustomValidity('Please enter a valid 10-digit US phone number');
+                } else {
+                    e.target.setCustomValidity('');
+                }
+            });
         }
 
         async function submitLeadForm(event) {
@@ -1364,7 +1413,7 @@
                 name: formData.get('name'),
                 email: formData.get('email'),
                 company: formData.get('company'),
-                phone: formData.get('phone'),
+                phone: formData.get('phone') ? formData.get('phone').replace(/\D/g, '') : null, // Store digits only
                 industry: businessInfo.industry,
                 website: formData.get('website') || null,
                 zipcode: formData.get('zipcode'),
