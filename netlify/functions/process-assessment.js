@@ -537,10 +537,7 @@ async function createPipedriveLead(assessment) {
       
       const orgCreateData = {
         name: assessment.company,
-        address: assessment.zipcode ? {
-          postal_code: assessment.zipcode,
-          country: "USA"
-        } : null,
+        address: assessment.zipcode || null,
         website: assessment.website || null,
         annual_revenue: assessment.revenue_numeric || null,
         employee_count: assessment.employees_numeric || null
@@ -576,10 +573,7 @@ async function createPipedriveLead(assessment) {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            address: assessment.zipcode ? {
-              postal_code: assessment.zipcode,
-              country: "USA"
-            } : null,
+            address: assessment.zipcode || null,
             website: assessment.website || null,
             annual_revenue: assessment.revenue_numeric || null,
             employee_count: assessment.employees_numeric || null
