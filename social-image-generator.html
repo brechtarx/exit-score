@@ -57,7 +57,7 @@
         }
         
         .header {
-            text-align: center;
+            text-align: left;
             margin-bottom: 40px;
         }
         
@@ -94,7 +94,7 @@
             margin-bottom: 20px;
             letter-spacing: -0.03em;
             font-family: 'Inter', sans-serif;
-            text-align: center;
+            text-align: left;
         }
         
         .subtitle {
@@ -104,12 +104,12 @@
             line-height: 1.3;
             margin-bottom: 50px;
             font-family: 'Open Sans', sans-serif;
-            text-align: center;
+            text-align: left;
         }
         
         .features {
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             gap: 60px;
             margin-bottom: 50px;
         }
@@ -142,7 +142,7 @@
         }
         
         .cta-section {
-            text-align: center;
+            text-align: left;
             margin-bottom: 40px;
         }
         
@@ -166,13 +166,13 @@
             text-align: center;
         }
         
-        .logo-text {
-            color: var(--bright-white);
-            font-size: 32px;
-            font-weight: 800;
-            font-family: 'Inter', sans-serif;
-            letter-spacing: -0.02em;
+        .logo-image {
+            width: auto;
+            height: 40px;
             margin-bottom: 8px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
         
         .website {
@@ -243,7 +243,8 @@
         </div>
         
         <div class="logo-section">
-            <div class="logo-text">arx</div>
+            <img src="/arx_website_blueblack.webp" alt="ARX Business Brokers" class="logo-image" onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='block';">
+            <div id="fallbackLogo" style="display:none; color: var(--bright-white); font-size: 28px; font-weight: 800; font-family: 'Inter', sans-serif; margin-bottom: 8px;">arx</div>
             <div class="website">arxbrokers.com</div>
         </div>
     </div>
