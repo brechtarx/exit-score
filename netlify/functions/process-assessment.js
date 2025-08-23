@@ -539,8 +539,10 @@ async function createPipedriveLead(assessment) {
         name: assessment.company,
         address: assessment.zipcode || null,
         website: assessment.website || null,
-        annual_revenue: assessment.revenue_numeric || null,
-        employee_count: assessment.employees_numeric || null
+        // Custom fields with specific IDs
+        'f04aa9605fd3eff31231301ee12f6d59491d0c7d': assessment.industry || null, // Industry
+        '2638446e6db380981c0693b3c05837308b7ed3c4': assessment.employees_numeric || null, // Employees  
+        'b9b1382d70ff58d426d35c631153b7d6d0d2c809': assessment.revenue_numeric || null // Revenue
       };
       
       console.log('Organization creation data:', JSON.stringify(orgCreateData, null, 2));
@@ -575,8 +577,10 @@ async function createPipedriveLead(assessment) {
           body: JSON.stringify({
             address: assessment.zipcode || null,
             website: assessment.website || null,
-            annual_revenue: assessment.revenue_numeric || null,
-            employee_count: assessment.employees_numeric || null
+            // Custom fields with specific IDs
+            'f04aa9605fd3eff31231301ee12f6d59491d0c7d': assessment.industry || null, // Industry
+            '2638446e6db380981c0693b3c05837308b7ed3c4': assessment.employees_numeric || null, // Employees  
+            'b9b1382d70ff58d426d35c631153b7d6d0d2c809': assessment.revenue_numeric || null // Revenue
           })
         });
         
