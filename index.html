@@ -5,12 +5,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Get your free Business Sale Readiness Score in 3 minutes. AI-powered assessment analyzes 6 key categories to determine how ready your business is for sale. Trusted by business owners nationwide.">
+    <meta name="keywords" content="business sale readiness, business valuation, sell my business, business broker, exit planning, business assessment, M&A advisory">
+    <meta name="author" content="ARX Business Brokers">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://exit-score.netlify.app/">
+    
+    <!-- Open Graph Meta Tags for Social Sharing -->
+    <meta property="og:title" content="Get Your Business Sale Readiness Score in 3 Minutes">
+    <meta property="og:description" content="Free AI-powered assessment that analyzes your business across 6 key categories to determine sale readiness. Get personalized recommendations from M&A experts.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://exit-score.netlify.app/">
+    <meta property="og:image" content="https://exit-score.netlify.app/arx_website_blueblack.webp">
+    <meta property="og:site_name" content="ARX Business Brokers">
+    <meta property="og:locale" content="en_US">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Get Your Business Sale Readiness Score in 3 Minutes">
+    <meta name="twitter:description" content="Free AI-powered assessment that analyzes your business across 6 key categories to determine sale readiness.">
+    <meta name="twitter:image" content="https://exit-score.netlify.app/arx_website_blueblack.webp">
+    
+    <!-- Favicons -->
     <link rel="icon" type="image/png" href="/arx_favicon.png">
     <link rel="shortcut icon" type="image/png" href="/arx_favicon.png">
+    <link rel="apple-touch-icon" href="/arx_favicon.png">
+    
     <title>Get Your Business Sale Readiness Score in 3 Minutes | AI-Powered Assessment | ARX Business Brokers</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "ARX Business Brokers",
+        "url": "https://arxbrokers.com",
+        "logo": "https://exit-score.netlify.app/arx_website_blueblack.webp",
+        "sameAs": [
+            "https://www.linkedin.com/company/arxbusinessbrokers"
+        ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Business Sale Readiness Assessment",
+        "description": "Free AI-powered assessment that analyzes your business across 6 key categories to determine sale readiness",
+        "url": "https://exit-score.netlify.app/",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web Browser",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "ARX Business Brokers"
+        }
+    }
+    </script>
+
     <!-- Google reCAPTCHA v3 -->
     <script src="https://www.google.com/recaptcha/api.js?render=6LdrH68rAAAAADuJOKxj-FLpKB8fUNFX-I6mYeAA" async defer></script>
     
@@ -164,6 +224,27 @@
             opacity: 0.8;
             cursor: not-allowed;
         }
+
+        /* Error and success message styles */
+        .error-message {
+            background-color: #fee2e2;
+            border: 1px solid #fca5a5;
+            color: #dc2626;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 16px 0;
+            display: none;
+        }
+        
+        .success-message {
+            background-color: #d1fae5;
+            border: 1px solid #6ee7b7;
+            color: #065f46;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 16px 0;
+            display: none;
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen" tabindex="-1">
@@ -172,8 +253,7 @@
         <div class="container max-w-6xl mx-auto px-4">
             <div class="flex items-center justify-between h-20">
                 <div class="flex items-center">
-                    <img src="/arx_website_blueblack.webp" alt="ARX Business Brokers" style="height: 50px; width: auto;" 
-                         onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='block';">
+                    <img src="/arx_website_blueblack.webp" alt="ARX Business Brokers" style="height: 50px; width: auto;" loading="eager" decoding="async" width="150" height="50" onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='block';">
                     <div id="fallbackLogo" style="display:none;" class="logo-text text-2xl text-slate-900 lowercase font-bold">arx</div>
                 </div>
                 <div class="text-right">
@@ -522,6 +602,9 @@
                 </p>
                 <form id="leadForm" onsubmit="submitLeadForm(event)">
                     <input type="text" id="honeypot" name="honeypot" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;border:0;padding:0;margin:0;pointer-events:none" tabindex="-1" autocomplete="new-password" aria-hidden="true" readonly>
+                    
+                    <div id="errorMessage" class="error-message" role="alert"></div>
+                    <div id="successMessage" class="success-message" role="status"></div>
                     
                     <div class="space-y-4">
                         <div>
@@ -1498,7 +1581,7 @@
                 });
                 
                 hideLoadingState();
-                alert('There was an error submitting your information. Please try again or contact us directly.');
+                showErrorMessage('There was an error submitting your information. Please try again or contact us directly.');
             }
         }
         
@@ -1534,6 +1617,44 @@
             
             // Hide processing overlay
             document.getElementById('processingOverlay').classList.add('hidden');
+        }
+        
+        // Message functions for better UX
+        function showErrorMessage(message) {
+            const errorElement = document.getElementById('errorMessage');
+            const successElement = document.getElementById('successMessage');
+            
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+                errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            
+            if (successElement) {
+                successElement.style.display = 'none';
+            }
+            
+            // Auto-hide after 10 seconds
+            setTimeout(() => {
+                if (errorElement) {
+                    errorElement.style.display = 'none';
+                }
+            }, 10000);
+        }
+        
+        function showSuccessMessage(message) {
+            const errorElement = document.getElementById('errorMessage');
+            const successElement = document.getElementById('successMessage');
+            
+            if (successElement) {
+                successElement.textContent = message;
+                successElement.style.display = 'block';
+                successElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            
+            if (errorElement) {
+                errorElement.style.display = 'none';
+            }
         }
         
         function resetProcessingSteps() {
