@@ -37,7 +37,7 @@ const categories = [
     questions: [
       "Do you have repeat customers or predictable revenue streams?",
       "Do you keep more than 10 cents profit from every dollar of revenue?",
-      "Is your business type generally attractive to buyers in your area?"
+      "Has anyone asked if they can buy your business in the last few years?"
     ]
   },
   {
@@ -56,7 +56,7 @@ const categories = [
     questions: [
       "Do customers choose you over competitors at least 50% of the time?",
       "Can you charge similar or higher prices than your main competitors?",
-      "Do you have positive online reviews or strong customer references?",
+      "Do you have a 4-star rating or higher online, or can you provide 10+ positive customer references?",
       "Do potential customers contact you directly without heavy marketing?"
     ]
   }
