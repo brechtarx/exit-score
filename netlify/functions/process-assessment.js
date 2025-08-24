@@ -360,65 +360,143 @@ exports.handler = async (event, context) => {
   }
 };
 
+// Build structured data for AI analysis
+function buildStructuredAssessmentData(assessment) {
+  const categoryScores = calculateCategoryScores(assessment.responses || []);
+  
+  let categoryAnalysis = '';
+  let responseAnalysis = '';
+  
+  categories.forEach((category, catIndex) => {
+    const score = categoryScores[catIndex];
+    const percentage = Math.round((score.points / score.maxPoints) * 100);
+    
+    categoryAnalysis += `${catIndex + 1}. **${category.name}** (${Math.round(category.weight * 100)}% weight) - Score: ${percentage}%\n`;
+    categoryAnalysis += `   Focus: ${getCategoryDescription(category.name)}\n\n`;
+    
+    responseAnalysis += `**${category.name.toUpperCase()}** (${percentage}% score):\n`;
+    
+    category.questions.forEach((question, qIndex) => {
+      const response = (assessment.responses || []).find(r => 
+        r.category === catIndex && r.question === qIndex
+      );
+      
+      if (response) {
+        const answerText = response.answer === true ? '✅ YES' : 
+                          response.answer === false ? '❌ NO' : '❓ DON\'T KNOW';
+        const weight = question.weight ? Math.round(question.weight * 100) : Math.round(100 / category.questions.length);
+        
+        responseAnalysis += `- Q${question.id}: ${question.text}\n`;
+        responseAnalysis += `  Response: ${answerText} (${weight}% of category weight)\n`;
+        
+        // Add interpretation for key responses
+        if (response.answer === false || response.answer === null) {
+          responseAnalysis += `  ⚠️  ${response.answer === null ? 'Uncertainty indicates need for clarification' : 'Area for improvement'}\n`;
+        }
+      }
+    });
+    
+    responseAnalysis += '\n';
+  });
+  
+  return {
+    categoryAnalysis,
+    responseAnalysis
+  };
+}
+
+// Get category description for AI context
+function getCategoryDescription(categoryName) {
+  const descriptions = {
+    "Risk of Change of Ownership": "Owner dependency and business transferability",
+    "Company Growth": "Revenue growth patterns and strategic planning", 
+    "Industry Growth": "Market trends and future outlook",
+    "Market Demand": "Buyer attractiveness and operational requirements",
+    "Company Rating": "Financial systems and customer diversification",
+    "Competitiveness": "Market position and pricing power"
+  };
+  
+  return descriptions[categoryName] || "Business evaluation criteria";
+}
+
 // Generate AI report
 async function generateAIReport(assessment) {
   console.log('Building prompt for Claude API...');
   
-  const prompt = `You are an expert M&A advisor from ARX Business Brokers preparing a personalized business sale readiness report.
+  // Build structured response data for AI
+  const structuredData = buildStructuredAssessmentData(assessment);
+  
+  const prompt = `You are a senior M&A advisor at ARX Business Brokers, a boutique firm specializing in selling businesses valued between $1M-$50M in the Pacific Northwest. You're preparing a personalized Exit Score report for a business owner.
 
-BUSINESS CONTEXT:
+**EXPERTISE CONTEXT:**
+- 15+ years M&A experience
+- Specialized in owner-operated businesses  
+- Deep understanding of buyer psychology and valuation drivers
+- Focus on businesses with $1M-$25M revenue
+
+**CLIENT BUSINESS:**
 - Company: ${assessment.company}
-- Industry: ${assessment.industry || 'Not specified'}
-- Location: ${assessment.zipcode ? `Zip Code ${assessment.zipcode}` : 'Not provided'}
+- Industry: ${assessment.industry || 'Not specified'}  
+- Location: ${assessment.zipcode ? `ZIP ${assessment.zipcode} (Pacific Northwest market)` : 'Pacific Northwest region'}
 - Website: ${assessment.website || 'Not provided'}
-- Overall Score: ${assessment.score}%
+- **Exit Score: ${assessment.score}%**
 
-ASSESSMENT STRUCTURE:
-The assessment evaluates 6 categories with specific weightings:
+**ASSESSMENT METHODOLOGY:**
+Our Exit Score evaluates 6 critical categories that buyers analyze during due diligence:
 
-1. TRANSFERABILITY RISK (30% weight) - Can business operate without owner?
-2. GROWTH TRACK RECORD (20% weight) - Recent and historical growth patterns
-3. MARKET DYNAMICS (15% weight) - Industry trends and competitive barriers
-4. BUSINESS MODEL ATTRACTIVENESS (15% weight) - Revenue predictability and margins
-5. FINANCIAL INTEGRITY & OPERATIONS (10% weight) - Clean books and customer concentration
-6. COMPETITIVE MOAT (10% weight) - Brand strength and market position
+${structuredData.categoryAnalysis}
 
-ASSESSMENT RESPONSES:
-${JSON.stringify(assessment.responses, null, 2)}
+**DETAILED RESPONSES:**
+${structuredData.responseAnalysis}
 
-Create a comprehensive, respectful business sale readiness report that acknowledges this business owner's lifetime achievement while providing honest buyer perspective. Use encouraging language and frame weaknesses as "opportunities for value enhancement."
+**WRITING GUIDELINES:**
+- Professional but warm tone - acknowledge the business owner's achievement
+- Lead with strengths, frame weaknesses as "value enhancement opportunities"
+- Provide specific, actionable insights (not generic advice)
+- Reference actual responses to build credibility
+- Include realistic timelines and investment estimates for improvements
+- Focus on buyer perspective while being encouraging
 
-Structure the report as follows:
+**REQUIRED STRUCTURE:**
 
-**EXECUTIVE SUMMARY**
-Overall readiness assessment and what the ${assessment.score}% score means for sale prospects.
+**🎯 EXECUTIVE SUMMARY**
+- What does a ${assessment.score}% score mean for sale prospects?
+- 2-3 sentence assessment of overall readiness
+- Highlight 1-2 major strengths and top priority
 
-**CATEGORY ANALYSIS**
-For each category that shows specific strengths or opportunities, explain:
-- What the responses indicate from a buyer's perspective
-- How this impacts valuation and buyer interest
-- Use positive framing like "buyers value" rather than "buyers are concerned"
+**📊 CATEGORY INSIGHTS**
+For categories with significant impact (scores below 70% or above 85%):
+- Brief analysis of buyer perspective
+- Specific impact on valuation or sale timeline
+- Reference actual responses when relevant
 
-**KEY STRENGTHS**
-Highlight what's working well that will attract buyers (lead with positives).
+**💪 KEY COMPETITIVE ADVANTAGES** 
+- Top 2-3 strengths that differentiate this business
+- How these translate to buyer appeal and premium valuation
 
-**PRIORITY OPPORTUNITIES**
-Top 3 specific areas that would most enhance buyer appeal and valuation.
+**🎯 PRIORITY VALUE ENHANCEMENTS**
+- Top 3 specific improvements with highest ROI
+- Realistic timeline (30-90 days typical)
+- Estimated effort/investment level (Low/Medium/High)
 
-**LOCATION & MARKET CONTEXT**
-${assessment.zipcode ? `Brief insights about the market area and how location affects sale prospects.` : 'General market considerations for this business type.'}
+**🌍 MARKET CONSIDERATIONS**
+${assessment.zipcode ? `Pacific Northwest market dynamics for ${assessment.industry} businesses` : `General market factors for ${assessment.industry} sector`}
 
-**NEXT STEPS**
-Concrete 30-60 day action items. Mention that ARX Business Brokers can help guide the process.
+**🚀 RECOMMENDED NEXT STEPS**
+- 2-3 concrete 30-day actions
+- When to consider engaging a broker
+- Reference to ARX's specific expertise
 
-Keep it professional, encouraging, and actionable for a business owner who has built something significant.`;
+**LENGTH:** Target 800-1200 words for comprehensive analysis.
+
+Generate a report that positions ARX as the trusted advisor who understands both the emotional and financial aspects of selling a life's work.`;
 
   console.log('Prompt length:', prompt.length);
   console.log('Making Claude API request...');
   
   const requestBody = {
-    model: 'claude-3-haiku-20240307',
-    max_tokens: 2000,
+    model: 'claude-3-5-sonnet-20241022',
+    max_tokens: 4000,
     messages: [{
       role: 'user',
       content: prompt
