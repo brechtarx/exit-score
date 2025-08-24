@@ -197,7 +197,7 @@
         },
         {
           "id": 24,
-          "text": "Do you have positive online reviews or strong customer references?",
+          "text": "Do you have a 4-star rating or higher online, or can you provide 10+ positive customer references?",
           "weight": 0.29,
           "yesText": "Strong reputation",
           "noText": "Reputation concerns"
