@@ -361,7 +361,7 @@
         <div id="revenueSelection" class="question-screen hidden">
             <div class="sm:bg-white sm:rounded-lg sm:border sm:border-gray-200 p-4 sm:p-10 mt-0 sm:mt-8 max-w-2xl mx-auto">
                 <div class="mb-6">
-                    <span class="text-xs sm:text-sm text-orange-600 font-bold uppercase tracking-wider">Business Profile</span>
+                    <span class="text-xs sm:text-sm text-hyperlink-blue font-bold uppercase tracking-wider">Business Profile</span>
                     <div class="text-sm text-gray-500 mt-1">Step 1 of 3</div>
                 </div>
                 <h2 class="text-xl sm:text-2xl font-semibold text-slate-900 mb-6">
@@ -433,7 +433,7 @@
         <div id="employeeSelection" class="question-screen hidden">
             <div class="sm:bg-white sm:rounded-lg sm:border sm:border-gray-200 p-4 sm:p-10 mt-0 sm:mt-8 max-w-2xl mx-auto">
                 <div class="mb-6">
-                    <span class="text-xs sm:text-sm text-orange-600 font-bold uppercase tracking-wider">Business Profile</span>
+                    <span class="text-xs sm:text-sm text-hyperlink-blue font-bold uppercase tracking-wider">Business Profile</span>
                     <div class="text-sm text-gray-500 mt-1">Step 2 of 3</div>
                 </div>
                 <h2 class="text-xl sm:text-2xl font-semibold text-slate-900 mb-6">
@@ -1229,18 +1229,18 @@
                     }
                 }
                 
-                // Check if we're back at the beginning
+                // Check if we're back at the beginning of questions
                 if (currentCategoryIndex < 0) {
-                    // Reset to beginning
+                    // Reset to beginning of questions
                     currentCategoryIndex = 0;
                     currentQuestionIndex = 0;
                     
-                    // Hide current question and show welcome
+                    // Hide current question and go back to employee selection
                     const currentQuestion = document.getElementById('currentQuestion');
                     if (currentQuestion) {
                         currentQuestion.remove();
                     }
-                    document.getElementById('welcome').classList.remove('hidden');
+                    showScreen('employeeSelection');
                     
                     // Reset progress bar
                     document.getElementById('progressBar').style.width = '0%';
@@ -1249,12 +1249,28 @@
                     showQuestion();
                 }
             } else {
-                // No answers yet, ensure we're on welcome screen
+                // No answers yet, determine what screen to go back to
                 const currentQuestion = document.getElementById('currentQuestion');
                 if (currentQuestion) {
                     currentQuestion.remove();
                 }
-                document.getElementById('welcome').classList.remove('hidden');
+                
+                // Check current state to determine where to go back
+                if (businessInfo && businessInfo.employees) {
+                    // Go back to employee selection
+                    businessInfo.employees = null;
+                    businessInfo.employeesNumeric = null;
+                    showScreen('employeeSelection');
+                } else if (businessInfo && businessInfo.revenue) {
+                    // Go back to revenue selection  
+                    businessInfo.revenue = null;
+                    businessInfo.revenueNumeric = null;
+                    showScreen('revenueSelection');
+                } else {
+                    // Go back to welcome screen
+                    document.getElementById('welcome').classList.remove('hidden');
+                }
+                
                 document.getElementById('progressBar').style.width = '0%';
             }
         }
