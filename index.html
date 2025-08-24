@@ -788,8 +788,8 @@
     </div>
 
     <script>
-        // Assessment Data
-        const categories = [
+        // Assessment Data - loaded from JSON
+        let categories = [
             {
                 name: "Risk of Change of Ownership",
                 weight: 0.3,
@@ -859,7 +859,7 @@
                         weight: 0.7,
                         yesText: "Growing industry",
                         noText: "Declining industry"
-,
+                    },
                     {
                         text: "Is your business resistant to being replaced by technology or automation?",
                         weight: 0.3,

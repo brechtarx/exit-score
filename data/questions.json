@@ -1,0 +1,229 @@
+{
+  "categories": [
+    {
+      "name": "Risk of Change of Ownership",
+      "weight": 0.3,
+      "questions": [
+        {
+          "id": 1,
+          "text": "Can your business operate profitably for 30+ days without you being present?",
+          "weight": 0.35,
+          "yesText": "Business runs independently",
+          "noText": "Owner dependency risk"
+        },
+        {
+          "id": 2,
+          "text": "Are all critical business processes documented so someone else could follow them?",
+          "weight": 0.22,
+          "yesText": "Systems documented",
+          "noText": "Tribal knowledge"
+        },
+        {
+          "id": 3,
+          "text": "Do you have at least one key employee who could manage daily operations?",
+          "weight": 0.18,
+          "yesText": "Management depth",
+          "noText": "Single person operation"
+        },
+        {
+          "id": 4,
+          "text": "Are the majority of your key customer relationships maintained by employees other than yourself?",
+          "weight": 0.12,
+          "yesText": "Institutional relationships",
+          "noText": "Owner-dependent relationships"
+        },
+        {
+          "id": 5,
+          "text": "Are your business operations independent of licenses or certifications held personally by you?",
+          "weight": 0.13,
+          "yesText": "Transferable operations",
+          "noText": "Owner-dependent credentials"
+        }
+      ]
+    },
+    {
+      "name": "Company Growth",
+      "weight": 0.2,
+      "questions": [
+        {
+          "id": 6,
+          "text": "Has your business grown revenue in the past 12 months?",
+          "weight": 0.45,
+          "yesText": "Currently growing",
+          "noText": "Stagnant or declining"
+        },
+        {
+          "id": 7,
+          "text": "Has your revenue increased in at least 3 of the last 4 years?",
+          "weight": 0.35,
+          "yesText": "Consistent growth pattern",
+          "noText": "Inconsistent performance"
+        },
+        {
+          "id": 8,
+          "text": "Do you have a documented plan or strategy for growing your business?",
+          "weight": 0.2,
+          "yesText": "Growth strategy in place",
+          "noText": "No growth planning"
+        }
+      ]
+    },
+    {
+      "name": "Industry Growth",
+      "weight": 0.15,
+      "questions": [
+        {
+          "id": 9,
+          "text": "Is demand for your type of business generally increasing?",
+          "weight": 0.6,
+          "yesText": "Growing industry",
+          "noText": "Declining industry"
+        },
+        {
+          "id": 10,
+          "text": "Is your industry expected to grow or remain stable over the next 5 years?",
+          "weight": 0.4,
+          "yesText": "Stable/growing industry outlook",
+          "noText": "Declining industry outlook"
+        }
+      ]
+    },
+    {
+      "name": "Market Demand",
+      "weight": 0.15,
+      "questions": [
+        {
+          "id": 11,
+          "text": "Do you have repeat customers or predictable revenue streams?",
+          "weight": 0.25,
+          "yesText": "Stable revenue model",
+          "noText": "Unpredictable revenue"
+        },
+        {
+          "id": 12,
+          "text": "Does your business generate predictable monthly revenue without heavy seasonal fluctuations?",
+          "weight": 0.2,
+          "yesText": "Stable revenue pattern",
+          "noText": "Volatile revenue"
+        },
+        {
+          "id": 13,
+          "text": "Is your business resistant to being replaced by technology or automation?",
+          "weight": 0.2,
+          "yesText": "Technology resistant",
+          "noText": "Automation vulnerable"
+        },
+        {
+          "id": 14,
+          "text": "Can your business operate with less than $100,000 in specialized equipment or machinery?",
+          "weight": 0.15,
+          "yesText": "Low equipment barrier",
+          "noText": "Equipment intensive"
+        },
+        {
+          "id": 15,
+          "text": "Could someone with general business experience learn to run your business within 6 months?",
+          "weight": 0.12,
+          "yesText": "Accessible skillset",
+          "noText": "Specialized expertise required"
+        },
+        {
+          "id": 16,
+          "text": "Can your business generate consistent revenue with minimal day-to-day owner involvement?",
+          "weight": 0.08,
+          "yesText": "Absentee friendly",
+          "noText": "Hands-on required"
+        }
+      ]
+    },
+    {
+      "name": "Company Rating",
+      "weight": 0.1,
+      "questions": [
+        {
+          "id": 17,
+          "text": "Are your financial records prepared by a bookkeeper or accountant?",
+          "weight": 0.25,
+          "yesText": "Professional records",
+          "noText": "DIY bookkeeping"
+        },
+        {
+          "id": 18,
+          "text": "Do you keep business and personal expenses completely separate?",
+          "weight": 0.2,
+          "yesText": "Clean financial separation",
+          "noText": "Mixed expenses"
+        },
+        {
+          "id": 19,
+          "text": "Do your profit & loss statements closely match what you report on your tax returns?",
+          "weight": 0.2,
+          "yesText": "Clean financial reporting",
+          "noText": "Reporting discrepancies"
+        },
+        {
+          "id": 20,
+          "text": "Do you keep more than 10 cents profit from every dollar of revenue?",
+          "weight": 0.18,
+          "yesText": "Healthy profit margins",
+          "noText": "Thin margins"
+        },
+        {
+          "id": 21,
+          "text": "Does your largest customer represent less than 20% of your total revenue?",
+          "weight": 0.12,
+          "yesText": "Diversified customer base",
+          "noText": "Customer concentration risk"
+        },
+        {
+          "id": 22,
+          "text": "Do you have written contracts or agreements with your key customers?",
+          "weight": 0.05,
+          "yesText": "Documented relationships",
+          "noText": "Handshake agreements"
+        }
+      ]
+    },
+    {
+      "name": "Competitiveness",
+      "weight": 0.1,
+      "questions": [
+        {
+          "id": 23,
+          "text": "Do customers choose you over competitors at least 50% of the time?",
+          "weight": 0.3,
+          "yesText": "Strong competitive position",
+          "noText": "Weak market position"
+        },
+        {
+          "id": 24,
+          "text": "Can you charge similar or higher prices than your main competitors?",
+          "weight": 0.25,
+          "yesText": "Pricing power",
+          "noText": "Price competition pressure"
+        },
+        {
+          "id": 25,
+          "text": "Do you have positive online reviews or strong customer references?",
+          "weight": 0.2,
+          "yesText": "Strong reputation",
+          "noText": "Reputation concerns"
+        },
+        {
+          "id": 26,
+          "text": "Do potential customers contact you directly without heavy marketing?",
+          "weight": 0.15,
+          "yesText": "Strong market presence",
+          "noText": "Weak market presence"
+        },
+        {
+          "id": 27,
+          "text": "Do you regularly win new customers each month?",
+          "weight": 0.1,
+          "yesText": "Active customer acquisition",
+          "noText": "Struggling to grow"
+        }
+      ]
+    }
+  ]
+}
