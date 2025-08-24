@@ -796,27 +796,33 @@
                 questions: [
                     {
                         text: "Can your business operate profitably for 30+ days without you being present?",
-                        weight: 0.4,
+                        weight: 0.35,
                         yesText: "Business runs independently",
                         noText: "Owner dependency risk"
                     },
                     {
                         text: "Are all critical business processes documented so someone else could follow them?",
-                        weight: 0.25,
+                        weight: 0.22,
                         yesText: "Systems documented",
                         noText: "Tribal knowledge"
                     },
                     {
                         text: "Do you have at least one key employee who could manage daily operations?",
-                        weight: 0.2,
+                        weight: 0.18,
                         yesText: "Management depth",
                         noText: "Single person operation"
                     },
                     {
                         text: "Are the majority of your key customer relationships maintained by employees other than yourself?",
-                        weight: 0.15,
+                        weight: 0.12,
                         yesText: "Institutional relationships",
                         noText: "Owner-dependent relationships"
+                    },
+                    {
+                        text: "Are your business operations independent of licenses or certifications held personally by you?",
+                        weight: 0.13,
+                        yesText: "Transferable operations",
+                        noText: "Owner-dependent credentials"
                     }
                 ]
             },
@@ -850,19 +856,13 @@
                 questions: [
                     {
                         text: "Is demand for your type of business generally increasing?",
-                        weight: 0.5,
+                        weight: 0.7,
                         yesText: "Growing industry",
                         noText: "Declining industry"
-                    },
-                    {
-                        text: "Do you have certifications, licenses, or permits that competitors would need?",
-                        weight: 0.3,
-                        yesText: "Barriers to entry",
-                        noText: "Easy to replicate"
-                    },
+,
                     {
                         text: "Is your business resistant to being replaced by technology or automation?",
-                        weight: 0.2,
+                        weight: 0.3,
                         yesText: "Technology resistant",
                         noText: "Automation vulnerable"
                     }
