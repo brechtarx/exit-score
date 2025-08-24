@@ -316,21 +316,34 @@
                     <label class="block text-sm sm:text-base font-bold text-gray-700 mb-2">What industry is your business in? *</label>
                     <select id="industry" name="industry" required class="w-full p-6 text-lg font-medium border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white">
                         <option value="">Select your industry</option>
-                        <option value="Manufacturing">Manufacturing</option>
-                        <option value="Construction">Construction</option>
-                        <option value="Retail">Retail</option>
-                        <option value="Food & Beverage">Food & Beverage</option>
-                        <option value="Healthcare">Healthcare</option>
-                        <option value="Professional Services">Professional Services</option>
-                        <option value="Technology">Technology</option>
-                        <option value="Transportation & Logistics">Transportation & Logistics</option>
-                        <option value="Real Estate">Real Estate</option>
-                        <option value="Financial Services">Financial Services</option>
-                        <option value="Education">Education</option>
-                        <option value="Automotive">Automotive</option>
                         <option value="Agriculture">Agriculture</option>
+                        <option value="Aerospace & Defense">Aerospace & Defense</option>
+                        <option value="Automotive">Automotive</option>
+                        <option value="Beauty & Personal Care">Beauty & Personal Care</option>
+                        <option value="Biotech & Life Sciences">Biotech & Life Sciences</option>
+                        <option value="Business Services">Business Services</option>
+                        <option value="CleanTech & Renewable Energy">CleanTech & Renewable Energy</option>
+                        <option value="Construction">Construction</option>
+                        <option value="Distribution/Wholesale">Distribution/Wholesale</option>
+                        <option value="E-commerce">E-commerce</option>
+                        <option value="Education">Education</option>
                         <option value="Energy">Energy</option>
                         <option value="Entertainment & Media">Entertainment & Media</option>
+                        <option value="Environmental Services">Environmental Services</option>
+                        <option value="Financial Services">Financial Services</option>
+                        <option value="Food & Beverage">Food & Beverage</option>
+                        <option value="Forestry & Timber">Forestry & Timber</option>
+                        <option value="Franchise Operations">Franchise Operations</option>
+                        <option value="Healthcare">Healthcare</option>
+                        <option value="Home Services">Home Services</option>
+                        <option value="Industrial Services">Industrial Services</option>
+                        <option value="Manufacturing">Manufacturing</option>
+                        <option value="Professional Services">Professional Services</option>
+                        <option value="Real Estate">Real Estate</option>
+                        <option value="Retail">Retail</option>
+                        <option value="Software/SaaS">Software/SaaS</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Transportation & Logistics">Transportation & Logistics</option>
                         <option value="Other">Other</option>
                     </select>
                 </div>
@@ -707,194 +720,164 @@
         // Assessment Data
         const categories = [
             {
-                name: "Transferability Risk",
-                weight: 0.30,
+                name: "Risk of Change of Ownership",
+                weight: 0.3,
                 questions: [
                     {
-                        text: "Does the business operate without requiring the owner's unique skills or knowledge?",
-                        weight: 0.35,
-                        yesText: "Business runs on systems",
-                        noText: "Owner is the business"
+                        text: "Can your business operate profitably for 30+ days without you being present?",
+                        weight: 0.4,
+                        yesText: "Business runs independently",
+                        noText: "Owner dependency risk"
                     },
                     {
-                        text: "Are key customer relationships maintained by at least two non-owner employees?",
-                        weight: 0.20,
-                        yesText: "Relationships are institutional",
-                        noText: "Owner holds relationships"
-                    },
-                    {
-                        text: "Would the business survive losing any single employee (including the owner)?",
-                        weight: 0.15,
-                        yesText: "No single point of failure",
-                        noText: "Dangerous dependencies"
-                    },
-                    {
-                        text: "Is the owner working less than 25 hours per week in the business?",
-                        weight: 0.10,
-                        yesText: "Business runs itself",
-                        noText: "Owner is overinvolved"
-                    },
-                    {
-                        text: "Are all critical processes documented in writing?",
-                        weight: 0.10,
-                        yesText: "Trainable systems",
+                        text: "Are all critical business processes documented so someone else could follow them?",
+                        weight: 0.25,
+                        yesText: "Systems documented",
                         noText: "Tribal knowledge"
                     },
                     {
-                        text: "Could the business operate profitably with an absentee owner for 60+ days?",
-                        weight: 0.10,
-                        yesText: "True business",
-                        noText: "Glorified job"
+                        text: "Do you have at least one key employee who could manage daily operations?",
+                        weight: 0.2,
+                        yesText: "Management depth",
+                        noText: "Single person operation"
+                    },
+                    {
+                        text: "Are your key customer relationships maintained by employees other than yourself?",
+                        weight: 0.15,
+                        yesText: "Institutional relationships",
+                        noText: "Owner-dependent relationships"
                     }
                 ]
             },
             {
-                name: "Growth Track Record",
-                weight: 0.20,
+                name: "Company Growth",
+                weight: 0.2,
                 questions: [
                     {
-                        text: "Did the company grow revenue year-over-year in the most recent 12 months?",
-                        weight: 0.40,
-                        yesText: "Growing now",
+                        text: "Has your business grown revenue in the past 12 months?",
+                        weight: 0.45,
+                        yesText: "Currently growing",
                         noText: "Stagnant or declining"
                     },
                     {
-                        text: "Did revenue increase in at least 4 of the last 5 years?",
-                        weight: 0.25,
-                        yesText: "Proven growth",
-                        noText: "Sporadic performance"
-                    },
-                    {
-                        text: "Do you feel your business has grown faster than most of your competitors?",
-                        weight: 0.20,
-                        yesText: "Taking share",
-                        noText: "Losing ground"
-                    },
-                    {
-                        text: "Do you regularly attract new customers to replace any you might lose?",
-                        weight: 0.15,
-                        yesText: "Healthy new business",
-                        noText: "Aging customer base"
-                    }
-                ]
-            },
-            {
-                name: "Market Dynamics",
-                weight: 0.15,
-                questions: [
-                    {
-                        text: "Is demand for your products/services generally increasing each year?",
-                        weight: 0.40,
-                        yesText: "Growth industry",
-                        noText: "Stagnant/declining"
-                    },
-                    {
-                        text: "Would it take a new competitor more than $100k to start competing with you?",
-                        weight: 0.30,
-                        yesText: "Protected",
-                        noText: "Easy entry"
-                    },
-                    {
-                        text: "Would it be difficult for someone to replace your service with a computer or app?",
-                        weight: 0.30,
-                        yesText: "Disruption resistant",
-                        noText: "Vulnerable"
-                    }
-                ]
-            },
-            {
-                name: "Business Model Attractiveness",
-                weight: 0.15,
-                questions: [
-                    {
-                        text: "Is your revenue predictable through contracts, subscriptions, or repeat customers?",
+                        text: "Has your revenue increased in at least 3 of the last 4 years?",
                         weight: 0.35,
-                        yesText: "Stable revenue",
-                        noText: "Unpredictable"
+                        yesText: "Consistent growth pattern",
+                        noText: "Inconsistent performance"
                     },
                     {
-                        text: "After paying all expenses, do you typically keep more than 15 cents of every dollar in revenue?",
-                        weight: 0.25,
-                        yesText: "Healthy margins",
+                        text: "Do you regularly win new customers each month?",
+                        weight: 0.2,
+                        yesText: "Active customer acquisition",
+                        noText: "Struggling to grow"
+                    }
+                ]
+            },
+            {
+                name: "Industry Growth",
+                weight: 0.15,
+                questions: [
+                    {
+                        text: "Is demand for your type of business generally increasing?",
+                        weight: 0.5,
+                        yesText: "Growing industry",
+                        noText: "Declining industry"
+                    },
+                    {
+                        text: "Would it cost a new competitor more than $50000 to start competing with you?",
+                        weight: 0.3,
+                        yesText: "Barriers to entry",
+                        noText: "Easy to replicate"
+                    },
+                    {
+                        text: "Is your business resistant to being replaced by technology or automation?",
+                        weight: 0.2,
+                        yesText: "Technology resistant",
+                        noText: "Automation vulnerable"
+                    }
+                ]
+            },
+            {
+                name: "Market Demand",
+                weight: 0.15,
+                questions: [
+                    {
+                        text: "Do you have repeat customers or predictable revenue streams?",
+                        weight: 0.4,
+                        yesText: "Stable revenue model",
+                        noText: "Unpredictable revenue"
+                    },
+                    {
+                        text: "Do you keep more than 10 cents profit from every dollar of revenue?",
+                        weight: 0.35,
+                        yesText: "Healthy profit margins",
                         noText: "Thin margins"
                     },
                     {
-                        text: "Did the business revenue drop less than 15% during 2008 or 2020?",
-                        weight: 0.20,
-                        yesText: "Recession resistant",
-                        noText: "Cyclical"
-                    },
-                    {
-                        text: "Is your equipment investment less than 50% of annual revenue?",
-                        weight: 0.20,
-                        yesText: "Asset light",
-                        noText: "Capital intensive"
-                    }
-                ]
-            },
-            {
-                name: "Financial Integrity & Operations",
-                weight: 0.10,
-                questions: [
-                    {
-                        text: "Are your financial records clean and prepared by a professional?",
-                        weight: 0.30,
-                        yesText: "Bankable",
-                        noText: "Requires normalization"
-                    },
-                    {
-                        text: "Does no single customer represent more than 15% of revenue?",
+                        text: "Is your business type generally attractive to buyers in your area?",
                         weight: 0.25,
-                        yesText: "Diversified",
-                        noText: "Concentration risk"
-                    },
-                    {
-                        text: "Do you keep personal expenses separate from business expenses?",
-                        weight: 0.20,
-                        yesText: "Clean operations",
-                        noText: "Lifestyle business"
-                    },
-                    {
-                        text: "Has a CPA reviewed or prepared your financial statements?",
-                        weight: 0.15,
-                        yesText: "Verified",
-                        noText: "Unverified"
-                    },
-                    {
-                        text: "Do most of your customers come back year after year?",
-                        weight: 0.10,
-                        yesText: "Sticky customers",
-                        noText: "High churn"
+                        yesText: "Desirable business type",
+                        noText: "Limited buyer interest"
                     }
                 ]
             },
             {
-                name: "Competitive Moat",
-                weight: 0.10,
+                name: "Company Rating",
+                weight: 0.1,
                 questions: [
                     {
-                        text: "Do you have 4.0+ stars online OR can you provide 10+ positive customer references?",
-                        weight: 0.30,
+                        text: "Are your financial records prepared by a bookkeeper or accountant?",
+                        weight: 0.3,
+                        yesText: "Professional records",
+                        noText: "DIY bookkeeping"
+                    },
+                    {
+                        text: "Do you keep business and personal expenses completely separate?",
+                        weight: 0.25,
+                        yesText: "Clean financial separation",
+                        noText: "Mixed expenses"
+                    },
+                    {
+                        text: "Does your largest customer represent less than 20% of your total revenue?",
+                        weight: 0.25,
+                        yesText: "Diversified customer base",
+                        noText: "Customer concentration risk"
+                    },
+                    {
+                        text: "Do you have written contracts or agreements with your key customers?",
+                        weight: 0.2,
+                        yesText: "Documented relationships",
+                        noText: "Handshake agreements"
+                    }
+                ]
+            },
+            {
+                name: "Competitiveness",
+                weight: 0.1,
+                questions: [
+                    {
+                        text: "Do customers choose you over competitors at least 50% of the time?",
+                        weight: 0.35,
+                        yesText: "Strong competitive position",
+                        noText: "Weak market position"
+                    },
+                    {
+                        text: "Can you charge similar or higher prices than your main competitors?",
+                        weight: 0.3,
+                        yesText: "Pricing power",
+                        noText: "Price competition pressure"
+                    },
+                    {
+                        text: "Do you have positive online reviews or strong customer references?",
+                        weight: 0.25,
                         yesText: "Strong reputation",
-                        noText: "Reputation issues"
+                        noText: "Reputation concerns"
                     },
                     {
-                        text: "Do potential customers regularly contact you without you having to chase them?",
-                        weight: 0.25,
-                        yesText: "Strong marketing",
-                        noText: "Weak presence"
-                    },
-                    {
-                        text: "Can you charge 10%+ more than competitors and keep customers?",
-                        weight: 0.25,
-                        yesText: "Premium position",
-                        noText: "Commodity"
-                    },
-                    {
-                        text: "Have you won 5+ new accounts from competitors in the last 12 months?",
-                        weight: 0.20,
-                        yesText: "Winning",
-                        noText: "Not competing"
+                        text: "Do potential customers contact you directly without heavy marketing?",
+                        weight: 0.1,
+                        yesText: "Strong market presence",
+                        noText: "Weak market presence"
                     }
                 ]
             }
@@ -1303,6 +1286,8 @@
                     );
                     if (answer && answer.answer === true) {
                         categoryScore += question.weight;
+                    } else if (answer && answer.answer === null) {
+                        categoryScore += question.weight * 0.15; // 15% for "Don't Know"
                     }
                 });
                 totalScore += categoryScore * category.weight;

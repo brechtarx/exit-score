@@ -4,65 +4,60 @@ const { google } = require('googleapis');
 // Assessment categories and questions structure (matches frontend)
 const categories = [
   {
-    name: "Transferability Risk",
+    name: "Risk of Change of Ownership",
     weight: 0.30,
     questions: [
-      "Does the business operate without requiring the owner's unique skills or knowledge?",
-      "Are key customer relationships maintained by at least two non-owner employees?",
-      "Would the business survive losing any single employee (including the owner)?",
-      "Is the owner working less than 25 hours per week in the business?",
-      "Are all critical processes documented in writing?",
-      "Could the business operate profitably with an absentee owner for 60+ days?"
+      "Can your business operate profitably for 30+ days without you being present?",
+      "Are all critical business processes documented so someone else could follow them?",
+      "Do you have at least one key employee who could manage daily operations?",
+      "Are your key customer relationships maintained by employees other than yourself?"
     ]
   },
   {
-    name: "Growth Track Record", 
+    name: "Company Growth", 
     weight: 0.20,
     questions: [
-      "Did the company grow revenue year-over-year in the most recent 12 months?",
-      "Did revenue increase in at least 4 of the last 5 years?",
-      "Do you feel your business has grown faster than most of your competitors?",
-      "Do you regularly attract new customers to replace any you might lose?"
+      "Has your business grown revenue in the past 12 months?",
+      "Has your revenue increased in at least 3 of the last 4 years?",
+      "Do you regularly win new customers each month?"
     ]
   },
   {
-    name: "Market Dynamics",
+    name: "Industry Growth",
     weight: 0.15,
     questions: [
-      "Is demand for your products/services generally increasing each year?",
-      "Would it take a new competitor more than $100k to start competing with you?",
-      "Would it be difficult for someone to replace your service with a computer or app?"
+      "Is demand for your type of business generally increasing?",
+      "Would it cost a new competitor more than $50000 to start competing with you?",
+      "Is your business resistant to being replaced by technology or automation?"
     ]
   },
   {
-    name: "Business Model Attractiveness",
+    name: "Market Demand",
     weight: 0.15,
     questions: [
-      "Is your revenue predictable through contracts, subscriptions, or repeat customers?",
-      "After paying all expenses, do you typically keep more than 15 cents of every dollar in revenue?",
-      "Did the business revenue drop less than 15% during 2008 or 2020?",
-      "Is your equipment investment less than 50% of annual revenue?"
+      "Do you have repeat customers or predictable revenue streams?",
+      "Do you keep more than 10 cents profit from every dollar of revenue?",
+      "Is your business type generally attractive to buyers in your area?"
     ]
   },
   {
-    name: "Financial Integrity & Operations",
+    name: "Company Rating",
     weight: 0.10,
     questions: [
-      "Are your financial records clean and prepared by a professional?",
-      "Does no single customer represent more than 15% of revenue?",
-      "Do you keep personal expenses separate from business expenses?",
-      "Has a CPA reviewed or prepared your financial statements?",
-      "Do most of your customers come back year after year?"
+      "Are your financial records prepared by a bookkeeper or accountant?",
+      "Do you keep business and personal expenses completely separate?",
+      "Does your largest customer represent less than 20% of your total revenue?",
+      "Do you have written contracts or agreements with your key customers?"
     ]
   },
   {
-    name: "Competitive Moat",
+    name: "Competitiveness",
     weight: 0.10,
     questions: [
-      "Do you have 4.0+ stars online OR can you provide 10+ positive customer references?",
-      "Do potential customers regularly contact you without you having to chase them?",
-      "Can you charge 10%+ more than competitors and keep customers?",
-      "Have you won 5+ new accounts from competitors in the last 12 months?"
+      "Do customers choose you over competitors at least 50% of the time?",
+      "Can you charge similar or higher prices than your main competitors?",
+      "Do you have positive online reviews or strong customer references?",
+      "Do potential customers contact you directly without heavy marketing?"
     ]
   }
 ];
@@ -868,9 +863,9 @@ CATEGORY BREAKDOWN:`;
       
       if (response) {
         const answerText = response.answer === true ? 'YES' : 
-                          response.answer === false ? 'NO' : 'SKIPPED';
+                          response.answer === false ? 'NO' : 'DON\'T KNOW';
         const points = response.answer === true ? '5 points' :
-                      response.answer === false ? '0 points' : '0 points';
+                      response.answer === false ? '0 points' : '0.75 points';
         note += `\n  ${qIndex + 1}. ${question}`;
         note += `\n     Answer: ${answerText} (${points})`;
         note += '\n'; // Add extra line break between questions
@@ -899,6 +894,8 @@ function calculateCategoryScores(responses) {
       
       if (response && response.answer === true) {
         points += 5;
+      } else if (response && response.answer === null) {
+        points += 0.75; // 15% of 5 points for "Don't Know"
       }
     });
     
