@@ -190,36 +190,29 @@
       "questions": [
         {
           "id": 23,
-          "text": "Do customers choose you over competitors at least 50% of the time?",
-          "weight": 0.3,
-          "yesText": "Strong competitive position",
-          "noText": "Weak market position"
-        },
-        {
-          "id": 24,
           "text": "Can you charge similar or higher prices than your main competitors?",
-          "weight": 0.25,
+          "weight": 0.36,
           "yesText": "Pricing power",
           "noText": "Price competition pressure"
         },
         {
-          "id": 25,
+          "id": 24,
           "text": "Do you have positive online reviews or strong customer references?",
-          "weight": 0.2,
+          "weight": 0.29,
           "yesText": "Strong reputation",
           "noText": "Reputation concerns"
         },
         {
-          "id": 26,
+          "id": 25,
           "text": "Do potential customers contact you directly without heavy marketing?",
-          "weight": 0.15,
+          "weight": 0.21,
           "yesText": "Strong market presence",
           "noText": "Weak market presence"
         },
         {
-          "id": 27,
+          "id": 26,
           "text": "Do you regularly win new customers each month?",
-          "weight": 0.1,
+          "weight": 0.14,
           "yesText": "Active customer acquisition",
           "noText": "Struggling to grow"
         }
