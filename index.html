@@ -960,13 +960,32 @@
             }
         ];
 
+        // Load questions from JSON
+        async function loadQuestions() {
+            try {
+                const response = await fetch('/data/questions.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                categories = data.categories;
+                totalQuestions = categories.reduce((sum, cat) => sum + cat.questions.length, 0);
+                console.log(`Loaded ${totalQuestions} questions from JSON`);
+                return true;
+            } catch (error) {
+                console.error('Failed to load questions from JSON:', error);
+                console.log('Using fallback hardcoded questions');
+                return false;
+            }
+        }
+
         // No hardcoded credentials - all API calls go through our secure Netlify function
 
         // State Management
         let currentCategoryIndex = 0;
         let currentQuestionIndex = 0;
         let answers = [];
-        let totalQuestions = categories.reduce((sum, cat) => sum + cat.questions.length, 0);
+        let totalQuestions = 0; // Will be calculated after JSON loads
         let currentQuestionNumber = 0;
         let assessmentStartTime = null;
         let businessInfo = {};
@@ -985,7 +1004,10 @@
         }
 
         // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Load questions from JSON first
+            await loadQuestions();
+            
             // Track page view
             trackEvent('page_view', {
                 page_title: 'Sales Readiness Assessment',

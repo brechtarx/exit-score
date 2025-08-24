@@ -1,8 +1,19 @@
 // Final working version - direct HTTP calls to Supabase API
 const { google } = require('googleapis');
+const fs = require('fs');
+const path = require('path');
 
-// Assessment categories and questions structure (matches frontend)
-const categories = [
+// Load assessment structure from JSON (single source of truth)
+let categories = [];
+try {
+    const questionsPath = path.join(process.cwd(), 'data', 'questions.json');
+    const questionsData = JSON.parse(fs.readFileSync(questionsPath, 'utf8'));
+    categories = questionsData.categories;
+    console.log(`Backend loaded ${categories.length} categories with ${categories.reduce((sum, cat) => sum + cat.questions.length, 0)} total questions`);
+} catch (error) {
+    console.error('Failed to load questions from JSON in backend:', error);
+    // Fallback to hardcoded structure
+    categories = [
   {
     name: "Risk of Change of Ownership",
     weight: 0.30,
@@ -61,7 +72,47 @@ const categories = [
       "Do you have proprietary processes, trade secrets, or intellectual property that competitors can't easily copy?"
     ]
   }
-];
+    ];
+}
+
+// Function to calculate score using the loaded structure
+function calculateScore(answers) {
+    let totalScore = 0;
+    let categoryBreakdown = [];
+    
+    categories.forEach((category, catIndex) => {
+        let categoryScore = 0;
+        let categoryDetails = {
+            name: category.name,
+            weight: category.weight,
+            rawScore: 0,
+            weightedScore: 0
+        };
+        
+        category.questions.forEach((question, qIndex) => {
+            const answer = answers.find(a => 
+                a.category === catIndex && a.question === qIndex
+            );
+            
+            if (answer && answer.answer === true) {
+                categoryScore += question.weight;
+            } else if (answer && answer.answer === null) {
+                categoryScore += question.weight * 0.15; // 15% for "Don't Know"
+            }
+            // No points for false answers (0%)
+        });
+        
+        categoryDetails.rawScore = categoryScore;
+        categoryDetails.weightedScore = categoryScore * category.weight;
+        totalScore += categoryDetails.weightedScore;
+        categoryBreakdown.push(categoryDetails);
+    });
+    
+    return {
+        finalScore: Math.round(totalScore * 100),
+        categoryBreakdown: categoryBreakdown
+    };
+}
 
 exports.handler = async (event, context) => {
   // Only allow POST requests
@@ -886,18 +937,23 @@ CATEGORY BREAKDOWN:`;
 function calculateCategoryScores(responses) {
   return categories.map((category, catIndex) => {
     let points = 0;
-    let maxPoints = category.questions.length * 5; // 5 points per question
+    let maxPoints = 0;
     
     category.questions.forEach((question, qIndex) => {
+      const questionWeight = question.weight || (1 / category.questions.length); // Fallback for old structure
+      const questionMaxPoints = questionWeight * 100; // Convert weight to points scale
+      maxPoints += questionMaxPoints;
+      
       const response = responses.find(r => 
         r.category === catIndex && r.question === qIndex
       );
       
       if (response && response.answer === true) {
-        points += 5;
+        points += questionMaxPoints;
       } else if (response && response.answer === null) {
-        points += 0.75; // 15% of 5 points for "Don't Know"
+        points += questionMaxPoints * 0.15; // 15% for "Don't Know"
       }
+      // 0 points for false answers
     });
     
     return { points, maxPoints };
