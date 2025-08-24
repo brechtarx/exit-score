@@ -10,7 +10,7 @@ const categories = [
       "Can your business operate profitably for 30+ days without you being present?",
       "Are all critical business processes documented so someone else could follow them?",
       "Do you have at least one key employee who could manage daily operations?",
-      "Are your key customer relationships maintained by employees other than yourself?"
+      "Are the majority of your key customer relationships maintained by employees other than yourself?"
     ]
   },
   {
@@ -27,7 +27,7 @@ const categories = [
     weight: 0.15,
     questions: [
       "Is demand for your type of business generally increasing?",
-      "Would it cost a new competitor more than $50000 to start competing with you?",
+      "Do you have certifications, licenses, or permits that competitors would need?",
       "Is your business resistant to being replaced by technology or automation?"
     ]
   },
@@ -36,7 +36,7 @@ const categories = [
     weight: 0.15,
     questions: [
       "Do you have repeat customers or predictable revenue streams?",
-      "Do you keep more than 10 cents profit from every dollar of revenue?",
+      "Are your net profit margins 10% or greater?",
       "Has anyone asked if they can buy your business in the last few years?"
     ]
   },
@@ -54,10 +54,11 @@ const categories = [
     name: "Competitiveness",
     weight: 0.10,
     questions: [
-      "Do customers choose you over competitors at least 50% of the time?",
+      "Do you regularly get referrals from existing customers?",
       "Can you charge similar or higher prices than your main competitors?",
       "Do you have a 4-star rating or higher online, or can you provide 10+ positive customer references?",
-      "Do potential customers contact you directly without heavy marketing?"
+      "Do potential customers contact you directly without heavy marketing?",
+      "Do you have proprietary processes, trade secrets, or intellectual property that competitors can't easily copy?"
     ]
   }
 ];
