@@ -360,11 +360,16 @@
                     </select>
                 </div>
                 
-                <button onclick="startAssessment()" class="btn-primary w-full py-5 px-6 rounded-xl text-white font-bold text-lg sm:text-lg shadow-xl transform transition-transform active:scale-98 mb-4">
+                <button onclick="startAssessment()" class="btn-primary w-full py-5 px-6 rounded-xl text-white font-bold text-lg sm:text-lg shadow-xl transform transition-transform active:scale-98 mb-3">
                     Start Assessment →
                 </button>
                 
-                <!-- Simplified mobile benefits - moved below button -->
+                <!-- Mobile micro copy - right under button -->
+                <p class="text-sm text-gray-500 mb-4 text-center leading-relaxed sm:hidden">
+                    No payment required • 100% confidential
+                </p>
+                
+                <!-- Simplified mobile benefits - moved below micro copy -->
                 <div class="space-y-3 mb-4 sm:hidden">
                     <div class="flex items-center">
                         <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -408,7 +413,8 @@
                     </div>
                 </div>
                 
-                <p class="text-sm sm:text-sm text-gray-500 mt-2 text-center leading-relaxed">
+                <!-- Desktop micro copy - at bottom -->
+                <p class="text-sm text-gray-500 mt-2 text-center leading-relaxed hidden sm:block">
                     No payment required • 100% confidential
                 </p>
             </div>
