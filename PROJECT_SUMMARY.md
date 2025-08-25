@@ -1,7 +1,9 @@
 # ARX Business Brokers Exit Score Assessment Project
 
 ## Overview
-The Exit Score Assessment is a sophisticated web-based tool designed to evaluate business sales readiness for ARX Business Brokers, a boutique M&A advisory firm specializing in businesses valued between $1M-$50M in the Pacific Northwest.
+**The Exit Score Assessment is fundamentally a lead generation tool** designed to capture and qualify high-value prospects for ARX Business Brokers. While it provides genuine value through business sales readiness evaluation, its primary purpose is to identify, attract, and convert business owners into potential clients for ARX's M&A advisory services.
+
+This sophisticated web-based assessment targets business owners in the Pacific Northwest with $1M-$50M revenue who are 6-36 months away from considering a sale.
 
 ## Business Context
 
@@ -20,18 +22,29 @@ The Exit Score Assessment is a sophisticated web-based tool designed to evaluate
 
 ## Project Goals
 
-### Primary Objectives
-1. **Lead Generation:** Capture high-quality prospects through valuable assessment experience
-2. **Lead Qualification:** Score and segment prospects based on actual sales readiness
-3. **Value Delivery:** Provide immediate, personalized insights that demonstrate ARX expertise
-4. **Trust Building:** Position ARX as knowledgeable advisors who understand business owner challenges
-5. **Automation:** Integrate seamlessly with existing CRM and marketing workflows
+### Primary Objective: LEAD GENERATION
+**This tool exists to generate qualified leads for ARX Business Brokers.** Everything else serves this core purpose.
 
-### Success Metrics
-- **Completion Rate:** Target >60% assessment completion
-- **Lead Quality:** Qualified prospects with realistic sale timelines
-- **Conversion:** Assessment → consultation bookings
-- **Engagement:** Time spent reviewing reports, PDF downloads
+### Lead Generation Strategy
+1. **Attract:** Provide genuine value that draws business owners to complete the assessment
+2. **Capture:** Collect contact information and business details for follow-up
+3. **Qualify:** Score prospects based on sales readiness and business characteristics
+4. **Nurture:** Deliver personalized insights that demonstrate ARX expertise
+5. **Convert:** Position ARX for consultation meetings and eventual engagement
+
+### Supporting Objectives
+- **Value Delivery:** Provide immediate, actionable insights that justify the time investment
+- **Trust Building:** Position ARX as knowledgeable advisors who understand business owner challenges
+- **Professional Positioning:** Demonstrate sophistication and expertise through AI-powered analysis
+- **CRM Integration:** Automate lead capture and follow-up workflows
+
+### Success Metrics (Lead Generation Focused)
+- **Lead Volume:** Number of qualified prospects captured monthly
+- **Lead Quality:** Prospects with realistic sale timelines and revenue targets
+- **Conversion Rate:** Assessment completion → consultation bookings
+- **Cost Per Lead:** Marketing spend efficiency
+- **Pipeline Value:** Estimated deal value from generated leads
+- **Engagement Depth:** Report review time, follow-up responsiveness
 
 ## Technical Architecture
 
