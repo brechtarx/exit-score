@@ -409,27 +409,27 @@ function buildStructuredAssessmentData(assessment) {
 function getCategoryOpeningTemplate(categoryName, score) {
   const templates = {
     "Risk of Change of Ownership": {
-      opening: `**Risk of Change of Ownership ${score}%**\n\nThe risk of change of ownership is often the biggest concern in any buyer's mind. The question they need to answer is "can I be successful with this business without the current owner?" This category weighs heavily (30% of your total score) because buyer financing, valuation multiples, and deal structure all depend on transferability.`,
+      opening: `**Risk of Change of Ownership ${score}%**\n\nThe risk of change of ownership is often the biggest concern in any buyer's mind. The question they need to answer is "can I be successful with this business without the current owner?" This area weighs most heavily in our evaluation because buyer financing, valuation multiples, and deal structure all depend on transferability.`,
       focus: "Reducing owner dependency and proving the business can thrive under new ownership"
     },
     "Company Growth": {
-      opening: `**Company Growth ${score}%**\n\nBuyers pay premium multiples for growing businesses and discount stagnant ones. Growth demonstrates market demand, management competence, and future potential. This category (20% of total score) directly impacts your valuation because buyers project future cash flows based on growth trends.`,
+      opening: `**Company Growth ${score}%**\n\nBuyers pay premium multiples for growing businesses and discount stagnant ones. Growth demonstrates market demand, management competence, and future potential. This area significantly impacts your valuation because buyers project future cash flows based on growth trends.`,
       focus: "Demonstrating consistent growth patterns and strategic planning capabilities"
     },
     "Industry Growth": {
-      opening: `**Industry Growth ${score}%**\n\nBuyers evaluate whether they're buying into a sunrise or sunset industry. Industry dynamics (15% of total score) affect everything from financing availability to exit multiples. Buyers want confidence that market tailwinds will continue supporting the business long-term.`,
+      opening: `**Industry Growth ${score}%**\n\nBuyers evaluate whether they're buying into a sunrise or sunset industry. Industry dynamics affect everything from financing availability to exit multiples. Buyers want confidence that market tailwinds will continue supporting the business long-term.`,
       focus: "Positioning within growing markets and building competitive barriers"
     },
     "Market Demand": {
-      opening: `**Market Demand ${score}%**\n\nThis category (15% of total score) evaluates whether your business model attracts buyers. Factors like equipment intensity, required expertise, revenue predictability, and operational complexity all influence buyer pool size. More potential buyers means higher valuations and better terms.`,
+      opening: `**Market Demand ${score}%**\n\nThis area evaluates whether your business model attracts buyers. Factors like equipment intensity, required expertise, revenue predictability, and operational complexity all influence buyer pool size. More potential buyers means higher valuations and better terms.`,
       focus: "Creating a business model that appeals to the broadest buyer base"
     },
     "Company Rating": {
-      opening: `**Company Rating ${score}%**\n\nBuyers conduct extensive due diligence on financial systems and operational controls. This category (10% of total score) can make or break deals during the due diligence phase. Clean books, documented processes, and professional systems reduce buyer risk and support asking price.`,
+      opening: `**Company Rating ${score}%**\n\nBuyers conduct extensive due diligence on financial systems and operational controls. This area can make or break deals during the due diligence phase. Clean books, documented processes, and professional systems reduce buyer risk and support asking price.`,
       focus: "Building institutional-grade financial and operational systems"
     },
     "Competitiveness": {
-      opening: `**Competitiveness ${score}%**\n\nBuyers need confidence that the business can maintain its market position post-acquisition. This category (10% of total score) evaluates sustainable competitive advantages, pricing power, and customer loyalty. Strong competitive moats justify premium valuations and attract strategic buyers.`,
+      opening: `**Competitiveness ${score}%**\n\nBuyers need confidence that the business can maintain its market position post-acquisition. This area evaluates sustainable competitive advantages, pricing power, and customer loyalty. Strong competitive moats justify premium valuations and attract strategic buyers.`,
       focus: "Building and communicating sustainable competitive advantages"
     }
   };
