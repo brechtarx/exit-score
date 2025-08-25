@@ -405,18 +405,66 @@ function buildStructuredAssessmentData(assessment) {
   };
 }
 
-// Get category description for AI context
-function getCategoryDescription(categoryName) {
-  const descriptions = {
-    "Risk of Change of Ownership": "Owner dependency and business transferability",
-    "Company Growth": "Revenue growth patterns and strategic planning", 
-    "Industry Growth": "Market trends and future outlook",
-    "Market Demand": "Buyer attractiveness and operational requirements",
-    "Company Rating": "Financial systems and customer diversification",
-    "Competitiveness": "Market position and pricing power"
+// Standardized category opening templates for consistent reports
+function getCategoryOpeningTemplate(categoryName, score) {
+  const templates = {
+    "Risk of Change of Ownership": {
+      opening: `**Risk of Change of Ownership ${score}%**\n\nThe risk of change of ownership is often the biggest concern in any buyer's mind. The question they need to answer is "can I be successful with this business without the current owner?" This category weighs heavily (30% of your total score) because buyer financing, valuation multiples, and deal structure all depend on transferability.`,
+      focus: "Reducing owner dependency and proving the business can thrive under new ownership"
+    },
+    "Company Growth": {
+      opening: `**Company Growth ${score}%**\n\nBuyers pay premium multiples for growing businesses and discount stagnant ones. Growth demonstrates market demand, management competence, and future potential. This category (20% of total score) directly impacts your valuation because buyers project future cash flows based on growth trends.`,
+      focus: "Demonstrating consistent growth patterns and strategic planning capabilities"
+    },
+    "Industry Growth": {
+      opening: `**Industry Growth ${score}%**\n\nBuyers evaluate whether they're buying into a sunrise or sunset industry. Industry dynamics (15% of total score) affect everything from financing availability to exit multiples. Buyers want confidence that market tailwinds will continue supporting the business long-term.`,
+      focus: "Positioning within growing markets and building competitive barriers"
+    },
+    "Market Demand": {
+      opening: `**Market Demand ${score}%**\n\nThis category (15% of total score) evaluates whether your business model attracts buyers. Factors like equipment intensity, required expertise, revenue predictability, and operational complexity all influence buyer pool size. More potential buyers means higher valuations and better terms.`,
+      focus: "Creating a business model that appeals to the broadest buyer base"
+    },
+    "Company Rating": {
+      opening: `**Company Rating ${score}%**\n\nBuyers conduct extensive due diligence on financial systems and operational controls. This category (10% of total score) can make or break deals during the due diligence phase. Clean books, documented processes, and professional systems reduce buyer risk and support asking price.`,
+      focus: "Building institutional-grade financial and operational systems"
+    },
+    "Competitiveness": {
+      opening: `**Competitiveness ${score}%**\n\nBuyers need confidence that the business can maintain its market position post-acquisition. This category (10% of total score) evaluates sustainable competitive advantages, pricing power, and customer loyalty. Strong competitive moats justify premium valuations and attract strategic buyers.`,
+      focus: "Building and communicating sustainable competitive advantages"
+    }
   };
   
-  return descriptions[categoryName] || "Business evaluation criteria";
+  return templates[categoryName] || {
+    opening: `**${categoryName} ${score}%**\n\nThis category evaluates critical business factors that impact buyer decisions and valuation.`,
+    focus: "Business evaluation criteria"
+  };
+}
+
+// Get category description for AI context (legacy support)
+function getCategoryDescription(categoryName) {
+  const template = getCategoryOpeningTemplate(categoryName, 0);
+  return template.focus;
+}
+
+// Build category templates for AI prompt
+function buildCategoryTemplates(assessment) {
+  const categoryScores = calculateCategoryScores(assessment.responses || []);
+  let templates = '';
+  
+  categories.forEach((category, catIndex) => {
+    const score = categoryScores[catIndex];
+    const percentage = Math.round((score.points / score.maxPoints) * 100);
+    const template = getCategoryOpeningTemplate(category.name, percentage);
+    
+    templates += `${template.opening}\n\n`;
+    templates += `After this exact opening, analyze the specific responses and provide:\n`;
+    templates += `- How the responses impact buyer perception\n`;
+    templates += `- 2-3 specific optimization recommendations\n`;
+    templates += `- Realistic timeline and effort level for improvements\n\n`;
+    templates += `---\n\n`;
+  });
+  
+  return templates;
 }
 
 // Generate AI report
@@ -449,7 +497,9 @@ ${structuredData.categoryAnalysis}
 **DETAILED RESPONSES:**
 ${structuredData.responseAnalysis}
 
-**WRITING GUIDELINES:**
+**CRITICAL FORMATTING REQUIREMENTS:**
+- Use the EXACT standardized category openings provided (word-for-word)
+- Follow the standardized structure exactly
 - Professional but warm tone - acknowledge the business owner's achievement
 - Lead with strengths, frame weaknesses as "value enhancement opportunities"
 - Provide specific, actionable insights (not generic advice)
@@ -464,11 +514,10 @@ ${structuredData.responseAnalysis}
 - 2-3 sentence assessment of overall readiness
 - Highlight 1-2 major strengths and top priority
 
-**📊 CATEGORY INSIGHTS**
-For categories with significant impact (scores below 70% or above 85%):
-- Brief analysis of buyer perspective
-- Specific impact on valuation or sale timeline
-- Reference actual responses when relevant
+**📊 CATEGORY ANALYSIS**
+For each category, you MUST use the exact standardized opening provided below, then add specific analysis:
+
+${buildCategoryTemplates(assessment)}
 
 **💪 KEY COMPETITIVE ADVANTAGES** 
 - Top 2-3 strengths that differentiate this business
