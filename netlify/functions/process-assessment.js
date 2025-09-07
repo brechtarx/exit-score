@@ -629,10 +629,8 @@ async function createPipedriveLead(assessment) {
   const orgData = {
     "name": assessment.company,
     "address": assessment.zipcode,
-    "website": assessment.website,
-    "f04aa9605fd3eff31231301ee12f6d59491d0c7d": assessment.industry,
-    "2638446e6db380981c0693b3c05837308b7ed3c4": assessment.employees_numeric,
-    "b9b1382d70ff58d426d35c631153b7d6d0d2c809": assessment.revenue_numeric
+    "website": assessment.website
+    // Temporarily removed custom fields to test basic org creation
   };
 
   console.log('Organization creation data:', JSON.stringify(orgData, null, 2));
