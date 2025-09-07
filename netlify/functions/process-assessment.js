@@ -608,6 +608,8 @@ brecht@arxbrokers.com
 async function createPipedriveLead(assessment) {
   const PIPEDRIVE_API_TOKEN = process.env.PIPEDRIVE_API_TOKEN;
   const BASE_URL = `https://api.pipedrive.com/v1`;
+  
+  console.log('Pipedrive API token status:', PIPEDRIVE_API_TOKEN ? `Present (${PIPEDRIVE_API_TOKEN.substring(0, 8)}...)` : 'Missing');
 
   // Search for existing contact by email
   console.log('Searching for existing contact...');
