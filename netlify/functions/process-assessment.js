@@ -1,4 +1,4 @@
-// Final working version - direct HTTP calls to Supabase API
+// Final working version with AI report generation - direct HTTP calls to Supabase API
 const { google } = require('googleapis');
 const fs = require('fs');
 const path = require('path');
