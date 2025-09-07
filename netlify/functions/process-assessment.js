@@ -545,7 +545,7 @@ Generate a report that positions ARX as the trusted advisor who understands both
   console.log('Making Claude API request...');
   
   const requestBody = {
-    model: 'claude-3-5-sonnet-20241022',
+    model: 'claude-3-5-sonnet-20240620',
     max_tokens: 4000,
     messages: [{
       role: 'user',
