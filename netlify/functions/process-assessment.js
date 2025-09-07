@@ -610,6 +610,10 @@ async function createPipedriveLead(assessment) {
   const BASE_URL = `https://api.pipedrive.com/v1`;
   
   console.log('Pipedrive API token status:', PIPEDRIVE_API_TOKEN ? `Present (${PIPEDRIVE_API_TOKEN.substring(0, 8)}...)` : 'Missing');
+  
+  if (!PIPEDRIVE_API_TOKEN) {
+    throw new Error('PIPEDRIVE_API_TOKEN environment variable not configured');
+  }
 
   // Search for existing contact by email
   console.log('Searching for existing contact...');
@@ -629,8 +633,10 @@ async function createPipedriveLead(assessment) {
   const orgData = {
     "name": assessment.company,
     "address": assessment.zipcode,
-    "website": assessment.website
-    // Temporarily removed custom fields to test basic org creation
+    "website": assessment.website,
+    "f04aa9605fd3eff31231301ee12f6d59491d0c7d": assessment.industry,
+    "2638446e6db380981c0693b3c05837308b7ed3c4": assessment.employees_numeric,
+    "b9b1382d70ff58d426d35c631153b7d6d0d2c809": assessment.revenue_numeric
   };
 
   console.log('Organization creation data:', JSON.stringify(orgData, null, 2));
