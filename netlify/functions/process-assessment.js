@@ -540,27 +540,20 @@ function calculateCategoryScores(responses) {
 
 // Gmail Draft Creation
 async function createGmailDraft(assessment, aiReport) {
-  // Check for Gmail environment variables (multiple possible names)
-  const GMAIL_CLIENT_ID = process.env.GMAIL_CLIENT_ID || process.env.GOOGLE_CLIENT_ID;
-  const GMAIL_CLIENT_SECRET = process.env.GMAIL_CLIENT_SECRET || process.env.GOOGLE_CLIENT_SECRET; 
-  const GMAIL_REFRESH_TOKEN = process.env.GMAIL_REFRESH_TOKEN || process.env.GOOGLE_REFRESH_TOKEN;
-  
-  if (!GMAIL_REFRESH_TOKEN) {
-    throw new Error('Gmail refresh token not configured (tried GMAIL_REFRESH_TOKEN and GOOGLE_REFRESH_TOKEN)');
+  // Check for service account key
+  if (!process.env.GOOGLE_SERVICE_ACCOUNT_KEY || !process.env.GMAIL_USER_EMAIL) {
+    throw new Error('Gmail service account credentials not configured');
   }
 
-  // Set up Gmail API client
-  const oauth2Client = new google.auth.OAuth2(
-    GMAIL_CLIENT_ID,
-    GMAIL_CLIENT_SECRET,
-    'https://developers.google.com/oauthplayground'
-  );
-
-  oauth2Client.setCredentials({
-    refresh_token: GMAIL_REFRESH_TOKEN,
+  // Set up Gmail API client with service account
+  const serviceAccountKey = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
+  const auth = new google.auth.GoogleAuth({
+    credentials: serviceAccountKey,
+    scopes: ['https://www.googleapis.com/auth/gmail.compose'],
+    subject: process.env.GMAIL_USER_EMAIL // Impersonate this user
   });
 
-  const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
+  const gmail = google.gmail({ version: 'v1', auth });
 
   // Create email content
   const subject = `Your Exit Score Report: ${assessment.score}% - ${assessment.company}`;
