@@ -384,7 +384,7 @@ Keep the tone professional yet approachable. Focus on actionable advice rather t
   console.log('Making Claude API request...');
   
   const requestBody = {
-    model: 'claude-instant-1.2',
+    model: 'claude-3-5-haiku-20241022',
     max_tokens: 4000,
     messages: [{
       role: 'user',
