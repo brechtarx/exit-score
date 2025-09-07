@@ -126,7 +126,7 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    console.log('Assessment submission received');
+    console.log('🔥 NEW VERSION: Assessment submission received');
     
     // Parse the form submission
     const assessment = JSON.parse(event.body);
@@ -242,7 +242,7 @@ exports.handler = async (event, context) => {
     }
 
     const savedData = await supabaseResponse.json();
-    console.log('Assessment saved successfully');
+    console.log('🔥 NEW VERSION: Assessment saved successfully');
 
     // Generate AI report
     let aiReport = '';
@@ -250,7 +250,7 @@ exports.handler = async (event, context) => {
     let aiError = null;
     
     try {
-      console.log('Starting AI report generation...');
+      console.log('🔥 NEW VERSION: Starting AI report generation...');
       console.log('Assessment data for AI:', {
         company: savedData[0].company,
         industry: savedData[0].industry,
