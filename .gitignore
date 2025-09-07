@@ -2,3 +2,10 @@ test-key-direct.js
 node_modules/
 .env
 *.log
+
+# Google Service Account Keys (SECURITY)
+*.json
+service-account-*.json
+google-*.json
+*service-account*.json
+exit-score-*.json
