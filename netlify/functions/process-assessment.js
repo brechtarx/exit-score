@@ -384,7 +384,7 @@ Keep the tone professional yet approachable. Focus on actionable advice rather t
   console.log('Making Claude API request...');
   
   const requestBody = {
-    model: 'claude-3-5-sonnet-20240620',
+    model: 'claude-3-5-haiku-20240307',
     max_tokens: 4000,
     messages: [{
       role: 'user',
@@ -647,6 +647,8 @@ async function createPipedriveLead(assessment) {
   if (orgResult.success) {
     orgId = orgResult.data.id;
     console.log(`Created organization with ID: ${orgId}`);
+  } else {
+    throw new Error(`Pipedrive organization creation failed: ${orgResult.error || 'Unknown error'} (${orgResult.errorCode || 'Unknown code'})`);
   }
 
   // Create contact if not exists
