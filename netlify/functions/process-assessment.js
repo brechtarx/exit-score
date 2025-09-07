@@ -540,19 +540,24 @@ function calculateCategoryScores(responses) {
 
 // Gmail Draft Creation
 async function createGmailDraft(assessment, aiReport) {
-  if (!process.env.GMAIL_REFRESH_TOKEN) {
-    throw new Error('Gmail refresh token not configured');
+  // Check for Gmail environment variables (multiple possible names)
+  const GMAIL_CLIENT_ID = process.env.GMAIL_CLIENT_ID || process.env.GOOGLE_CLIENT_ID;
+  const GMAIL_CLIENT_SECRET = process.env.GMAIL_CLIENT_SECRET || process.env.GOOGLE_CLIENT_SECRET; 
+  const GMAIL_REFRESH_TOKEN = process.env.GMAIL_REFRESH_TOKEN || process.env.GOOGLE_REFRESH_TOKEN;
+  
+  if (!GMAIL_REFRESH_TOKEN) {
+    throw new Error('Gmail refresh token not configured (tried GMAIL_REFRESH_TOKEN and GOOGLE_REFRESH_TOKEN)');
   }
 
   // Set up Gmail API client
   const oauth2Client = new google.auth.OAuth2(
-    process.env.GMAIL_CLIENT_ID,
-    process.env.GMAIL_CLIENT_SECRET,
+    GMAIL_CLIENT_ID,
+    GMAIL_CLIENT_SECRET,
     'https://developers.google.com/oauthplayground'
   );
 
   oauth2Client.setCredentials({
-    refresh_token: process.env.GMAIL_REFRESH_TOKEN,
+    refresh_token: GMAIL_REFRESH_TOKEN,
   });
 
   const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
@@ -606,13 +611,13 @@ brecht@arxbrokers.com
 
 // Pipedrive Integration
 async function createPipedriveLead(assessment) {
-  const PIPEDRIVE_API_TOKEN = process.env.PIPEDRIVE_API_TOKEN;
+  const PIPEDRIVE_API_TOKEN = process.env.PIPEDRIVE_KEY;
   const BASE_URL = `https://api.pipedrive.com/v1`;
   
   console.log('Pipedrive API token status:', PIPEDRIVE_API_TOKEN ? `Present (${PIPEDRIVE_API_TOKEN.substring(0, 8)}...)` : 'Missing');
   
   if (!PIPEDRIVE_API_TOKEN) {
-    throw new Error('PIPEDRIVE_API_TOKEN environment variable not configured');
+    throw new Error('PIPEDRIVE_KEY environment variable not configured');
   }
 
   // Search for existing contact by email
