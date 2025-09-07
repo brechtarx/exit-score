@@ -1011,11 +1011,25 @@
             }
         ];
 
-        // Load questions from JSON (temporarily disabled - using hardcoded)
+        // Load questions from JSON
         async function loadQuestions() {
-            // Using hardcoded data - 26 questions ready
-            totalQuestions = categories.reduce((sum, cat) => sum + cat.questions.length, 0);
-            return true;
+            try {
+                const response = await fetch('/questions.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                categories = data.categories;
+                totalQuestions = categories.reduce((sum, cat) => sum + cat.questions.length, 0);
+                console.log(`✅ Loaded ${totalQuestions} questions from JSON successfully`);
+                return true;
+            } catch (error) {
+                console.error('❌ Failed to load questions from JSON:', error);
+                console.log('📂 Using fallback hardcoded questions');
+                // Keep existing hardcoded data as fallback
+                totalQuestions = categories.reduce((sum, cat) => sum + cat.questions.length, 0);
+                return false;
+            }
         }
 
         // No hardcoded credentials - all API calls go through our secure Netlify function

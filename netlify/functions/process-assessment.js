@@ -6,12 +6,13 @@ const path = require('path');
 // Load assessment structure from JSON (single source of truth)
 let categories = [];
 try {
-    const questionsPath = path.join(process.cwd(), 'data', 'questions.json');
+    const questionsPath = path.join(process.cwd(), 'questions.json');
     const questionsData = JSON.parse(fs.readFileSync(questionsPath, 'utf8'));
     categories = questionsData.categories;
-    console.log(`Backend loaded ${categories.length} categories with ${categories.reduce((sum, cat) => sum + cat.questions.length, 0)} total questions`);
+    console.log(`✅ Backend loaded ${categories.length} categories with ${categories.reduce((sum, cat) => sum + cat.questions.length, 0)} total questions from JSON`);
 } catch (error) {
-    console.error('Failed to load questions from JSON in backend:', error);
+    console.error('❌ Backend failed to load questions from JSON:', error);
+    console.log('📂 Backend using fallback hardcoded structure');
     // Fallback to hardcoded structure
     categories = [
   {
