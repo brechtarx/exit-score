@@ -1553,6 +1553,9 @@
             
             // Set up zip code validation
             setupZipCodeValidation();
+            
+            // Set up website validation
+            setupWebsiteValidation();
         }
         
         function setupPhoneMask() {
@@ -1623,9 +1626,12 @@
                 }
             });
         }
-            
-            // Website field formatting
+
+        // Setup website field formatting
+        function setupWebsiteValidation() {
             const websiteInput = document.getElementById('websiteInput');
+            if (!websiteInput) return;
+            
             websiteInput.addEventListener('blur', function(e) {
                 let value = e.target.value.trim();
                 if (value && !value.startsWith('http://') && !value.startsWith('https://')) {
