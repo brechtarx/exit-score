@@ -333,7 +333,7 @@
                         <svg class="w-6 h-6 text-green-500 mr-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
                         </svg>
-                        <span class="text-gray-700 text-base font-medium">22-point analysis in 3 minutes</span>
+                        <span class="text-gray-700 text-base font-medium">26-point analysis in 3 minutes</span>
                     </div>
                     <div class="flex items-center">
                         <svg class="w-6 h-6 text-green-500 mr-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -410,7 +410,7 @@
                         <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
                         </svg>
-                        <span class="text-gray-700 text-base font-medium">22-point analysis in 3 minutes</span>
+                        <span class="text-gray-700 text-base font-medium">26-point analysis in 3 minutes</span>
                     </div>
                     <div class="flex items-center">
                         <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1013,9 +1013,8 @@
 
         // Load questions from JSON (temporarily disabled - using hardcoded)
         async function loadQuestions() {
-            // Temporarily using hardcoded data since JSON serving has issues
+            // Using hardcoded data - 26 questions ready
             totalQuestions = categories.reduce((sum, cat) => sum + cat.questions.length, 0);
-            console.log(`Using hardcoded questions: ${totalQuestions} total`);
             return true;
         }
 
