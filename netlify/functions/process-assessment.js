@@ -541,135 +541,98 @@ function calculateCategoryScores(responses) {
   return categoryBreakdown;
 }
 
-// Gmail Draft Creation
-async function createGmailDraft(assessment, aiReport) {
-  // Check for service account key
-  if (!process.env.GOOGLE_SERVICE_ACCOUNT_KEY || !process.env.GMAIL_USER_EMAIL) {
-    throw new Error('Gmail service account credentials not configured');
-  }
-
-  console.log('Gmail delegation email:', process.env.GMAIL_USER_EMAIL);
-
+// Create Gmail draft
+async function createGmailDraft(assessment, report) {
   try {
-    // Set up Gmail API client with service account
+    // Parse the service account key from environment
     const serviceAccountKey = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
-    console.log('Service account client_email:', serviceAccountKey.client_email);
-    console.log('Service account project_id:', serviceAccountKey.project_id);
-    console.log('Service account private_key length:', serviceAccountKey.private_key ? serviceAccountKey.private_key.length : 'MISSING');
     
-    const auth = new google.auth.GoogleAuth({
-      credentials: serviceAccountKey,
-      scopes: [
-        'https://www.googleapis.com/auth/gmail.compose',
-        'https://www.googleapis.com/auth/gmail.modify'
-      ],
-      subject: process.env.GMAIL_USER_EMAIL // Impersonate this user
-    });
-
-    console.log('Getting access token...');
-    const authClient = await auth.getClient();
-    const accessToken = await authClient.getAccessToken();
-    console.log('Access token obtained:', accessToken.token ? 'YES' : 'NO');
+    // Create JWT auth client
+    const auth = new google.auth.JWT(
+      serviceAccountKey.client_email,
+      null,
+      serviceAccountKey.private_key,
+      ['https://www.googleapis.com/auth/gmail.compose'],
+      process.env.GMAIL_USER_EMAIL // Impersonate the Gmail user
+    );
     
-    // Test Gmail API with direct fetch call instead of client library
-    console.log('Testing Gmail API with direct fetch...');
-    try {
-      const response = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/profile', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${accessToken.token}`,
-          'Content-Type': 'application/json',
-          'User-Agent': 'exit-score-assessment/1.0',
-          'Accept': 'application/json',
-          'X-Goog-Api-Client': 'nodejs/18.0.0'
-        }
-      });
-      
-      console.log('Gmail API response status:', response.status);
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Gmail API error response:', errorText);
-        throw new Error(`Gmail API returned ${response.status}: ${errorText}`);
-      }
-      
-      const profileData = await response.json();
-      console.log('Gmail profile access successful:', profileData.emailAddress);
-      
-    } catch (fetchError) {
-      console.error('Direct Gmail API call failed:', fetchError.message);
-      throw new Error(`Direct Gmail API access failed: ${fetchError.message}`);
-    }
+    // Create Gmail API client
+    const gmail = google.gmail({ version: 'v1', auth });
     
-    // Create email content
-  const subject = `Your Exit Score Report: ${assessment.score}% - ${assessment.company}`;
-  
-  const emailBody = `Hi ${assessment.name},
-
-Thank you for completing the Exit Score Assessment for ${assessment.company}. Your business achieved an overall score of ${assessment.score}%.
-
-Here's your detailed personalized report:
-
-${aiReport}
-
----
-
-This report was generated based on your specific responses and provides actionable insights to improve your business's exit readiness.
-
-If you'd like to discuss these findings and develop a strategic plan for increasing your Exit Score, I'd be happy to schedule a consultation.
-
-Best regards,
-ARX Business Brokers Team
-sales@arxbrokers.com
-(503) 893-2799`;
-
-  // Create the email message
-  const message = [
-    `To: ${assessment.email}`,
-    `Subject: ${subject}`,
-    'Content-Type: text/plain; charset=utf-8',
-    '',
-    emailBody
-  ].join('\n');
-
+    // Compose email content
+    const subject = `Your Business Sale Readiness Report - ${assessment.score}% Score`;
+    const htmlBody = `
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .header { background-color: #f8f9fa; padding: 20px; text-align: center; }
+        .content { padding: 20px; }
+        .score { font-size: 24px; color: #ff6b35; font-weight: bold; }
+        .report { background-color: #f8f9fa; padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .footer { background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Business Sale Readiness Report</h1>
+        <div class="score">Score: ${assessment.score}%</div>
+    </div>
+    
+    <div class="content">
+        <p>Dear ${assessment.name},</p>
+        
+        <p>Thank you for completing the Business Sale Readiness Assessment for <strong>${assessment.company}</strong>. Your personalized report is ready.</p>
+        
+        <div class="report">
+            ${report.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}
+        </div>
+        
+        <p>This assessment provides valuable insights into your business's current sale readiness and actionable steps to enhance its value.</p>
+        
+        <p>If you'd like to discuss these findings or explore next steps, please don't hesitate to reach out.</p>
+        
+        <p>Best regards,<br>
+        <strong>ARX Business Brokers</strong><br>
+        Phone: ${assessment.phone ? assessment.phone : 'Contact us'}<br>
+        Email: sales@arxbrokers.com</p>
+    </div>
+    
+    <div class="footer">
+        <p>This report was generated based on your assessment responses. For the most accurate valuation and sale guidance, we recommend a comprehensive business evaluation.</p>
+    </div>
+</body>
+</html>`;
+    
+    // Create email message
+    const message = [
+      `To: ${assessment.email}`,
+      `Subject: ${subject}`,
+      'Content-Type: text/html; charset=utf-8',
+      '',
+      htmlBody
+    ].join('\r\n');
+    
+    // Base64 encode the message
     const encodedMessage = Buffer.from(message).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-
-    console.log('Creating Gmail draft with direct fetch...');
-    // Create the draft using direct fetch
-    const draftResponse = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/drafts', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${accessToken.token}`,
-        'Content-Type': 'application/json',
-        'User-Agent': 'exit-score-assessment/1.0',
-        'Accept': 'application/json',
-        'X-Goog-Api-Client': 'nodejs/18.0.0'
-      },
-      body: JSON.stringify({
+    
+    // Create draft
+    const draft = await gmail.users.drafts.create({
+      userId: 'me',
+      requestBody: {
         message: {
           raw: encodedMessage
         }
-      })
+      }
     });
-
-    console.log('Gmail draft API response status:', draftResponse.status);
     
-    if (!draftResponse.ok) {
-      const errorText = await draftResponse.text();
-      console.error('Gmail draft creation error response:', errorText);
-      throw new Error(`Gmail draft creation failed: ${draftResponse.status} - ${errorText}`);
-    }
-
-    const draftData = await draftResponse.json();
-    console.log('Gmail draft created successfully:', draftData.id);
-    return draftData;
+    console.log('Gmail draft created:', draft.data.id);
+    return draft.data;
     
   } catch (error) {
-    console.error('Gmail draft creation failed:', error.message);
-    if (error.response) {
-      console.error('Gmail API response:', error.response.data);
-    }
-    throw new Error(`Gmail draft creation failed: ${error.message}`);
+    console.error('Gmail draft creation error:', error);
+    throw error;
   }
 }
 
