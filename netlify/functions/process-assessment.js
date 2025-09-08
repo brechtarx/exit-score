@@ -551,6 +551,8 @@ async function createGmailDraft(assessment, aiReport) {
     // Set up Gmail API client with service account
     const serviceAccountKey = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
     console.log('Service account client_email:', serviceAccountKey.client_email);
+    console.log('Service account project_id:', serviceAccountKey.project_id);
+    console.log('Service account private_key length:', serviceAccountKey.private_key ? serviceAccountKey.private_key.length : 'MISSING');
     
     const auth = new google.auth.GoogleAuth({
       credentials: serviceAccountKey,
