@@ -1087,30 +1087,6 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', async function() {
-            // TEST BACKDOOR - Check for score_test parameter
-            const urlParams = new URLSearchParams(window.location.search);
-            const testScore = urlParams.get('score_test');
-            if (testScore && !isNaN(testScore)) {
-                const score = Math.min(100, Math.max(0, parseInt(testScore)));
-                console.log(`🧪 TEST MODE: Showing results with score ${score}`);
-                
-                // Load questions first (needed for category breakdown)
-                await loadQuestions();
-                
-                // Set mock business info for testing
-                businessInfo.company = 'Test Company Inc.';
-                businessInfo.industry = 'Software/SaaS';
-                
-                // Create mock answers to calculate category breakdown
-                createMockAnswersForScore(score);
-                
-                // Show results page immediately
-                setTimeout(() => {
-                    showResults(score);
-                }, 100);
-                return;
-            }
-            
             // Load questions from JSON first
             await loadQuestions();
             
@@ -1660,51 +1636,6 @@
             });
             
             categoryBreakdownDiv.innerHTML = breakdownHTML;
-        }
-        
-        function createMockAnswersForScore(targetScore) {
-            // Clear existing answers
-            answers = [];
-            
-            // Calculate target score as decimal
-            const target = targetScore / 100;
-            
-            // Create answers for each category to achieve the target score
-            let questionIndex = 0;
-            categories.forEach((category, categoryIndex) => {
-                category.questions.forEach((question, qIndex) => {
-                    // Distribute answers to achieve target score
-                    // For higher scores, more "yes" answers; for lower scores, more "no" answers
-                    let answer;
-                    
-                    if (targetScore >= 80) {
-                        // High score: mostly yes answers
-                        answer = Math.random() < 0.9 ? true : (Math.random() < 0.5 ? false : null);
-                    } else if (targetScore >= 60) {
-                        // Good score: mixed with more yes
-                        answer = Math.random() < 0.7 ? true : (Math.random() < 0.7 ? false : null);
-                    } else if (targetScore >= 40) {
-                        // Average score: balanced mix
-                        answer = Math.random() < 0.5 ? true : (Math.random() < 0.7 ? false : null);
-                    } else if (targetScore >= 20) {
-                        // Below average: more no answers
-                        answer = Math.random() < 0.3 ? true : (Math.random() < 0.8 ? false : null);
-                    } else {
-                        // Low score: mostly no answers
-                        answer = Math.random() < 0.1 ? true : (Math.random() < 0.9 ? false : null);
-                    }
-                    
-                    answers.push({
-                        category: categoryIndex,
-                        question: qIndex,
-                        answer: answer
-                    });
-                    
-                    questionIndex++;
-                });
-            });
-            
-            console.log(`🧪 Created ${answers.length} mock answers for ${targetScore}% score`);
         }
         
         function setupExitIntent() {
