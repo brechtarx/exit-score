@@ -549,11 +549,15 @@ async function createGmailDraft(assessment, aiReport) {
   const serviceAccountKey = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
   const auth = new google.auth.GoogleAuth({
     credentials: serviceAccountKey,
-    scopes: ['https://www.googleapis.com/auth/gmail.compose'],
+    scopes: [
+      'https://www.googleapis.com/auth/gmail.compose',
+      'https://www.googleapis.com/auth/gmail.drafts'
+    ],
     subject: process.env.GMAIL_USER_EMAIL // Impersonate this user
   });
 
-  const gmail = google.gmail({ version: 'v1', auth });
+  const authClient = await auth.getClient();
+  const gmail = google.gmail({ version: 'v1', auth: authClient });
 
   // Create email content
   const subject = `Your Exit Score Report: ${assessment.score}% - ${assessment.company}`;
