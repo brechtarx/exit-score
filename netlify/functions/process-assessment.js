@@ -554,7 +554,10 @@ async function createGmailDraft(assessment, aiReport) {
     
     const auth = new google.auth.GoogleAuth({
       credentials: serviceAccountKey,
-      scopes: ['https://www.googleapis.com/auth/gmail.compose'],
+      scopes: [
+        'https://www.googleapis.com/auth/gmail.compose',
+        'https://www.googleapis.com/auth/gmail.modify'
+      ],
       subject: process.env.GMAIL_USER_EMAIL // Impersonate this user
     });
 
@@ -562,6 +565,17 @@ async function createGmailDraft(assessment, aiReport) {
     const authClient = await auth.getClient();
     console.log('Auth client obtained, creating Gmail API client...');
     const gmail = google.gmail({ version: 'v1', auth: authClient });
+    
+    // Test basic Gmail API access first
+    try {
+      console.log('Testing basic Gmail API access...');
+      const profile = await gmail.users.getProfile({ userId: 'me' });
+      console.log('Gmail profile access successful:', profile.data.emailAddress);
+    } catch (profileError) {
+      console.error('Gmail profile access failed:', profileError.message);
+      throw new Error(`Gmail API access denied: ${profileError.message}`);
+    }
+    
     // Create email content
   const subject = `Your Exit Score Report: ${assessment.score}% - ${assessment.company}`;
   
