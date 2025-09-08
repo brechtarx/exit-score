@@ -549,10 +549,7 @@ async function createGmailDraft(assessment, aiReport) {
   const serviceAccountKey = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
   const auth = new google.auth.GoogleAuth({
     credentials: serviceAccountKey,
-    scopes: [
-      'https://www.googleapis.com/auth/gmail.compose',
-      'https://www.googleapis.com/auth/gmail.drafts'
-    ],
+    scopes: ['https://www.googleapis.com/auth/gmail.compose'],
     subject: process.env.GMAIL_USER_EMAIL // Impersonate this user
   });
 
