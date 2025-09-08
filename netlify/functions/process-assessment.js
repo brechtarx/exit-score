@@ -634,19 +634,35 @@ sales@arxbrokers.com
 
     const encodedMessage = Buffer.from(message).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 
-    console.log('Creating Gmail draft...');
-    // Create the draft
-    const draft = await gmail.users.drafts.create({
-      userId: 'me',
-      requestBody: {
+    console.log('Creating Gmail draft with direct fetch...');
+    // Create the draft using direct fetch
+    const draftResponse = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/drafts', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken.token}`,
+        'Content-Type': 'application/json',
+        'User-Agent': 'exit-score-assessment/1.0',
+        'Accept': 'application/json',
+        'X-Goog-Api-Client': 'nodejs/18.0.0'
+      },
+      body: JSON.stringify({
         message: {
           raw: encodedMessage
         }
-      }
+      })
     });
 
-    console.log('Gmail draft created successfully:', draft.data.id);
-    return draft.data;
+    console.log('Gmail draft API response status:', draftResponse.status);
+    
+    if (!draftResponse.ok) {
+      const errorText = await draftResponse.text();
+      console.error('Gmail draft creation error response:', errorText);
+      throw new Error(`Gmail draft creation failed: ${draftResponse.status} - ${errorText}`);
+    }
+
+    const draftData = await draftResponse.json();
+    console.log('Gmail draft created successfully:', draftData.id);
+    return draftData;
     
   } catch (error) {
     console.error('Gmail draft creation failed:', error.message);
