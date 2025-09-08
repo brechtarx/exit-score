@@ -563,19 +563,36 @@ async function createGmailDraft(assessment, aiReport) {
       subject: process.env.GMAIL_USER_EMAIL // Impersonate this user
     });
 
-    console.log('Getting auth client...');
+    console.log('Getting access token...');
     const authClient = await auth.getClient();
-    console.log('Auth client obtained, creating Gmail API client...');
-    const gmail = google.gmail({ version: 'v1', auth: authClient });
+    const accessToken = await authClient.getAccessToken();
+    console.log('Access token obtained:', accessToken.token ? 'YES' : 'NO');
     
-    // Test basic Gmail API access first
+    // Test Gmail API with direct fetch call instead of client library
+    console.log('Testing Gmail API with direct fetch...');
     try {
-      console.log('Testing basic Gmail API access...');
-      const profile = await gmail.users.getProfile({ userId: 'me' });
-      console.log('Gmail profile access successful:', profile.data.emailAddress);
-    } catch (profileError) {
-      console.error('Gmail profile access failed:', profileError.message);
-      throw new Error(`Gmail API access denied: ${profileError.message}`);
+      const response = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/profile', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${accessToken.token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      console.log('Gmail API response status:', response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Gmail API error response:', errorText);
+        throw new Error(`Gmail API returned ${response.status}: ${errorText}`);
+      }
+      
+      const profileData = await response.json();
+      console.log('Gmail profile access successful:', profileData.emailAddress);
+      
+    } catch (fetchError) {
+      console.error('Direct Gmail API call failed:', fetchError.message);
+      throw new Error(`Direct Gmail API access failed: ${fetchError.message}`);
     }
     
     // Create email content
