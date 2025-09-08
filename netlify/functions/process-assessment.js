@@ -253,6 +253,9 @@ exports.handler = async (event, context) => {
       } catch (error) {
         gmailError = error;
         console.error('Gmail draft creation failed:', error.message);
+        
+        // Log that Gmail is having issues but don't fail the entire process
+        console.log('Gmail feature temporarily unavailable - continuing with other integrations');
       }
     } else {
       console.log('Skipping Gmail draft - no report generated');
@@ -575,7 +578,10 @@ async function createGmailDraft(assessment, aiReport) {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${accessToken.token}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'User-Agent': 'exit-score-assessment/1.0',
+          'Accept': 'application/json',
+          'X-Goog-Api-Client': 'nodejs/18.0.0'
         }
       });
       
