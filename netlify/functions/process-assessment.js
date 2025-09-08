@@ -545,18 +545,24 @@ async function createGmailDraft(assessment, aiReport) {
     throw new Error('Gmail service account credentials not configured');
   }
 
-  // Set up Gmail API client with service account
-  const serviceAccountKey = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
-  const auth = new google.auth.GoogleAuth({
-    credentials: serviceAccountKey,
-    scopes: ['https://www.googleapis.com/auth/gmail.compose'],
-    subject: process.env.GMAIL_USER_EMAIL // Impersonate this user
-  });
+  console.log('Gmail delegation email:', process.env.GMAIL_USER_EMAIL);
 
-  const authClient = await auth.getClient();
-  const gmail = google.gmail({ version: 'v1', auth: authClient });
+  try {
+    // Set up Gmail API client with service account
+    const serviceAccountKey = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
+    console.log('Service account client_email:', serviceAccountKey.client_email);
+    
+    const auth = new google.auth.GoogleAuth({
+      credentials: serviceAccountKey,
+      scopes: ['https://www.googleapis.com/auth/gmail.compose'],
+      subject: process.env.GMAIL_USER_EMAIL // Impersonate this user
+    });
 
-  // Create email content
+    console.log('Getting auth client...');
+    const authClient = await auth.getClient();
+    console.log('Auth client obtained, creating Gmail API client...');
+    const gmail = google.gmail({ version: 'v1', auth: authClient });
+    // Create email content
   const subject = `Your Exit Score Report: ${assessment.score}% - ${assessment.company}`;
   
   const emailBody = `Hi ${assessment.name},
@@ -574,9 +580,8 @@ This report was generated based on your specific responses and provides actionab
 If you'd like to discuss these findings and develop a strategic plan for increasing your Exit Score, I'd be happy to schedule a consultation.
 
 Best regards,
-Brecht Palombo
-ARX Business Brokers
-brecht@arxbrokers.com
+ARX Business Brokers Team
+sales@arxbrokers.com
 (503) 893-2799`;
 
   // Create the email message
@@ -588,19 +593,29 @@ brecht@arxbrokers.com
     emailBody
   ].join('\n');
 
-  const encodedMessage = Buffer.from(message).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    const encodedMessage = Buffer.from(message).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 
-  // Create the draft
-  const draft = await gmail.users.drafts.create({
-    userId: 'me',
-    requestBody: {
-      message: {
-        raw: encodedMessage
+    console.log('Creating Gmail draft...');
+    // Create the draft
+    const draft = await gmail.users.drafts.create({
+      userId: 'me',
+      requestBody: {
+        message: {
+          raw: encodedMessage
+        }
       }
-    }
-  });
+    });
 
-  return draft.data;
+    console.log('Gmail draft created successfully:', draft.data.id);
+    return draft.data;
+    
+  } catch (error) {
+    console.error('Gmail draft creation failed:', error.message);
+    if (error.response) {
+      console.error('Gmail API response:', error.response.data);
+    }
+    throw new Error(`Gmail draft creation failed: ${error.message}`);
+  }
 }
 
 // Pipedrive Integration
