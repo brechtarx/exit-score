@@ -98,12 +98,12 @@ exports.handler = async (event, context) => {
     // Parse the form submission
     const assessment = JSON.parse(event.body);
     
-    // Enhanced server-side validation
-    if (!assessment.email || !assessment.name || !assessment.company || !assessment.zipcode) {
+    // Enhanced server-side validation - Only require name and email for step 1
+    if (!assessment.email || !assessment.name) {
       return {
         statusCode: 400,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ error: 'Missing required fields' })
+        body: JSON.stringify({ error: 'Missing required fields (name and email)' })
       };
     }
     
@@ -170,7 +170,7 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({
         name: assessment.name,
         email: assessment.email,
-        company: assessment.company,
+        company: assessment.company || `${assessment.industry || 'General'} Company`, // Placeholder company name
         phone: assessment.phone || null,
         industry: assessment.industry || null,
         website: assessment.website || null,
@@ -186,7 +186,11 @@ exports.handler = async (event, context) => {
         referrer: assessment.referrer || null,
         processed: false,
         gmail_draft_created: false,
-        pipedrive_created: false
+        pipedrive_created: false,
+        form_step_completed: 1,
+        pipedrive_person_id: null,
+        pipedrive_org_id: null,
+        pipedrive_deal_id: null
       })
     });
 
@@ -264,10 +268,11 @@ exports.handler = async (event, context) => {
     // Create Pipedrive lead
     let pipediveSuccess = false;
     let pipediveError = null;
+    let pipediveIds = { contactId: null, orgId: null, dealId: null };
     
     try {
       console.log('Creating Pipedrive lead...');
-      await createPipedriveLead(savedData[0]);
+      pipediveIds = await createPipedriveLead(savedData[0]);
       pipediveSuccess = true;
       console.log('Pipedrive lead created successfully');
     } catch (error) {
@@ -287,7 +292,10 @@ exports.handler = async (event, context) => {
         processed: true,
         gmail_draft_created: gmailSuccess,
         pipedrive_created: pipediveSuccess,
-        report_text: reportGenerated ? aiReport : null
+        report_text: reportGenerated ? aiReport : null,
+        pipedrive_person_id: pipediveIds.contactId,
+        pipedrive_org_id: pipediveIds.orgId,
+        pipedrive_deal_id: pipediveIds.dealId
       })
     });
     
@@ -340,7 +348,7 @@ async function generateAIReport(assessment) {
   const prompt = `You are an expert business valuation analyst helping business owners understand their exit readiness. Create a detailed, actionable report based on this Exit Score Assessment.
 
 BUSINESS INFORMATION:
-Company: ${assessment.company}
+Company: ${assessment.company.includes('Company') ? `${assessment.name}'s ${assessment.industry || 'Business'}` : assessment.company}
 Industry: ${assessment.industry || 'Not specified'}
 Overall Exit Score: ${assessment.score}%
 
@@ -658,12 +666,13 @@ async function createPipedriveLead(assessment) {
     console.log(`Found existing contact: ${contactId}`);
   }
 
-  // Create or get organization
+  // Create or get organization using business category
   let orgId = null;
-  console.log(`Creating organization for: ${assessment.company}`);
+  const orgName = assessment.company.includes('Company') ? assessment.company : `${assessment.industry || 'General'} Company`;
+  console.log(`Creating organization for: ${orgName}`);
   
   const orgData = {
-    "name": assessment.company,
+    "name": orgName,
     "address": assessment.zipcode,
     "website": assessment.website,
     "f04aa9605fd3eff31231301ee12f6d59491d0c7d": assessment.industry,
@@ -726,11 +735,12 @@ async function createPipedriveLead(assessment) {
 
   // Create deal
   console.log('Creating deal...');
+  const dealTitle = `${assessment.industry || 'General'} - Evaluation`;
   const dealResponse = await fetch(`${BASE_URL}/deals?api_token=${PIPEDRIVE_API_TOKEN}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      title: `Exit Score Assessment - ${assessment.company}`,
+      title: dealTitle,
       person_id: contactId,
       org_id: orgId,
       pipeline_id: pipelineId,
@@ -768,7 +778,7 @@ async function createPipedriveLead(assessment) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        subject: `Follow up on Exit Score Assessment - ${assessment.company}`,
+        subject: `Follow up on ${dealTitle}`,
         type: 'call',
         user_id: userId,
         deal_id: dealId,

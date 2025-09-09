@@ -570,6 +570,29 @@
             </div>
         </div>
 
+        <!-- Business Location (Zip Code) Selection Screen -->
+        <div id="zipcodeSelection" class="question-screen hidden">
+            <div class="sm:bg-white sm:rounded-lg sm:border sm:border-gray-200 p-4 sm:p-10 mt-0 sm:mt-8 max-w-2xl mx-auto">
+                <div class="mb-6">
+                    <span class="text-xs sm:text-sm text-hyperlink-blue font-bold uppercase tracking-wider">Business Profile</span>
+                    <div class="text-sm text-gray-500 mt-1">Step 3 of 3</div>
+                </div>
+                <h2 class="text-xl sm:text-2xl font-semibold text-slate-900 mb-6">
+                    What is your business location?
+                </h2>
+                <p class="text-gray-600 mb-8 text-sm sm:text-base">
+                    This helps us provide location-specific market insights and valuations.
+                </p>
+                <div class="mb-8">
+                    <label for="zipcodeSelectionInput" class="block text-sm font-medium text-gray-700 mb-3">Business Location (Zip Code) *</label>
+                    <input type="text" id="zipcodeSelectionInput" name="zipcode" required pattern="[0-9]{5}" maxlength="5" minlength="5" placeholder="12345" autocomplete="postal-code" inputmode="numeric" class="w-full p-4 text-lg border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all">
+                </div>
+                <button onclick="selectZipcode()" class="btn-primary w-full py-4 px-6 rounded-xl text-white font-semibold text-lg">
+                    Continue to Assessment →
+                </button>
+            </div>
+        </div>
+
         <!-- Question Template (Hidden, will be cloned) -->
         <div id="questionTemplate" class="question-screen hidden">
             <div class="sm:bg-white sm:rounded-lg sm:border sm:border-gray-200 p-4 sm:p-8 mt-0 sm:mt-8 fade-in max-w-2xl mx-auto">
@@ -706,9 +729,9 @@
         <!-- Lead Capture Form -->
         <div id="leadCapture" class="hidden">
             <div class="sm:bg-white sm:rounded-xl sm:shadow-lg p-6 sm:p-8 mt-0 sm:mt-8 fade-in">
-                <h2 class="text-2xl font-bold text-slate-900 mb-2">Get Your Personalized Report</h2>
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">Get Your 3 Most Critical Steps to Sell in the Next 6 Months</h2>
                 <p class="text-gray-600 mb-6">
-                    We'll send you a detailed analysis with specific recommendations to improve your business's sale readiness.
+                    We'll send you a personalized action plan with your Business Sale Readiness Score and specific priorities based on your assessment.
                 </p>
                 <form id="leadForm" onsubmit="submitLeadForm(event)">
                     <input type="text" id="honeypot" name="honeypot" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;border:0;padding:0;margin:0;pointer-events:none" tabindex="-1" autocomplete="new-password" aria-hidden="true" readonly>
@@ -724,22 +747,6 @@
                         <div>
                             <label for="emailInput" class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
                             <input type="email" id="emailInput" name="email" autocomplete="email" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
-                        </div>
-                        <div>
-                            <label for="phoneInput" class="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
-                            <input type="tel" name="phone" id="phoneInput" placeholder="(555) 123-4567" autocomplete="tel" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
-                        </div>
-                        <div>
-                            <label for="companyInput" class="block text-sm font-medium text-gray-700 mb-1">Company Name *</label>
-                            <input type="text" id="companyInput" name="company" autocomplete="organization" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
-                        </div>
-                        <div>
-                            <label for="websiteInput" class="block text-sm font-medium text-gray-700 mb-1">Company Website</label>
-                            <input type="text" id="websiteInput" name="website" placeholder="yourcompany.com" autocomplete="url" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
-                        </div>
-                        <div>
-                            <label for="zipcodeInput" class="block text-sm font-medium text-gray-700 mb-1">Business Location (Zip Code) *</label>
-                            <input type="text" id="zipcodeInput" name="zipcode" required pattern="[0-9]{5}" maxlength="5" minlength="5" placeholder="12345" autocomplete="postal-code" inputmode="numeric" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
                         </div>
                     </div>
                     
@@ -759,6 +766,59 @@
                         </svg>
                         Your information is 100% confidential and will never be shared.
                     </p>
+                </form>
+            </div>
+        </div>
+
+        <!-- Additional Details Form -->
+        <div id="additionalDetails" class="hidden">
+            <div class="sm:bg-white sm:rounded-xl sm:shadow-lg p-6 sm:p-8 mt-0 sm:mt-8 fade-in">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-900 mb-2">Great! Your Report is Ready</h2>
+                    <p class="text-gray-600 mb-4">
+                        For the most personalized and accurate evaluation, please provide a few additional details about your business.
+                    </p>
+                </div>
+                
+                <form id="additionalDetailsForm" onsubmit="submitAdditionalDetails(event)">
+                    <input type="text" id="honeypot2" name="honeypot" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;border:0;padding:0;margin:0;pointer-events:none" tabindex="-1" autocomplete="new-password" aria-hidden="true" readonly>
+                    
+                    <div id="errorMessage2" class="error-message" role="alert"></div>
+                    <div id="successMessage2" class="success-message" role="status"></div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label for="companyInputStep2" class="block text-sm font-medium text-gray-700 mb-1">Company Name *</label>
+                            <input type="text" id="companyInputStep2" name="company" autocomplete="organization" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                        </div>
+                        <div>
+                            <label for="phoneInputStep2" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                            <input type="tel" name="phone" id="phoneInputStep2" placeholder="(555) 123-4567" autocomplete="tel" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                        </div>
+                        <div>
+                            <label for="websiteInputStep2" class="block text-sm font-medium text-gray-700 mb-1">Company Website</label>
+                            <input type="text" id="websiteInputStep2" name="website" placeholder="yourcompany.com" autocomplete="url" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                        </div>
+                    </div>
+                    
+                    <button type="submit" id="submitBtn2" class="btn-primary w-full py-4 px-6 rounded-lg text-white font-semibold text-lg mt-6">
+                        <span id="submitBtnText2">Complete My Profile →</span>
+                        <span id="submitBtnLoading2" class="hidden">
+                            <div class="loading-spinner"></div>
+                            Updating Your Profile...
+                        </span>
+                    </button>
+                    <p class="text-sm text-gray-500 mt-4 text-center">
+                        <strong>Optional:</strong> Skip this step and we'll send your report with the information provided above.
+                    </p>
+                    <button type="button" onclick="skipAdditionalDetails()" class="w-full py-2 px-4 text-gray-600 hover:text-gray-800 text-sm mt-2 underline">
+                        Skip - Send My Report Now
+                    </button>
                 </form>
             </div>
         </div>
@@ -783,9 +843,14 @@
                         <li>• Your complete report arrives in your inbox within 1 business day</li>
                     </ul>
                 </div>
-                <p class="text-gray-600 mb-4">
+                <p class="text-gray-600 mb-6">
                     <strong>Can't wait?</strong> One of our senior advisors may reach out to discuss your preliminary results and answer any immediate questions about your business sale preparation.
                 </p>
+                <div class="mb-6">
+                    <a href="https://savvycal.com/brecht/SMB" target="_blank" rel="noopener noreferrer" class="btn-primary inline-block py-3 px-8 rounded-lg text-white font-semibold text-lg hover:opacity-90 transition-all">
+                        📞 Book a Call Now
+                    </a>
+                </div>
                 <p class="text-sm text-gray-500">
                     Check your email (including spam folder) for your detailed analysis report.
                 </p>
@@ -1247,10 +1312,35 @@
                     employee_numeric: numericValue
                 });
                 
-                showQuestion();
+                // Move to zipcode selection
+                showScreen('zipcodeSelection');
                 // Save progress
                 saveProgress();
             }, 500);
+        }
+        
+        function selectZipcode() {
+            const zipInput = document.getElementById('zipcodeSelectionInput');
+            const zipcode = zipInput.value.trim();
+            
+            if (!zipcode || zipcode.length !== 5 || !/^\d{5}$/.test(zipcode)) {
+                zipInput.focus();
+                zipInput.classList.add('border-red-500');
+                return;
+            }
+            
+            businessInfo.zipcode = zipcode;
+            zipInput.classList.remove('border-red-500');
+            
+            // Track zipcode completion
+            trackEvent('zipcode_selection_complete', {
+                zipcode: zipcode
+            });
+            
+            // Move to first assessment question
+            showQuestion();
+            // Save progress
+            saveProgress();
         }
         
         function showScreen(screenId) {
@@ -1685,7 +1775,7 @@
         }
         
         function setupFormTracking() {
-            const formFields = ['name', 'email', 'phone', 'company', 'website', 'zipcode'];
+            const formFields = ['name', 'email'];
             
             formFields.forEach(fieldName => {
                 const field = document.querySelector(`input[name="${fieldName}"]`);
@@ -1921,11 +2011,13 @@
                 // Small delay to show final step
                 setTimeout(() => {
                     hideLoadingState();
-                    // Clear saved progress since assessment is complete
-                    clearProgress();
-                    // Show thank you
+                    // Don't clear progress yet - we have a second form
+                    // Show additional details form
                     document.getElementById('leadCapture').classList.add('hidden');
-                    document.getElementById('thankYou').classList.remove('hidden');
+                    document.getElementById('additionalDetails').classList.remove('hidden');
+                    
+                    // Store the submission result for later use
+                    window.submissionResult = result;
                 }, 1000);
                 
             } catch (error) {
@@ -1940,6 +2032,85 @@
                 hideLoadingState();
                 showErrorMessage('There was an error submitting your information. Please try again or contact us directly.');
             }
+        }
+        
+        // Additional Details Form Functions
+        async function submitAdditionalDetails(event) {
+            event.preventDefault();
+            
+            // Show loading state
+            const submitBtn2 = document.getElementById('submitBtn2');
+            const submitBtnText2 = document.getElementById('submitBtnText2');
+            const submitBtnLoading2 = document.getElementById('submitBtnLoading2');
+            
+            submitBtn2.disabled = true;
+            submitBtn2.classList.add('btn-loading');
+            submitBtnText2.classList.add('hidden');
+            submitBtnLoading2.classList.remove('hidden');
+            
+            try {
+                const formData = new FormData(event.target);
+                
+                // Prepare update data
+                const updateData = {
+                    id: window.submissionResult?.id,
+                    company: formData.get('company') || '',
+                    phone: formData.get('phone') || '',
+                    website: formData.get('website') || '',
+                    form_step_completed: 2
+                };
+                
+                // Submit additional details
+                const response = await fetch('/.netlify/functions/update-assessment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(updateData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                // Track completion
+                trackEvent('additional_details_completed', {
+                    has_phone: !!formData.get('phone'),
+                    has_website: !!formData.get('website')
+                });
+                
+                // Show success and move to thank you
+                setTimeout(() => {
+                    // Clear saved progress now
+                    clearProgress();
+                    document.getElementById('additionalDetails').classList.add('hidden');
+                    document.getElementById('thankYou').classList.remove('hidden');
+                }, 500);
+                
+            } catch (error) {
+                console.error('Error updating details:', error);
+                // Hide loading and show error
+                submitBtn2.disabled = false;
+                submitBtn2.classList.remove('btn-loading');
+                submitBtnText2.classList.remove('hidden');
+                submitBtnLoading2.classList.add('hidden');
+                
+                const errorElement = document.getElementById('errorMessage2');
+                if (errorElement) {
+                    errorElement.textContent = 'There was an error updating your information. Please try again.';
+                    errorElement.style.display = 'block';
+                }
+            }
+        }
+        
+        function skipAdditionalDetails() {
+            // Track skip action
+            trackEvent('additional_details_skipped');
+            
+            // Clear saved progress and go to thank you
+            clearProgress();
+            document.getElementById('additionalDetails').classList.add('hidden');
+            document.getElementById('thankYou').classList.remove('hidden');
         }
         
         // Loading state functions
