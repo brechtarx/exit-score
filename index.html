@@ -1970,7 +1970,7 @@
                 phone: formData.get('phone') ? formData.get('phone').replace(/\D/g, '') : null, // Store digits only
                 industry: businessInfo.industry,
                 website: formData.get('website') || null,
-                zipcode: formData.get('zipcode'),
+                zipcode: businessInfo.zipcode,
                 revenue: businessInfo.revenue,
                 revenue_numeric: businessInfo.revenueNumeric,
                 employees: businessInfo.employees,

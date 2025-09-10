@@ -482,20 +482,21 @@ function buildStructuredAssessmentData(assessment) {
   
   // Group responses by category
   assessment.responses.forEach(response => {
-    QUESTIONS_STRUCTURE.categories.forEach(category => {
-      const question = category.questions.find(q => q.id === response.questionId);
-      if (question) {
+    if (response.category !== undefined && response.question !== undefined) {
+      const category = QUESTIONS_STRUCTURE.categories[response.category];
+      if (category && category.questions[response.question]) {
+        const question = category.questions[response.question];
         if (!responsesByCategory[category.name]) {
           responsesByCategory[category.name] = [];
         }
         responsesByCategory[category.name].push({
-          id: response.questionId,
-          text: question.text || `Question ${response.questionId}`,
+          id: response.question,
+          text: question.text || `Question ${response.question + 1}`,
           answer: response.answer === true ? 'Yes' : response.answer === false ? 'No' : 'Don\'t Know',
           weight: question.weight
         });
       }
-    });
+    }
   });
 
   // Format for AI prompt
@@ -518,16 +519,16 @@ function calculateCategoryScores(responses) {
     return categoryBreakdown;
   }
 
-  QUESTIONS_STRUCTURE.categories.forEach(category => {
+  QUESTIONS_STRUCTURE.categories.forEach((category, categoryIndex) => {
     let categoryScore = 0;
     let totalPossibleScore = 0;
     let answeredQuestions = 0;
     let totalQuestions = category.questions.length;
     
-    category.questions.forEach(question => {
+    category.questions.forEach((question, questionIndex) => {
       totalPossibleScore += question.weight;
       
-      const response = responses.find(r => r.questionId === question.id);
+      const response = responses.find(r => r.category === categoryIndex && r.question === questionIndex);
       if (response) {
         answeredQuestions++;
         if (response.answer === true) {
