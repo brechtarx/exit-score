@@ -1966,11 +1966,11 @@
             const submissionData = {
                 name: formData.get('name'),
                 email: formData.get('email'),
-                company: `${businessInfo.industry || 'General'} Company`, // Placeholder for step 1
+                company: formData.get('company'),
                 phone: formData.get('phone') ? formData.get('phone').replace(/\D/g, '') : null, // Store digits only
                 industry: businessInfo.industry,
                 website: formData.get('website') || null,
-                zipcode: businessInfo.zipcode, // Get from businessInfo, not form
+                zipcode: formData.get('zipcode'),
                 revenue: businessInfo.revenue,
                 revenue_numeric: businessInfo.revenueNumeric,
                 employees: businessInfo.employees,
