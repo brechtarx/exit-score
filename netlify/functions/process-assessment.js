@@ -710,11 +710,9 @@ async function createPipedriveLead(assessment) {
       name: assessment.name,
       email: [{ value: assessment.email, primary: true }],
       phone: assessment.phone ? [{ value: assessment.phone, primary: true }] : [],
-      org_id: orgId,
-      // Try multiple possible source field approaches
-      "892e0c4e70af0dc488b77cba0e0b1f8b9c1b9e8f": "Score App", // Custom field ID for source
-      "source": "Score App", // Try generic source field
-      "label": "Score App Lead" // Try label field
+      org_id: orgId
+      // Note: Removing invalid custom field ID that was causing contact creation to fail
+      // Will need to find correct field ID for source tracking
     };
     
     // Remove undefined phone field if no phone provided
