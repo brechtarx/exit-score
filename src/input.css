@@ -12,10 +12,17 @@ input:focus, select:focus, textarea:focus, button:focus {
     @apply ring-2 ring-green-500 ring-offset-2 border-green-500 outline-none !important;
 }
 
+/* Fix focus states for answer buttons (Y/N/NA) */
+.answer-btn:focus, .revenue-btn:focus, .employee-btn:focus {
+    @apply ring-2 ring-green-500 ring-offset-2 outline-none !important;
+}
+
 /* Mobile container padding fixes */
 @media (max-width: 640px) {
     .container, .max-w-2xl {
-        @apply px-4 mx-4;
+        @apply px-6 mx-auto;
+        max-width: 100vw;
+        box-sizing: border-box;
     }
     
     .sm\:p-8, .sm\:p-10 {
@@ -24,6 +31,16 @@ input:focus, select:focus, textarea:focus, button:focus {
     
     .sm\:bg-white {
         @apply bg-transparent shadow-none border-0;
+    }
+    
+    /* Prevent horizontal overflow */
+    body {
+        overflow-x: hidden;
+    }
+    
+    .max-w-4xl {
+        @apply px-4 mx-auto;
+        max-width: 100vw;
     }
 }
 
