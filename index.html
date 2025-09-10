@@ -154,12 +154,7 @@
         .answer-btn:active {
             transform: scale(0.98);
         }
-        @media (hover: hover) {
-            /* Only apply hover styles on devices that support hover */
-            .answer-btn:hover {
-                border-color: currentColor;
-            }
-        }
+        /* Removed hover override to allow Tailwind hover: classes to work properly */
         /* Brand utility classes */
         .bg-dark-anchor {
             background-color: var(--dark-anchor);
