@@ -150,10 +150,7 @@
             font-weight: 900;
             letter-spacing: -0.05em;
         }
-        /* Prevent sticky focus states on mobile */
-        .answer-btn:focus {
-            outline: none;
-        }
+        /* Removed outline: none to allow Tailwind focus styles to work */
         .answer-btn:active {
             transform: scale(0.98);
         }
