@@ -4,7 +4,27 @@
 
 /* Custom styles */
 .btn-primary {
-    @apply bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg transition-colors;
+    @apply bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 text-white font-bold py-2 px-4 rounded-lg transition-all;
+}
+
+/* Fix focus states for form elements */
+input:focus, select:focus, textarea:focus, button:focus {
+    @apply ring-2 ring-green-500 ring-offset-2 border-green-500 outline-none;
+}
+
+/* Mobile container padding fixes */
+@media (max-width: 640px) {
+    .container, .max-w-2xl {
+        @apply px-4 mx-4;
+    }
+    
+    .sm\:p-8, .sm\:p-10 {
+        @apply p-4;
+    }
+    
+    .sm\:bg-white {
+        @apply bg-transparent shadow-none border-0;
+    }
 }
 
 .loading-spinner {
