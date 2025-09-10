@@ -742,11 +742,11 @@
                     <div class="space-y-4">
                         <div>
                             <label for="nameInput" class="block text-sm font-medium text-gray-700 mb-1">Name *</label>
-                            <input type="text" id="nameInput" name="name" autocomplete="name" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                            <input type="text" id="nameInput" name="name" autocomplete="name" required placeholder="First Last" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
                         </div>
                         <div>
                             <label for="emailInput" class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-                            <input type="email" id="emailInput" name="email" autocomplete="email" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                            <input type="email" id="emailInput" name="email" autocomplete="email" required placeholder="your.name@company.com" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
                         </div>
                     </div>
                     
@@ -797,12 +797,12 @@
                             <input type="text" id="companyInputStep2" name="company" autocomplete="organization" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
                         </div>
                         <div>
-                            <label for="phoneInputStep2" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                            <input type="tel" name="phone" id="phoneInputStep2" placeholder="(555) 123-4567" autocomplete="tel" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                            <label for="phoneInputStep2" class="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+                            <input type="tel" name="phone" id="phoneInputStep2" placeholder="(555) 123-4567" autocomplete="tel" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
                         </div>
                         <div>
-                            <label for="websiteInputStep2" class="block text-sm font-medium text-gray-700 mb-1">Company Website</label>
-                            <input type="text" id="websiteInputStep2" name="website" placeholder="yourcompany.com" autocomplete="url" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                            <label for="websiteInputStep2" class="block text-sm font-medium text-gray-700 mb-1">Company Website *</label>
+                            <input type="url" id="websiteInputStep2" name="website" placeholder="https://yourcompany.com" autocomplete="url" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
                         </div>
                     </div>
                     
@@ -1808,48 +1808,53 @@
         }
         
         function setupPhoneMask() {
-            const phoneInput = document.getElementById('phoneInput');
-            if (!phoneInput) return;
+            // Apply phone mask to both phone inputs
+            const phoneInputs = [document.getElementById('phoneInput'), document.getElementById('phoneInputStep2')];
             
-            phoneInput.addEventListener('input', function(e) {
-                let value = e.target.value.replace(/\D/g, ''); // Remove all non-digits
+            phoneInputs.forEach(phoneInput => {
+                if (!phoneInput) return;
                 
-                if (value.length >= 6) {
-                    // Format as (XXX) XXX-XXXX
-                    value = `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6, 10)}`;
-                } else if (value.length >= 3) {
-                    // Format as (XXX) XXX
-                    value = `(${value.slice(0, 3)}) ${value.slice(3)}`;
-                } else if (value.length > 0) {
-                    // Format as (XXX
-                    value = `(${value}`;
-                }
-                
-                e.target.value = value;
-            });
-            
-            // Handle backspace to remove formatting
-            phoneInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Backspace') {
-                    let value = e.target.value;
-                    // If we're deleting a formatting character, delete the digit before it too
-                    if (value.endsWith(') ') || value.endsWith('-')) {
-                        e.preventDefault();
-                        e.target.value = value.slice(0, -2);
-                        // Trigger input event to reformat
-                        e.target.dispatchEvent(new Event('input'));
+                phoneInput.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, ''); // Remove all non-digits
+                    
+                    if (value.length >= 6) {
+                        // Format as (XXX) XXX-XXXX
+                        value = `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6, 10)}`;
+                    } else if (value.length >= 3) {
+                        // Format as (XXX) XXX
+                        value = `(${value.slice(0, 3)}) ${value.slice(3)}`;
+                    } else if (value.length > 0) {
+                        // Format as (XXX
+                        value = `(${value}`;
                     }
-                }
+                    
+                    e.target.value = value;
+                });
             });
-            
-            // Validation
-            phoneInput.addEventListener('blur', function(e) {
-                const value = e.target.value.replace(/\D/g, '');
-                if (value.length !== 10) {
-                    e.target.setCustomValidity('Please enter a valid 10-digit US phone number');
-                } else {
-                    e.target.setCustomValidity('');
-                }
+                
+                // Handle backspace to remove formatting
+                phoneInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace') {
+                        let value = e.target.value;
+                        // If we're deleting a formatting character, delete the digit before it too
+                        if (value.endsWith(') ') || value.endsWith('-')) {
+                            e.preventDefault();
+                            e.target.value = value.slice(0, -2);
+                            // Trigger input event to reformat
+                            e.target.dispatchEvent(new Event('input'));
+                        }
+                    }
+                });
+                
+                // Validation
+                phoneInput.addEventListener('blur', function(e) {
+                    const value = e.target.value.replace(/\D/g, '');
+                    if (value.length !== 10) {
+                        e.target.setCustomValidity('Please enter a valid 10-digit US phone number');
+                    } else {
+                        e.target.setCustomValidity('');
+                    }
+                });
             });
         }
 
@@ -1878,19 +1883,38 @@
 
         // Setup website field formatting
         function setupWebsiteValidation() {
-            const websiteInput = document.getElementById('websiteInput');
-            if (!websiteInput) return;
+            // Apply website validation to both website inputs
+            const websiteInputs = [document.getElementById('websiteInput'), document.getElementById('websiteInputStep2')];
             
-            websiteInput.addEventListener('blur', function(e) {
-                let value = e.target.value.trim();
-                if (value && !value.startsWith('http://') && !value.startsWith('https://')) {
-                    // Add https:// if no protocol specified
-                    if (value.includes('.') && !value.startsWith('www.')) {
-                        e.target.value = 'https://' + value;
-                    } else if (value.startsWith('www.')) {
-                        e.target.value = 'https://' + value;
+            websiteInputs.forEach(websiteInput => {
+                if (!websiteInput) return;
+                
+                websiteInput.addEventListener('blur', function(e) {
+                    let value = e.target.value.trim();
+                    if (value && !value.startsWith('http://') && !value.startsWith('https://')) {
+                        // Add https:// if no protocol specified
+                        if (value.includes('.') && !value.startsWith('www.')) {
+                            e.target.value = 'https://' + value;
+                        } else if (value.startsWith('www.')) {
+                            e.target.value = 'https://' + value;
+                        }
                     }
-                }
+                });
+                
+                // Validate URL format
+                websiteInput.addEventListener('input', function(e) {
+                    const value = e.target.value.trim();
+                    if (value) {
+                        const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+                        const domainPattern = /^[\da-z\.-]+\.([a-z\.]{2,6})$/;
+                        
+                        if (!urlPattern.test(value) && !domainPattern.test(value)) {
+                            e.target.setCustomValidity('Please enter a valid website URL');
+                        } else {
+                            e.target.setCustomValidity('');
+                        }
+                    }
+                });
             });
         }
 

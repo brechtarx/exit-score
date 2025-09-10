@@ -708,7 +708,8 @@ async function createPipedriveLead(assessment) {
         name: assessment.name,
         email: [{ value: assessment.email, primary: true }],
         phone: assessment.phone ? [{ value: assessment.phone, primary: true }] : undefined,
-        org_id: orgId
+        org_id: orgId,
+        "892e0c4e70af0dc488b77cba0e0b1f8b9c1b9e8f": "Score App" // Source channel field
       })
     });
     
@@ -784,8 +785,25 @@ async function createPipedriveLead(assessment) {
         deal_id: dealId,
         person_id: contactId,
         org_id: orgId,
-        note: `Exit Score: ${assessment.score}%\nEmail: ${assessment.email}\nPhone: ${assessment.phone || 'Not provided'}\nWebsite: ${assessment.website || 'Not provided'}\nIndustry: ${assessment.industry || 'Not specified'}`,
-        due_date: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0] // Tomorrow
+        note: `Exit Score Assessment: ${assessment.score}%
+
+BUSINESS DETAILS:
+Company: ${assessment.company || 'Not provided'}
+Industry: ${assessment.industry || 'Not specified'}
+Revenue: ${assessment.revenue || 'Not provided'}
+Employees: ${assessment.employees || 'Not provided'}
+Location: ${assessment.zipcode || 'Not provided'}
+
+CONTACT INFO:
+Email: ${assessment.email}
+Phone: ${assessment.phone || 'Not provided'}
+Website: ${assessment.website || 'Not provided'}
+
+ASSESSMENT DETAILS:
+Total Questions Answered: ${assessment.responses ? assessment.responses.length : 0}
+Time Spent: ${assessment.time_spent ? Math.round(assessment.time_spent / 60) : 0} minutes
+Submitted: ${new Date().toLocaleDateString()}`,
+        due_date: new Date().toISOString().split('T')[0] // Today (immediate)
       })
     });
     
