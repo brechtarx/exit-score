@@ -345,16 +345,37 @@ async function generateAIReport(assessment) {
   const structuredData = buildStructuredAssessmentData(assessment);
   const categoryBreakdown = calculateCategoryScores(assessment.responses);
   
+  // Calculate top 3 priority areas (lowest weighted scores)
+  const priorityAreas = Object.entries(categoryBreakdown)
+    .map(([category, data]) => {
+      const categoryWeight = QUESTIONS_STRUCTURE.categories.find(c => c.name === category)?.weight || 0;
+      return {
+        category,
+        score: Math.round(data.score * 100),
+        weight: categoryWeight,
+        impact: (1 - data.score) * categoryWeight // Higher impact = lower score * higher weight
+      };
+    })
+    .sort((a, b) => b.impact - a.impact)
+    .slice(0, 3);
+
   const prompt = `You are an expert business valuation analyst helping business owners understand their exit readiness. Create a detailed, actionable report based on this Exit Score Assessment.
 
 BUSINESS INFORMATION:
 Company: ${assessment.company.includes('Company') ? `${assessment.name}'s ${assessment.industry || 'Business'}` : assessment.company}
 Industry: ${assessment.industry || 'Not specified'}
 Overall Exit Score: ${assessment.score}%
+Revenue: ${assessment.revenue || 'Not specified'}
+Employees: ${assessment.employees || 'Not specified'}
 
 CATEGORY SCORES:
 ${Object.entries(categoryBreakdown).map(([category, data]) => 
   `${category}: ${Math.round(data.score * 100)}% (${data.answeredQuestions}/${data.totalQuestions} questions answered)`
+).join('\n')}
+
+TOP 3 PRIORITY AREAS FOR MAXIMUM IMPACT:
+${priorityAreas.map((area, index) => 
+  `${index + 1}. ${area.category}: ${area.score}% (High impact area - Category weight: ${Math.round(area.weight * 100)}%)`
 ).join('\n')}
 
 DETAILED RESPONSES:
@@ -363,26 +384,40 @@ ${structuredData}
 Create a professional, actionable report with these sections:
 
 **Executive Summary**
-- Overall assessment of exit readiness
-- Key strengths and challenges
+- Overall assessment of exit readiness with ${assessment.score}% score
+- Key strengths and challenges based on actual category performance
 - Timeline recommendation for sale preparation
+
+**Your Top 3 Most Critical Steps to Increase Marketability**
+Based on weighted impact analysis, focus on these areas for maximum ROI:
+
+1. **${priorityAreas[0]?.category || 'Priority Area 1'}** (${priorityAreas[0]?.score || 0}% score)
+   - [Provide specific, actionable recommendation for this highest-impact area]
+
+2. **${priorityAreas[1]?.category || 'Priority Area 2'}** (${priorityAreas[1]?.score || 0}% score)  
+   - [Provide specific, actionable recommendation for this second-highest impact area]
+
+3. **${priorityAreas[2]?.category || 'Priority Area 3'}** (${priorityAreas[2]?.score || 0}% score)
+   - [Provide specific, actionable recommendation for this third-highest impact area]
+
+**Detailed Category Analysis**
 
 ${Object.keys(categoryBreakdown).map(category => {
   const score = Math.round(categoryBreakdown[category].score * 100);
   const template = getCategoryOpeningTemplate(category, score);
-  return `**${category} ${score}%**
+  return `**${category}: ${score}%**
 
 ${template.opening}
 
 *Focus Area: ${template.focus}*
 
-[Provide specific recommendations based on the responses]`;
+[Provide specific recommendations based on the responses for this category]`;
 }).join('\n\n')}
 
-**Next Steps**
-1. [Most critical priority]
-2. [Second priority] 
-3. [Third priority]
+**Next Steps Priority Action Plan**
+1. **Immediate Focus**: ${priorityAreas[0]?.category || 'Highest impact area'}
+2. **Secondary Priority**: ${priorityAreas[1]?.category || 'Second impact area'} 
+3. **Third Priority**: ${priorityAreas[2]?.category || 'Third impact area'}
 
 **Recommended Action Plan**
 - Immediate (0-3 months): [Urgent items]
@@ -482,20 +517,21 @@ function buildStructuredAssessmentData(assessment) {
   
   // Group responses by category
   assessment.responses.forEach(response => {
-    QUESTIONS_STRUCTURE.categories.forEach(category => {
-      const question = category.questions.find(q => q.id === response.questionId);
-      if (question) {
+    if (response.category !== undefined && response.question !== undefined) {
+      const category = QUESTIONS_STRUCTURE.categories[response.category];
+      if (category && category.questions[response.question]) {
+        const question = category.questions[response.question];
         if (!responsesByCategory[category.name]) {
           responsesByCategory[category.name] = [];
         }
         responsesByCategory[category.name].push({
-          id: response.questionId,
-          text: question.text || `Question ${response.questionId}`,
+          id: response.question,
+          text: question.text || `Question ${response.question + 1}`,
           answer: response.answer === true ? 'Yes' : response.answer === false ? 'No' : 'Don\'t Know',
           weight: question.weight
         });
       }
-    });
+    }
   });
 
   // Format for AI prompt
@@ -518,16 +554,16 @@ function calculateCategoryScores(responses) {
     return categoryBreakdown;
   }
 
-  QUESTIONS_STRUCTURE.categories.forEach(category => {
+  QUESTIONS_STRUCTURE.categories.forEach((category, categoryIndex) => {
     let categoryScore = 0;
     let totalPossibleScore = 0;
     let answeredQuestions = 0;
     let totalQuestions = category.questions.length;
     
-    category.questions.forEach(question => {
+    category.questions.forEach((question, questionIndex) => {
       totalPossibleScore += question.weight;
       
-      const response = responses.find(r => r.questionId === question.id);
+      const response = responses.find(r => r.category === categoryIndex && r.question === questionIndex);
       if (response) {
         answeredQuestions++;
         if (response.answer === true) {
