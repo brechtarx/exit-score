@@ -673,7 +673,7 @@ async function createPipedriveLead(assessment) {
 
   // Create or get organization using business category
   let orgId = null;
-  const orgName = assessment.company.includes('Company') ? assessment.company : `${assessment.industry || 'General'} Company`;
+  const orgName = assessment.company || `${assessment.industry || 'General'} Company`;
   console.log(`Creating organization for: ${orgName}`);
   
   const orgData = {
@@ -711,7 +711,10 @@ async function createPipedriveLead(assessment) {
       email: [{ value: assessment.email, primary: true }],
       phone: assessment.phone ? [{ value: assessment.phone, primary: true }] : [],
       org_id: orgId,
-      "892e0c4e70af0dc488b77cba0e0b1f8b9c1b9e8f": "Score App" // Source channel field
+      // Try multiple possible source field approaches
+      "892e0c4e70af0dc488b77cba0e0b1f8b9c1b9e8f": "Score App", // Custom field ID for source
+      "source": "Score App", // Try generic source field
+      "label": "Score App Lead" // Try label field
     };
     
     // Remove undefined phone field if no phone provided
@@ -840,6 +843,19 @@ Submitted: ${new Date().toLocaleDateString()}`,
       console.log(`Created follow-up task: ${taskResult.data.id}`);
       taskCreated = true;
     }
+  }
+
+  console.log('Pipedrive integration completed successfully');
+  console.log('Final IDs:', { contactId, orgId, dealId });
+  
+  if (!contactId) {
+    console.error('WARNING: No contact ID - person creation may have failed');
+  }
+  if (!orgId) {
+    console.error('WARNING: No organization ID - organization creation may have failed');  
+  }
+  if (!dealId) {
+    console.error('WARNING: No deal ID - deal creation may have failed');
   }
 
   return { contactId, orgId, dealId, taskCreated: !!userId };
