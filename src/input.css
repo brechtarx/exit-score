@@ -7,19 +7,9 @@
     @apply bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 text-white font-bold py-2 px-4 rounded-lg transition-all;
 }
 
-/* Fix focus states for form elements */
+/* Focus states for form elements */
 input:focus, select:focus, textarea:focus {
-    @apply ring-2 ring-green-500 ring-offset-2 border-green-500 outline-none !important;
-}
-
-/* Fix focus states for regular buttons */
-button:focus:not(.answer-btn):not(.revenue-btn):not(.employee-btn) {
-    @apply ring-2 ring-green-500 ring-offset-2 border-green-500 outline-none !important;
-}
-
-/* Fix focus states for answer buttons (Y/N/NA) - don't override border colors */
-.answer-btn:focus, .revenue-btn:focus, .employee-btn:focus {
-    @apply ring-2 ring-green-500 ring-offset-2 outline-none !important;
+    @apply ring-2 ring-green-500 ring-offset-2 border-green-500 outline-none;
 }
 
 /* Mobile container padding fixes */
