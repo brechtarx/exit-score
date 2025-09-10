@@ -266,18 +266,22 @@ exports.handler = async (event, context) => {
     }
 
     // Create Pipedrive lead
-    let pipediveSuccess = false;
-    let pipediveError = null;
-    let pipediveIds = { contactId: null, orgId: null, dealId: null };
+    let pipedriveSuccess = false;
+    let pipedriveError = null;
+    let pipedriveIds = { contactId: null, orgId: null, dealId: null };
     
     try {
       console.log('Creating Pipedrive lead...');
-      pipediveIds = await createPipedriveLead(savedData[0]);
-      pipediveSuccess = true;
+      pipedriveIds = await createPipedriveLead(savedData[0]);
+      pipedriveSuccess = true;
       console.log('Pipedrive lead created successfully');
+      console.log('Pipedrive IDs:', pipedriveIds);
     } catch (error) {
-      pipediveError = error;
+      pipedriveError = error;
       console.error('Pipedrive lead creation failed:', error.message);
+      console.error('Full error:', error);
+      // Ensure we have default values even on failure
+      pipedriveIds = { contactId: null, orgId: null, dealId: null };
     }
 
     // Update processed status and save report
@@ -291,11 +295,11 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({
         processed: true,
         gmail_draft_created: gmailSuccess,
-        pipedrive_created: pipediveSuccess,
+        pipedrive_created: pipedriveSuccess,
         report_text: reportGenerated ? aiReport : null,
-        pipedrive_person_id: pipediveIds.contactId,
-        pipedrive_org_id: pipediveIds.orgId,
-        pipedrive_deal_id: pipediveIds.dealId
+        pipedrive_person_id: pipedriveIds.contactId,
+        pipedrive_org_id: pipedriveIds.orgId,
+        pipedrive_deal_id: pipedriveIds.dealId
       })
     });
     
@@ -316,7 +320,7 @@ exports.handler = async (event, context) => {
         id: savedData[0].id,
         reportGenerated: reportGenerated,
         gmailSuccess: gmailSuccess,
-        pipediveSuccess: pipediveSuccess,
+        pipedriveSuccess: pipedriveSuccess,
         score: savedData[0].score,
         aiError: aiError ? aiError.message : null,
         gmailError: gmailError ? gmailError.message : null,
@@ -702,22 +706,36 @@ async function createPipedriveLead(assessment) {
   // Create contact if not exists
   if (!contactId) {
     console.log('Creating contact...');
+    const contactData = {
+      name: assessment.name,
+      email: [{ value: assessment.email, primary: true }],
+      phone: assessment.phone ? [{ value: assessment.phone, primary: true }] : [],
+      org_id: orgId,
+      "892e0c4e70af0dc488b77cba0e0b1f8b9c1b9e8f": "Score App" // Source channel field
+    };
+    
+    // Remove undefined phone field if no phone provided
+    if (!assessment.phone) {
+      delete contactData.phone;
+    }
+    
+    console.log('Contact creation data:', JSON.stringify(contactData, null, 2));
+    
     const contactResponse = await fetch(`${BASE_URL}/persons?api_token=${PIPEDRIVE_API_TOKEN}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: assessment.name,
-        email: [{ value: assessment.email, primary: true }],
-        phone: assessment.phone ? [{ value: assessment.phone, primary: true }] : undefined,
-        org_id: orgId,
-        "892e0c4e70af0dc488b77cba0e0b1f8b9c1b9e8f": "Score App" // Source channel field
-      })
+      body: JSON.stringify(contactData)
     });
     
     const contactResult = await contactResponse.json();
+    console.log('Contact creation response:', contactResult);
+    
     if (contactResult.success) {
       contactId = contactResult.data.id;
       console.log(`Created contact: ${contactId}`);
+    } else {
+      console.error('Failed to create contact:', contactResult);
+      throw new Error(`Pipedrive contact creation failed: ${contactResult.error || 'Unknown error'}`);
     }
   }
 
@@ -738,26 +756,35 @@ async function createPipedriveLead(assessment) {
   // Create deal
   console.log('Creating deal...');
   const dealTitle = `${assessment.industry || 'General'} - Evaluation`;
+  const dealData = {
+    title: dealTitle,
+    person_id: contactId,
+    org_id: orgId,
+    pipeline_id: pipelineId,
+    stage_id: stageId,
+    status: 'open',
+    value: assessment.revenue_numeric ? assessment.revenue_numeric * 0.1 : null, // Estimate 10% of revenue as deal value
+    currency: 'USD'
+  };
+  
+  console.log('Deal creation data:', JSON.stringify(dealData, null, 2));
+  
   const dealResponse = await fetch(`${BASE_URL}/deals?api_token=${PIPEDRIVE_API_TOKEN}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      title: dealTitle,
-      person_id: contactId,
-      org_id: orgId,
-      pipeline_id: pipelineId,
-      stage_id: stageId,
-      status: 'open',
-      value: assessment.revenue_numeric ? assessment.revenue_numeric * 0.1 : null, // Estimate 10% of revenue as deal value
-      currency: 'USD'
-    })
+    body: JSON.stringify(dealData)
   });
   
   const dealResult = await dealResponse.json();
+  console.log('Deal creation response:', dealResult);
+  
   let dealId = null;
   if (dealResult.success) {
     dealId = dealResult.data.id;
     console.log(`Created deal: ${dealId}`);
+  } else {
+    console.error('Failed to create deal:', dealResult);
+    throw new Error(`Pipedrive deal creation failed: ${dealResult.error || 'Unknown error'}`);
   }
 
   // Get user information for task assignment
