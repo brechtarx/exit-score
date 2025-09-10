@@ -9,7 +9,7 @@
 
 /* Fix focus states for form elements */
 input:focus, select:focus, textarea:focus, button:focus {
-    @apply ring-2 ring-green-500 ring-offset-2 border-green-500 outline-none;
+    @apply ring-2 ring-green-500 ring-offset-2 border-green-500 outline-none !important;
 }
 
 /* Mobile container padding fixes */
