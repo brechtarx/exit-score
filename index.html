@@ -34,23 +34,7 @@
     <link rel="apple-touch-icon" href="/arx_favicon.png">
     
     <title>Exit Score - Know Your Business Sale Readiness in 3 Minutes | ARX Business Brokers</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        // Configure Tailwind and suppress production warnings
-        tailwind.config = {
-            // Suppress CDN production warnings
-        }
-        // Suppress console warnings for Tailwind CDN
-        if (typeof console !== 'undefined' && console.warn) {
-            const originalWarn = console.warn;
-            console.warn = function(...args) {
-                if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com')) {
-                    return; // Suppress Tailwind CDN warnings
-                }
-                originalWarn.apply(console, args);
-            };
-        }
-    </script>
+    <link rel="stylesheet" href="/assets/css/tailwind.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     
     <!-- Structured Data for SEO -->

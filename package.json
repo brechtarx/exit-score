@@ -4,10 +4,38 @@
   "description": "Business Sales Readiness Assessment Tool",
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0",
-    "node-fetch": "^3.3.2",
-    "googleapis": "^144.0.0"
+    "googleapis": "^144.0.0",
+    "node-fetch": "^3.3.2"
   },
   "engines": {
     "node": ">=18.0.0"
-  }
+  },
+  "main": "extract-categories.js",
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.10",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17"
+  },
+  "scripts": {
+    "build:css": "tailwindcss -i ./src/input.css -o ./assets/css/tailwind.css --minify",
+    "watch:css": "tailwindcss -i ./src/input.css -o ./assets/css/tailwind.css --watch",
+    "build": "npm run build:css",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brechtarx/exit-score.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/brechtarx/exit-score/issues"
+  },
+  "homepage": "https://github.com/brechtarx/exit-score#readme"
 }

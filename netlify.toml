@@ -1,6 +1,6 @@
 [build]
   functions = "netlify/functions"
-  command = ""
+  command = "npm run build"
   publish = "."
 
 [[headers]]
@@ -11,7 +11,7 @@
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.anthropic.com https://*.netlify.app https://www.google-analytics.com https://www.google.com; frame-src https://www.google.com https://recaptcha.google.com;"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.anthropic.com https://*.netlify.app https://www.google-analytics.com https://www.google.com; frame-src https://www.google.com https://recaptcha.google.com;"
 
 [functions]
   node_bundler = "esbuild"
