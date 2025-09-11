@@ -398,14 +398,16 @@ totalScore = Σ(categoryWeight × categoryScore)
 
 ### Environment Variables Required
 ```
-SUPABASE_URL=https://qbctmoqhpytlzjoxzpvq.supabase.co
+SUPABASE_URL=[your supabase project url]
 SUPABASE_SERVICE_KEY=[service_role key]
 CLAUDE_API_KEY=[Anthropic API key]
-PIPEDRIVE_KEY=[REDACTED_PIPEDRIVE_KEY]
+PIPEDRIVE_KEY=[Pipedrive API key]
 GOOGLE_SERVICE_ACCOUNT_KEY=[JSON service account]
 GMAIL_USER_EMAIL=[Gmail account for drafts]
 RECAPTCHA_SECRET_KEY=[Google reCAPTCHA secret]
 ```
+
+Note: Do not commit real secret values to the repository. Store them only in Netlify environment variables.
 
 ## Security Implementation
 
