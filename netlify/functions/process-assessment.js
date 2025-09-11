@@ -86,6 +86,7 @@ try {
             }
         ]
     };
+    }
 }
 
 exports.handler = async (event, context) => {
