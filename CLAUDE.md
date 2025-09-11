@@ -193,3 +193,280 @@ You are building a web-based Business Sales Readiness Score (BSRS) assessment to
 - **Competition**: Research other business broker assessment tools
 - **Industry**: M&A transaction process knowledge essential
 - **User Experience**: Business owner perspective and language
+
+---
+
+# Current Implementation Architecture
+
+## Actual File Structure
+
+```
+/
+├── index.html                              # Single-page assessment application
+├── questions.json                          # Assessment questions and weights
+├── package.json                            # Node.js dependencies
+├── tailwind.config.js                      # Tailwind CSS configuration
+├── postcss.config.js                       # PostCSS configuration
+├── netlify/functions/                      # Serverless backend functions
+│   ├── process-assessment.js               # Main assessment processing
+│   ├── update-assessment.js                # Assessment update handler
+│   ├── process-assessment-debug.js         # Debug version with logging
+│   ├── process-assessment-simple.js        # Simplified version
+│   ├── process-assessment-http.js          # HTTP method version
+│   └── get-pipedrive-fields.js            # Pipedrive field discovery
+├── assets/css/
+│   └── tailwind.css                        # Compiled Tailwind CSS
+├── src/
+│   └── input.css                           # Source CSS for Tailwind
+└── data/
+    └── questions.json                      # Backup questions file
+```
+
+## Frontend Architecture
+
+### Single Page Application (SPA)
+- **Main File**: `index.html` (~31k tokens, extensive inline JavaScript)
+- **Framework**: Vanilla JavaScript with embedded assessment logic
+- **Styling**: Tailwind CSS for responsive design
+- **No external JavaScript files** - all logic is embedded in HTML
+
+### Assessment Flow
+1. **Landing Section**: Hero, value proposition, start button
+2. **Question Flow**: 26 questions across 6 categories with progress tracking
+3. **Lead Capture**: Name/email collection before results
+4. **Company Details**: Additional business information
+5. **Results Display**: Score calculation and report generation
+
+### JavaScript Architecture (Inline)
+```javascript
+// Core data structure loaded from categories array
+let categories = [...] // 6 categories with weighted questions
+
+// State management
+let currentCategory = 0;
+let currentQuestion = 0;
+let answers = [];
+let userInfo = {};
+
+// Key functions:
+- showNextQuestion() // Question navigation
+- calculateScore() // Weighted scoring algorithm
+- submitAssessment() // API submission
+- updateProgress() // UI updates
+```
+
+## Backend Architecture (Netlify Functions)
+
+### Primary Function: `process-assessment.js`
+**Purpose**: Main assessment processing endpoint
+
+**Flow**:
+1. **Validation**: Email format, required fields, rate limiting
+2. **reCAPTCHA**: Google reCAPTCHA v3 verification (score > 0.5)
+3. **Database**: Save to Supabase `assessments` table
+4. **AI Report**: Claude API integration for personalized reports
+5. **Email**: Gmail API for draft creation (domain delegation)
+6. **CRM**: Pipedrive integration (contacts, organizations, deals, tasks)
+7. **Response**: JSON with processing status and results
+
+**Dependencies**:
+- `googleapis`: Gmail API integration
+- Node.js fetch: HTTP requests
+- Environment variables for API keys
+
+### Secondary Function: `update-assessment.js`
+**Purpose**: Update assessments with additional company details
+
+**Flow**:
+1. Update Supabase record with company/phone/website
+2. Update corresponding Pipedrive records
+3. Return success status
+
+## Data Architecture
+
+### Questions Structure (questions.json)
+```json
+{
+  "categories": [
+    {
+      "name": "Risk of Change of Ownership",
+      "weight": 0.3,
+      "questions": [
+        {
+          "id": 1,
+          "text": "Question text...",
+          "weight": 0.35,
+          "yesText": "Positive indicator",
+          "noText": "Risk factor"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Assessment Categories & Weights
+1. **Risk of Change of Ownership** (30%) - 5 questions
+2. **Company Growth** (20%) - 3 questions  
+3. **Industry Growth** (15%) - 2 questions
+4. **Market Demand** (15%) - 6 questions
+5. **Company Rating** (10%) - 6 questions
+6. **Competitiveness** (10%) - 4 questions
+
+**Total**: 26 questions (not 37 as originally planned)
+
+### Scoring Algorithm
+```javascript
+// Weighted scoring system
+- Yes answer = full weight points
+- Don't Know = 15% of weight points  
+- No answer = 0 points
+
+// Final score calculation
+totalScore = Σ(categoryWeight × categoryScore)
+```
+
+## Database Schema (Supabase)
+
+### Table: `assessments`
+```sql
+- id (primary key)
+- created_at (timestamp)
+- name (text)
+- email (text) 
+- company (text)
+- phone (text, nullable)
+- industry (text, nullable)
+- website (text, nullable) 
+- zipcode (text, nullable)
+- revenue (text, nullable)
+- revenue_numeric (integer, nullable)
+- employees (text, nullable)
+- employees_numeric (integer, nullable)
+- score (integer)
+- responses (jsonb) // Array of answer objects
+- time_spent (integer) // Seconds
+- user_agent (text, nullable)
+- referrer (text, nullable)
+- processed (boolean, default false)
+- gmail_draft_created (boolean, default false)
+- pipedrive_created (boolean, default false)
+- form_step_completed (integer, default 1)
+- report_text (text, nullable) // AI-generated report
+- pipedrive_person_id (integer, nullable)
+- pipedrive_org_id (integer, nullable)  
+- pipedrive_deal_id (integer, nullable)
+```
+
+## API Integrations
+
+### Claude API Integration
+- **Model**: `claude-3-5-haiku-20241022` (optimized for cost)
+- **Purpose**: Generate personalized business sale readiness reports
+- **Prompt Engineering**: Structured assessment data → actionable insights
+- **Error Handling**: Graceful degradation if AI fails
+
+### Pipedrive CRM Integration  
+- **API Token**: Environment variable `PIPEDRIVE_KEY`
+- **Workflow**:
+  1. Search for existing person by email
+  2. Create organization with custom fields:
+     - Industry: `f04aa9605fd3eff31231301ee12f6d59491d0c7d`
+     - Employee Count: `employee_count` (recently updated)
+     - Revenue: `b9b1382d70ff58d426d35c631153b7d6d0d2c809`
+  3. Create person (contact) linked to organization
+  4. Create deal in "Projects" pipeline
+  5. Create follow-up task with assessment details
+
+### Gmail API Integration
+- **Service Account**: Domain delegation for automated email drafts
+- **Purpose**: Create personalized report email drafts
+- **HTML Template**: Styled email with full AI report content
+
+### Google reCAPTCHA v3
+- **Site Key**: `6LdrH68rAAAAADuJOKxj-FLpKB8fUNFX-I6mYeAA`
+- **Threshold**: Score > 0.5 required for submission
+- **Integration**: Client-side token generation + server-side verification
+
+## Deployment Architecture
+
+### Hosting: Netlify
+- **Domain**: `exit-score.netlify.app`
+- **Continuous Deployment**: GitHub integration
+- **Functions**: Serverless backend on Netlify Functions
+- **Environment Variables**: Secure API key storage
+
+### Environment Variables Required
+```
+SUPABASE_URL=https://qbctmoqhpytlzjoxzpvq.supabase.co
+SUPABASE_SERVICE_KEY=[service_role key]
+CLAUDE_API_KEY=[Anthropic API key]
+PIPEDRIVE_KEY=[REDACTED_PIPEDRIVE_KEY]
+GOOGLE_SERVICE_ACCOUNT_KEY=[JSON service account]
+GMAIL_USER_EMAIL=[Gmail account for drafts]
+RECAPTCHA_SECRET_KEY=[Google reCAPTCHA secret]
+```
+
+## Security Implementation
+
+### Input Validation
+- Email regex validation
+- Required field enforcement  
+- Rate limiting (minimum 30 seconds assessment time)
+- Honeypot field for bot detection
+
+### Data Protection
+- HTTPS enforcement via Netlify
+- Environment variable security
+- Supabase RLS (Row Level Security)
+- No client-side API key exposure
+
+## Performance Optimizations
+
+### Frontend
+- Single HTML file reduces HTTP requests
+- Tailwind CSS purging for minimal bundle size
+- Lazy loading for images
+- Progressive enhancement for JavaScript
+
+### Backend  
+- Serverless functions for scalability
+- Efficient database queries
+- Error handling with graceful degradation
+- Async API calls where possible
+
+## Development Workflow
+
+### Build Process
+```bash
+npm run build:css    # Compile Tailwind CSS
+npm run watch:css    # Development CSS watching  
+```
+
+### Testing Utilities
+- `scoring-system-test.html`: Test scoring calculations
+- `test-claude.js`: Test Claude API integration
+- Multiple function versions for debugging
+
+## Current Status & Next Steps
+
+### Working Features ✅
+- Complete 26-question assessment flow
+- Weighted scoring algorithm
+- Supabase data persistence  
+- AI report generation via Claude API
+- Pipedrive CRM integration
+- Gmail draft creation
+- reCAPTCHA security
+- Responsive design
+
+### Recent Updates
+- Employee count field updated to use `employee_count` key in Pipedrive
+- Enhanced error handling and logging
+- Improved assessment validation
+
+### Development Considerations
+- All assessment logic is in single HTML file (consider modularization for maintainability)
+- Questions hardcoded in both HTML and JSON (sync required for changes)
+- Multiple function versions exist (consolidation opportunity)
+- No automated testing suite (manual testing required)

@@ -108,8 +108,8 @@ exports.handler = async (event, context) => {
     }
     
     // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(assessment.email)) {
+    const { validateEmail, verifyRecaptcha } = require('./lib/validation');
+    if (!validateEmail(assessment.email)) {
       return {
         statusCode: 400,
         headers: { 'Content-Type': 'application/json' },
@@ -136,16 +136,8 @@ exports.handler = async (event, context) => {
     }
     
     // Verify reCAPTCHA with Google
-    const recaptchaVerifyResponse = await fetch('https://www.google.com/recaptcha/api/siteverify', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: `secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${assessment.recaptcha_token}`
-    });
-    
-    const recaptchaResult = await recaptchaVerifyResponse.json();
-    if (!recaptchaResult.success || recaptchaResult.score < 0.5) {
+    const recaptchaResult = await verifyRecaptcha(assessment.recaptcha_token);
+    if (!recaptchaResult.ok) {
       return {
         statusCode: 400,
         headers: { 'Content-Type': 'application/json' },
@@ -225,7 +217,8 @@ exports.handler = async (event, context) => {
       });
       
       const startTime = Date.now();
-      aiReport = await generateAIReport(savedData[0]);
+      const { generateAIReport } = require('./lib/ai');
+      aiReport = await generateAIReport(savedData[0], QUESTIONS_STRUCTURE);
       const endTime = Date.now();
       
       reportGenerated = true;
@@ -399,7 +392,7 @@ Keep the tone professional yet approachable. Focus on actionable advice rather t
   console.log('Making Claude API request...');
   
   const requestBody = {
-    model: 'claude-3-5-haiku-20241022',
+    model: process.env.AI_MODEL || 'claude-3-5-sonnet-20241022',
     max_tokens: 4000,
     messages: [{
       role: 'user',
@@ -681,8 +674,10 @@ async function createPipedriveLead(assessment) {
     "address": assessment.zipcode,
     "website": assessment.website,
     "f04aa9605fd3eff31231301ee12f6d59491d0c7d": assessment.industry,
-    "2638446e6db380981c0693b3c05837308b7ed3c4": assessment.employees_numeric,
-    "b9b1382d70ff58d426d35c631153b7d6d0d2c809": assessment.revenue_numeric
+    "employee_count": assessment.employees_numeric,
+    "b9b1382d70ff58d426d35c631153b7d6d0d2c809": assessment.revenue_numeric,
+    "cd731d6cf78b3b67f7a492ff4dc6e62f1277caea": assessment.score,
+    "channel": "Score App"
   };
 
   console.log('Organization creation data:', JSON.stringify(orgData, null, 2));

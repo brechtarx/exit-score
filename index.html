@@ -11,14 +11,14 @@
     <meta name="keywords" content="business sale readiness, business valuation, sell my business, business broker, exit planning, business assessment, M&A advisory">
     <meta name="author" content="ARX Business Brokers">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://exit-score.netlify.app/">
+    <link rel="canonical" href="https://score.arxbrokers.com/">
     
     <!-- Open Graph Meta Tags for Social Sharing -->
     <meta property="og:title" content="Get Your Business Sale Readiness Score in 3 Minutes">
     <meta property="og:description" content="Free AI-powered assessment that analyzes your business across 6 key categories to determine sale readiness. Get personalized recommendations from M&A experts.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://exit-score.netlify.app/">
-    <meta property="og:image" content="https://exit-score.netlify.app/arx_website_blueblack.webp">
+    <meta property="og:url" content="https://score.arxbrokers.com/">
+    <meta property="og:image" content="https://score.arxbrokers.com/arx_website_blueblack.webp">
     <meta property="og:site_name" content="ARX Business Brokers">
     <meta property="og:locale" content="en_US">
     
@@ -26,7 +26,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Get Your Business Sale Readiness Score in 3 Minutes">
     <meta name="twitter:description" content="Free AI-powered assessment that analyzes your business across 6 key categories to determine sale readiness.">
-    <meta name="twitter:image" content="https://exit-score.netlify.app/arx_website_blueblack.webp">
+    <meta name="twitter:image" content="https://score.arxbrokers.com/arx_website_blueblack.webp">
     
     <!-- Favicons -->
     <link rel="icon" type="image/png" href="/arx_favicon.png">
@@ -44,7 +44,7 @@
         "@type": "Organization",
         "name": "ARX Business Brokers",
         "url": "https://arxbrokers.com",
-        "logo": "https://exit-score.netlify.app/arx_website_blueblack.webp",
+        "logo": "https://score.arxbrokers.com/arx_website_blueblack.webp",
         "sameAs": [
             "https://www.linkedin.com/company/arxbusinessbrokers"
         ]
@@ -56,7 +56,7 @@
         "@type": "WebApplication",
         "name": "Business Sale Readiness Assessment",
         "description": "Free AI-powered assessment that analyzes your business across 6 key categories to determine sale readiness",
-        "url": "https://exit-score.netlify.app/",
+        "url": "https://score.arxbrokers.com/",
         "applicationCategory": "BusinessApplication",
         "operatingSystem": "Web Browser",
         "offers": {
@@ -74,20 +74,20 @@
     <!-- Google reCAPTCHA v3 -->
     <script src="https://www.google.com/recaptcha/api.js?render=6LdrH68rAAAAADuJOKxj-FLpKB8fUNFX-I6mYeAA" async defer></script>
     
-    <!-- Google Analytics 4 -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-23SV7KW5WM"></script>
+    <!-- Google Tag Manager -->
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-23SV7KW5WM', {
-            // Enhanced ecommerce and cross-domain tracking
-            'custom_map': {
-                'custom_parameter_1': 'assessment_score',
-                'custom_parameter_2': 'industry'
-            }
-        });
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-WVNR86SP');
     </script>
+    <!-- End Google Tag Manager -->
+
+    <!-- Modular JS -->
+    <script src="/assets/js/analytics.js"></script>
+    <script src="/assets/js/questions.js"></script>
+    <script src="/assets/js/pdf.js"></script>
     
     <!-- Facebook Pixel disabled until proper ID is configured -->
     <!--
@@ -272,6 +272,9 @@
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen" tabindex="-1">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WVNR86SP" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
     <!-- Header -->
     <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div class="container max-w-6xl mx-auto px-4">
@@ -694,6 +697,9 @@
                     <a href="#" onclick="showDetailedReport(); return false;" class="inline-block text-hyperlink-blue hover:text-blue-700 font-semibold underline">
                         Start your personalized consultation today
                     </a>
+                    <div class="mt-6">
+                        <button onclick="downloadPdf()" class="py-3 px-5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">Download PDF</button>
+                    </div>
                 </div>
                 
                 <p class="text-sm text-gray-500 mt-6 text-center">
@@ -1081,22 +1087,17 @@
             }
         ];
 
-        // Load questions from JSON
+        // Load questions from JSON via external module
         async function loadQuestions() {
             try {
-                const response = await fetch('/questions.json');
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                categories = data.categories;
+                const loaded = await (window.fetchQuestions ? window.fetchQuestions() : Promise.reject(new Error('questions module missing')));
+                categories = loaded;
                 totalQuestions = categories.reduce((sum, cat) => sum + cat.questions.length, 0);
                 console.log(`✅ Loaded ${totalQuestions} questions from JSON successfully`);
                 return true;
             } catch (error) {
                 console.error('❌ Failed to load questions from JSON:', error);
                 console.log('📂 Using fallback hardcoded questions');
-                // Keep existing hardcoded data as fallback
                 totalQuestions = categories.reduce((sum, cat) => sum + cat.questions.length, 0);
                 return false;
             }
@@ -1113,18 +1114,7 @@
         let assessmentStartTime = null;
         let businessInfo = {};
 
-        // Safe analytics tracking
-        function trackEvent(eventName, parameters) {
-            if (typeof gtag !== 'undefined') {
-                gtag('event', eventName, parameters);
-            }
-        }
-        
-        function trackFBEvent(eventName, parameters) {
-            if (typeof fbq !== 'undefined') {
-                fbq('track', eventName, parameters);
-            }
-        }
+        // Analytics are provided by assets/js/analytics.js (trackEvent, trackFBEvent)
 
         // Initialize
         document.addEventListener('DOMContentLoaded', async function() {
@@ -1405,6 +1395,13 @@
             }
             container.appendChild(questionDiv);
             
+            // Track question view
+            trackEvent('question_view', {
+                question_number: currentQuestionNumber,
+                category: category.name,
+                question_id: question.id
+            });
+
             // Update progress
             updateProgress();
             
