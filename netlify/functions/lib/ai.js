@@ -2,32 +2,59 @@
 
 async function generateAIReport(assessment, QUESTIONS_STRUCTURE) {
   const prompt = buildPrompt(assessment, QUESTIONS_STRUCTURE);
-  const requestBody = {
-    model: process.env.AI_MODEL || 'claude-3-5-sonnet-20241022',
-    max_tokens: 4000,
-    messages: [{ role: 'user', content: prompt }]
-  };
+  const preferred = process.env.AI_MODEL || 'claude-3-5-sonnet-20241022';
+  const fallbacks = [
+    'claude-3-5-sonnet-20240620',
+    'claude-3-5-haiku-20241022',
+    'claude-3-opus-20240229'
+  ];
+  const tried = [];
 
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': process.env.CLAUDE_API_KEY,
-      'anthropic-version': '2023-06-01'
-    },
-    body: JSON.stringify(requestBody)
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Claude API error: ${response.status} - ${errorText}`);
+  async function callModel(model) {
+    const body = {
+      model,
+      max_tokens: 4000,
+      messages: [{ role: 'user', content: prompt }]
+    };
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': process.env.CLAUDE_API_KEY,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify(body)
+    });
+    return res;
   }
 
-  const data = await response.json();
-  if (!data.content || !data.content[0] || !data.content[0].text) {
-    throw new Error('Invalid response format from Claude API');
+  // Try preferred then fallbacks on 404/not_found_error
+  const sequence = [preferred, ...fallbacks.filter(m => m !== preferred)];
+  let lastErrorText = '';
+  for (const model of sequence) {
+    try {
+      tried.push(model);
+      const response = await callModel(model);
+      if (!response.ok) {
+        const text = await response.text();
+        lastErrorText = text;
+        // If model not found, try next
+        if (response.status === 404 || (text && text.includes('not_found_error'))) {
+          continue;
+        }
+        throw new Error(`Claude API error: ${response.status} - ${text}`);
+      }
+      const data = await response.json();
+      if (!data.content || !data.content[0] || !data.content[0].text) {
+        throw new Error('Invalid response format from Claude API');
+      }
+      return data.content[0].text;
+    } catch (e) {
+      lastErrorText = (e && e.message) || String(e);
+      // try next
+    }
   }
-  return data.content[0].text;
+  throw new Error(`All Claude model attempts failed. Tried: ${tried.join(', ')}. Last error: ${lastErrorText}`);
 }
 
 function buildPrompt(assessment, QUESTIONS_STRUCTURE) {
@@ -161,4 +188,3 @@ function calculateCategoryScores(responses, QUESTIONS_STRUCTURE) {
 }
 
 module.exports = { generateAIReport };
-

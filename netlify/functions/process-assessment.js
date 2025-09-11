@@ -6,15 +6,21 @@ const path = require('path');
 // Load questions from JSON file
 let QUESTIONS_STRUCTURE = null;
 try {
-    const questionsPath = path.join(process.cwd(), 'questions.json');
-    const questionsData = fs.readFileSync(questionsPath, 'utf8');
-    QUESTIONS_STRUCTURE = JSON.parse(questionsData);
-    console.log('✅ Backend loaded questions from JSON successfully');
-} catch (error) {
-    console.error('❌ Backend failed to load questions from JSON:', error);
-    console.log('📂 Backend using fallback hardcoded structure');
-    // Fallback structure
-    QUESTIONS_STRUCTURE = {
+    // Prefer bundler-friendly JSON import so file is included in the function bundle
+    // Path from this file (netlify/functions/...) to project root questions.json
+    QUESTIONS_STRUCTURE = require('../../questions.json');
+    console.log('✅ Backend loaded questions from JSON via require successfully');
+} catch (e1) {
+    try {
+        const questionsPath = path.join(__dirname, '../../questions.json');
+        const questionsData = fs.readFileSync(questionsPath, 'utf8');
+        QUESTIONS_STRUCTURE = JSON.parse(questionsData);
+        console.log('✅ Backend loaded questions from JSON via fs successfully');
+    } catch (error) {
+        console.error('❌ Backend failed to load questions from JSON:', error);
+        console.log('📂 Backend using fallback hardcoded structure');
+        // Fallback structure
+        QUESTIONS_STRUCTURE = {
         "categories": [
             {
                 "name": "Risk of Change of Ownership",
@@ -676,8 +682,9 @@ async function createPipedriveLead(assessment) {
     "f04aa9605fd3eff31231301ee12f6d59491d0c7d": assessment.industry,
     "employee_count": assessment.employees_numeric,
     "b9b1382d70ff58d426d35c631153b7d6d0d2c809": assessment.revenue_numeric,
-    "cd731d6cf78b3b67f7a492ff4dc6e62f1277caea": assessment.score,
-    "channel": "Score App"
+    // Remove invalid/legacy fields that caused 400 errors
+    // "cd731d6cf78b3b67f7a492ff4dc6e62f1277caea": assessment.score,
+    // "channel": "Score App"
   };
 
   console.log('Organization creation data:', JSON.stringify(orgData, null, 2));
