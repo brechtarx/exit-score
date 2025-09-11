@@ -1,0 +1,13 @@
+# Exclude internal docs and test utilities from publish/deploy
+CLAUDE.md
+CLAUDE.local.md
+PROJECT_SUMMARY.md
+questions-analysis.csv
+improved_exit_score_questions.csv
+social-image-generator.html
+scoring-system-test.html
+test-claude.js
+test-key-direct.js
+extract-categories.js
+test/
+
