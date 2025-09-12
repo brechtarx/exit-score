@@ -17,11 +17,7 @@
 [functions]
   node_bundler = "esbuild"
 
-[functions."generate-pdf"]
-  # Increase resources for headless Chromium
-  timeout = 26
-  memory = 1536
-  external_node_modules = ["@sparticuz/chromium", "puppeteer-core"]
+  
 
 [[redirects]]
   from = "/api/*"

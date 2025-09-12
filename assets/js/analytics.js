@@ -1,25 +1,31 @@
-// Analytics adapter for GTM (and GA fallback)
+// Analytics adapter for direct GA4 + optional Meta/LinkedIn
 (function() {
-  var GTM_ID = 'GTM-WVNR86SP';
-
-  // Initialize dataLayer
-  window.dataLayer = window.dataLayer || [];
-
-  // GTM container is loaded in index.html head; this module provides helpers
-
-  // Safe event tracker
+  // GA4 event
   window.trackEvent = function(eventName, params) {
     try {
-      window.dataLayer.push(Object.assign({ event: eventName }, params || {}));
-    } catch (e) {
-      // no-op
-    }
+      if (typeof gtag === 'function') {
+        gtag('event', eventName, params || {});
+      }
+    } catch (e) { /* no-op */ }
   };
 
-  // Placeholder for future Meta/LinkedIn integration
+  // Meta Pixel custom/standard events
   window.trackFBEvent = function(eventName, params) {
-    if (typeof fbq === 'function') {
-      try { fbq('track', eventName, params || {}); } catch (e) {}
-    }
+    try {
+      if (typeof fbq === 'function') {
+        // Use standard events where appropriate, else trackCustom
+        var standard = ['PageView','Lead','Contact','CompleteRegistration','Purchase','AddToCart'];
+        if (standard.indexOf(eventName) !== -1) {
+          fbq('track', eventName, params || {});
+        } else {
+          fbq('trackCustom', eventName, params || {});
+        }
+      }
+    } catch (e) { /* no-op */ }
+  };
+
+  // LinkedIn: requires conversion ids; this is a no-op wrapper unless you supply one
+  window.trackLinkedInEvent = function(conversionId) {
+    try { if (typeof lintrk === 'function' && conversionId) lintrk('track', { conversion_id: conversionId }); } catch (e) {}
   };
 })();
