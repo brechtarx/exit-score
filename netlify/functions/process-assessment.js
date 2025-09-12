@@ -763,6 +763,7 @@ async function createPipedriveLead(assessment) {
   // Create deal
   console.log('Creating deal...');
   const dealTitle = `${assessment.industry || 'General'} - Evaluation`;
+  const resultsLink = `https://score.arxbrokers.com/results/${assessment.id || ''}`;
   const dealData = {
     title: dealTitle,
     person_id: contactId,

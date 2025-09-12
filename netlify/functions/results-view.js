@@ -11,7 +11,9 @@ try {
 }
 
 exports.handler = async (event) => {
-  const id = (event.queryStringParameters && (event.queryStringParameters.id || event.queryStringParameters.assessment_id)) || '';
+  let id = (event.queryStringParameters && (event.queryStringParameters.id || event.queryStringParameters.assessment_id)) || '';
+  // Allow incoming ":abc" style (human pasted route template) by stripping a leading colon
+  id = id.replace(/^:/, '');
   if (!id) {
     return resp(400, 'Missing id');
   }
@@ -135,4 +137,3 @@ function renderQuestionsForCategory(catName, responses) {
 }
 
 function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c])); }
-
