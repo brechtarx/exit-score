@@ -21,21 +21,34 @@ exports.handler = async (event) => {
     // Allow environment overrides
     const envLogo = process.env.PDF_LOGO_URL;
     const envLetter = process.env.PDF_LETTERHEAD_URL;
+    // Resolve assets: prefer env vars; ensure they are reachable, otherwise fall back
+    async function resolveAsset(url, fallback) {
+      if (!url) return fallback;
+      try {
+        const resp = await fetch(url, { method: 'HEAD' });
+        if (resp.ok) return url;
+      } catch (_) {}
+      return fallback;
+    }
+
+    const finalLogo = await resolveAsset(logoUrl || envLogo, 'https://score.arxbrokers.com/arx_website_blueblack.webp');
+    const finalLetter = await resolveAsset(letterheadUrl || envLetter, null);
+
     const html = buildHtml({
       score, name, email, company, industry, breakdown,
-      logoUrl: logoUrl || envLogo,
-      letterheadUrl: letterheadUrl || envLetter
+      logoUrl: finalLogo,
+      letterheadUrl: finalLetter
     });
 
     const executablePath = await chromium.executablePath();
     const browser = await puppeteer.launch({
-      args: chromium.args,
+      args: [...chromium.args, '--no-sandbox', '--disable-setuid-sandbox'],
       defaultViewport: chromium.defaultViewport,
       executablePath,
       headless: chromium.headless,
     });
     const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'networkidle0' });
+    await page.setContent(html, { waitUntil: 'domcontentloaded' });
     const pdf = await page.pdf({
       printBackground: true,
       format: 'Letter',
@@ -61,7 +74,7 @@ function buildHtml({ score, name, email, company, industry, breakdown, logoUrl, 
   const primary = '#101620';
   const accent = '#416EA6';
   const light = '#F0F1F2';
-  const resolvedLogo = logoUrl || 'https://score.arxbrokers.com/images/logo.png';
+  const resolvedLogo = logoUrl || 'https://score.arxbrokers.com/images/arx_logo_Logo_basic_rich_black.png';
   const fallbackLogo = 'https://score.arxbrokers.com/arx_website_blueblack.webp';
 
   const rows = breakdown.map(b => `
