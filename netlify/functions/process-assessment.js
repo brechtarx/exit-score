@@ -771,6 +771,16 @@ async function createPipedriveLead(assessment) {
     currency: 'USD'
   };
   
+  // Add Deal "Source channel" custom field if configured
+  const DEAL_CHANNEL_FIELD_KEY = process.env.PIPEDRIVE_DEAL_CHANNEL_FIELD_KEY;
+  const DEAL_CHANNEL_FIELD_VALUE = process.env.PIPEDRIVE_DEAL_CHANNEL_VALUE || 'Score App';
+  if (DEAL_CHANNEL_FIELD_KEY) {
+    dealData[DEAL_CHANNEL_FIELD_KEY] = DEAL_CHANNEL_FIELD_VALUE;
+    console.log('Included deal channel field:', DEAL_CHANNEL_FIELD_KEY, '=', DEAL_CHANNEL_FIELD_VALUE);
+  } else {
+    console.log('PIPEDRIVE_DEAL_CHANNEL_FIELD_KEY not set; skipping deal channel field');
+  }
+  
   console.log('Deal creation data:', JSON.stringify(dealData, null, 2));
   
   const dealResponse = await fetch(`${BASE_URL}/deals?api_token=${PIPEDRIVE_API_TOKEN}`, {
