@@ -12,6 +12,14 @@ try {
 
 exports.handler = async (event) => {
   let id = (event.queryStringParameters && (event.queryStringParameters.id || event.queryStringParameters.assessment_id)) || '';
+  if (!id && event && event.rawUrl) {
+    try {
+      const u = new URL(event.rawUrl);
+      const parts = u.pathname.split('/').filter(Boolean);
+      const i = parts.indexOf('results');
+      if (i >= 0 && parts[i+1]) id = parts[i+1];
+    } catch(_) {}
+  }
   // Allow incoming ":abc" style (human pasted route template) by stripping a leading colon
   id = id.replace(/^:/, '');
   if (!id) {

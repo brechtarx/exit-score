@@ -28,3 +28,8 @@
   from = "/results/:id"
   to = "/.netlify/functions/results-view?id=:id"
   status = 200
+
+[[redirects]]
+  from = "/results/*"
+  to = "/.netlify/functions/results-view?id=:splat"
+  status = 200
