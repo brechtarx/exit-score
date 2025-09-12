@@ -27,8 +27,8 @@
 
       // Preferred brand assets (publicly accessible)
       const base = (window.location && window.location.origin) ? window.location.origin : 'https://score.arxbrokers.com';
-      const logoUrl = `${base}/images/arx_logo_Logo_basic_rich_black.png`;
-      const letterheadUrl = `${base}/images/Stationery_All_arx_letterhead.png`;
+      const logoUrl = `${base}/assets/images/arx_logo_Logo_basic_rich_black.png`;
+      const letterheadUrl = `${base}/assets/images/Stationery_All_arx_letterhead.png`;
 
       const payload = { score, name, email, company, industry, breakdown, logoUrl, letterheadUrl };
       const res = await fetch('/.netlify/functions/generate-pdf', {

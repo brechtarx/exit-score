@@ -2,6 +2,17 @@ test-key-direct.js
 node_modules/
 .env
 *.log
+*.csv
+
+# Working docs/tools (do not track in git)
+social-image-generator.html
+scoring-system-test.html
+test-claude.js
+extract-categories.js
+test/
+
+# Local variants
+CLAUDE.local.md
 
 # Google Service Account Keys (SECURITY)
 *.json

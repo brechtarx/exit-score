@@ -74,7 +74,7 @@ function buildHtml({ score, name, email, company, industry, breakdown, logoUrl, 
   const primary = '#101620';
   const accent = '#416EA6';
   const light = '#F0F1F2';
-  const resolvedLogo = logoUrl || 'https://score.arxbrokers.com/images/arx_logo_Logo_basic_rich_black.png';
+  const resolvedLogo = logoUrl || 'https://score.arxbrokers.com/assets/images/arx_logo_Logo_basic_rich_black.png';
   const fallbackLogo = 'https://score.arxbrokers.com/arx_website_blueblack.webp';
 
   const rows = breakdown.map(b => `
