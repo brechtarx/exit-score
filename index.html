@@ -29,9 +29,10 @@
     <meta name="twitter:image" content="https://score.arxbrokers.com/arx_website_blueblack.webp">
     
     <!-- Favicons -->
-    <link rel="icon" type="image/png" href="/arx_favicon.png">
-    <link rel="shortcut icon" type="image/png" href="/arx_favicon.png">
-    <link rel="apple-touch-icon" href="/arx_favicon.png">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/assets/images/arx_favicon.png">
+    <link rel="shortcut icon" type="image/png" href="/assets/images/arx_favicon.png">
+    <link rel="apple-touch-icon" href="/assets/images/arx_favicon.png">
     
     <title>Exit Score - Know Your Business Sale Readiness in 3 Minutes | ARX Business Brokers</title>
     <link rel="stylesheet" href="/assets/css/tailwind.css">
@@ -1899,6 +1900,17 @@
             const formData = new FormData(event.target);
             const timeSpent = assessmentStartTime ? Math.floor((Date.now() - assessmentStartTime) / 1000) : 0;
             
+            // Track lead form submit attempt
+            try {
+                trackEvent('lead_form_submit', {
+                    name: formData.get('name') || '',
+                    email: formData.get('email') || '',
+                    industry: businessInfo?.industry || '',
+                    score: parseInt(document.getElementById('scoreValue').textContent) || 0,
+                    time_spent: timeSpent
+                });
+            } catch (e) {}
+            
             // Spam protection - honeypot check
             const honeypot = formData.get('honeypot');
             if (honeypot) {
@@ -1988,6 +2000,13 @@
                     processing_time_seconds: Math.round(processingTime / 1000)
                 });
                 
+                // Track lead form success
+                trackEvent('lead_form_success', {
+                    assessment_id: result?.id || null,
+                    score: parseInt(document.getElementById('scoreValue').textContent) || 0,
+                    industry: businessInfo?.industry || ''
+                });
+                
                 // Step 3: Report preparation
                 setTimeout(() => updateProcessingStep(3), 500);
                 
@@ -2025,6 +2044,11 @@
                     assessment_score: parseInt(document.getElementById('scoreValue').textContent)
                 });
                 
+                // Track lead form error
+                trackEvent('lead_form_error', {
+                    error_message: error.message || 'Unknown error'
+                });
+                
                 hideLoadingState();
                 showErrorMessage('There was an error submitting your information. Please try again or contact us directly.');
             }
@@ -2056,6 +2080,12 @@
                     form_step_completed: 2
                 };
                 
+                // Track additional details submit attempt
+                trackEvent('additional_details_submit', {
+                    has_phone: !!updateData.phone,
+                    has_website: !!updateData.website
+                });
+                
                 // Submit additional details
                 const response = await fetch('/.netlify/functions/update-assessment', {
                     method: 'POST',
@@ -2073,6 +2103,10 @@
                 trackEvent('additional_details_completed', {
                     has_phone: !!formData.get('phone'),
                     has_website: !!formData.get('website')
+                });
+                
+                trackEvent('additional_details_success', {
+                    assessment_id: window.submissionResult?.id || null
                 });
                 
                 // Show success and move to thank you
@@ -2096,6 +2130,11 @@
                     errorElement.textContent = 'There was an error updating your information. Please try again.';
                     errorElement.style.display = 'block';
                 }
+                
+                // Track additional details error
+                trackEvent('additional_details_error', {
+                    error_message: error.message || 'Unknown error'
+                });
             }
         }
         
