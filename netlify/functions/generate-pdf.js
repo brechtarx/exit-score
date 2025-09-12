@@ -33,6 +33,8 @@ exports.handler = async (event) => {
 
     const finalLogo = await resolveAsset(logoUrl || envLogo, 'https://score.arxbrokers.com/arx_website_blueblack.webp');
     const finalLetter = await resolveAsset(letterheadUrl || envLetter, null);
+    console.log('[PDF] Input:', { score, name, email, company, industry, breakdownLen: Array.isArray(breakdown)? breakdown.length : 0 });
+    console.log('[PDF] Assets:', { finalLogo, finalLetter });
 
     const html = buildHtml({
       score, name, email, company, industry, breakdown,
@@ -41,6 +43,7 @@ exports.handler = async (event) => {
     });
 
     const executablePath = await chromium.executablePath();
+    console.log('[PDF] Launching Chromium at', executablePath);
     const browser = await puppeteer.launch({
       args: [...chromium.args, '--no-sandbox', '--disable-setuid-sandbox'],
       defaultViewport: chromium.defaultViewport,
@@ -48,13 +51,17 @@ exports.handler = async (event) => {
       headless: chromium.headless,
     });
     const page = await browser.newPage();
+    page.on('pageerror', (err) => console.error('[PDF] Page error:', err && err.message || err));
+    page.on('requestfailed', (req) => console.warn('[PDF] Request failed:', req.url(), req.failure() && req.failure().errorText));
     await page.setContent(html, { waitUntil: 'domcontentloaded' });
+    console.log('[PDF] HTML set, generating PDF');
     const pdf = await page.pdf({
       printBackground: true,
       format: 'Letter',
       margin: { top: '20mm', right: '16mm', bottom: '20mm', left: '16mm' }
     });
     await browser.close();
+    console.log('[PDF] PDF generated, size(bytes):', pdf.length);
 
     return {
       statusCode: 200,
@@ -66,7 +73,12 @@ exports.handler = async (event) => {
       isBase64Encoded: true
     };
   } catch (e) {
-    return { statusCode: 500, body: JSON.stringify({ error: e.message }) };
+    console.error('[PDF] Error:', e && e.message, e && e.stack);
+    return {
+      statusCode: 500,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: 'PDF generation failed', message: e && e.message })
+    };
   }
 };
 
