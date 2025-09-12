@@ -3,6 +3,7 @@ node_modules/
 .env
 *.log
 *.csv
+.DS_Store
 
 # Working docs/tools (do not track in git)
 social-image-generator.html
@@ -20,3 +21,6 @@ service-account-*.json
 google-*.json
 *service-account*.json
 exit-score-*.json
+\n# Allow GTM container export JSONs in assets/gtm
+!assets/gtm/
+!assets/gtm/*.json

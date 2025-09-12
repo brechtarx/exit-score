@@ -1,0 +1,121 @@
+{
+  "exportFormatVersion": 2,
+  "containerVersion": {
+    "name": "Exit Score Events v1",
+    "container": {
+      "publicId": "GTM-WVNR86SP",
+      "name": "Exit Score"
+    },
+    "variable": [
+      { "name": "dlv - name", "type": "v", "parameter": [{"key":"name","type":"TEMPLATE","value":"name"},{"key":"dataLayerVersion","type":"TEMPLATE","value":"2"}] },
+      { "name": "dlv - email", "type": "v", "parameter": [{"key":"name","type":"TEMPLATE","value":"email"},{"key":"dataLayerVersion","type":"TEMPLATE","value":"2"}] },
+      { "name": "dlv - industry", "type": "v", "parameter": [{"key":"name","type":"TEMPLATE","value":"industry"},{"key":"dataLayerVersion","type":"TEMPLATE","value":"2"}] },
+      { "name": "dlv - score", "type": "v", "parameter": [{"key":"name","type":"TEMPLATE","value":"score"},{"key":"dataLayerVersion","type":"TEMPLATE","value":"2"}] },
+      { "name": "dlv - time_spent", "type": "v", "parameter": [{"key":"name","type":"TEMPLATE","value":"time_spent"},{"key":"dataLayerVersion","type":"TEMPLATE","value":"2"}] },
+      { "name": "dlv - assessment_id", "type": "v", "parameter": [{"key":"name","type":"TEMPLATE","value":"assessment_id"},{"key":"dataLayerVersion","type":"TEMPLATE","value":"2"}] },
+      { "name": "dlv - error_message", "type": "v", "parameter": [{"key":"name","type":"TEMPLATE","value":"error_message"},{"key":"dataLayerVersion","type":"TEMPLATE","value":"2"}] },
+      { "name": "dlv - has_phone", "type": "v", "parameter": [{"key":"name","type":"TEMPLATE","value":"has_phone"},{"key":"dataLayerVersion","type":"TEMPLATE","value":"2"}] },
+      { "name": "dlv - has_website", "type": "v", "parameter": [{"key":"name","type":"TEMPLATE","value":"has_website"},{"key":"dataLayerVersion","type":"TEMPLATE","value":"2"}] }
+    ],
+    "trigger": [
+      { "triggerId": "1", "name": "All Pages", "type": "PAGEVIEW" },
+      { "triggerId": "2", "name": "CE - lead_form_submit", "type": "CUSTOM_EVENT", "parameter": [{"key":"eventName","type":"TEMPLATE","value":"lead_form_submit"}] },
+      { "triggerId": "3", "name": "CE - lead_form_success", "type": "CUSTOM_EVENT", "parameter": [{"key":"eventName","type":"TEMPLATE","value":"lead_form_success"}] },
+      { "triggerId": "4", "name": "CE - lead_form_error", "type": "CUSTOM_EVENT", "parameter": [{"key":"eventName","type":"TEMPLATE","value":"lead_form_error"}] },
+      { "triggerId": "5", "name": "CE - additional_details_submit", "type": "CUSTOM_EVENT", "parameter": [{"key":"eventName","type":"TEMPLATE","value":"additional_details_submit"}] },
+      { "triggerId": "6", "name": "CE - additional_details_success", "type": "CUSTOM_EVENT", "parameter": [{"key":"eventName","type":"TEMPLATE","value":"additional_details_success"}] },
+      { "triggerId": "7", "name": "CE - additional_details_error", "type": "CUSTOM_EVENT", "parameter": [{"key":"eventName","type":"TEMPLATE","value":"additional_details_error"}] }
+    ],
+    "tag": [
+      {
+        "tagId": "10",
+        "name": "GA4 - Configuration",
+        "type": "gaawc",
+        "parameter": [
+          { "key": "measurementId", "type": "TEMPLATE", "value": "G-23SV7KW5WM" }
+        ],
+        "firingTriggerId": ["1"]
+      },
+      {
+        "tagId": "11",
+        "name": "GA4 - lead_form_submit",
+        "type": "gaawe",
+        "parameter": [
+          { "key": "eventName", "type": "TEMPLATE", "value": "lead_form_submit" },
+          { "key": "eventParameters", "type": "LIST", "list": [
+            { "type":"MAP","map":[{"key":"name","value":{"type":"TEMPLATE","value":"{{dlv - name}}"}}] },
+            { "type":"MAP","map":[{"key":"email","value":{"type":"TEMPLATE","value":"{{dlv - email}}"}}] },
+            { "type":"MAP","map":[{"key":"industry","value":{"type":"TEMPLATE","value":"{{dlv - industry}}"}}] },
+            { "type":"MAP","map":[{"key":"score","value":{"type":"TEMPLATE","value":"{{dlv - score}}"}}] },
+            { "type":"MAP","map":[{"key":"time_spent","value":{"type":"TEMPLATE","value":"{{dlv - time_spent}}"}}] }
+          ] }
+        ],
+        "firingTriggerId": ["2"]
+      },
+      {
+        "tagId": "12",
+        "name": "GA4 - lead_form_success",
+        "type": "gaawe",
+        "parameter": [
+          { "key": "eventName", "type": "TEMPLATE", "value": "lead_form_success" },
+          { "key": "eventParameters", "type": "LIST", "list": [
+            { "type":"MAP","map":[{"key":"assessment_id","value":{"type":"TEMPLATE","value":"{{dlv - assessment_id}}"}}] },
+            { "type":"MAP","map":[{"key":"score","value":{"type":"TEMPLATE","value":"{{dlv - score}}"}}] },
+            { "type":"MAP","map":[{"key":"industry","value":{"type":"TEMPLATE","value":"{{dlv - industry}}"}}] }
+          ] }
+        ],
+        "firingTriggerId": ["3"]
+      },
+      {
+        "tagId": "13",
+        "name": "GA4 - lead_form_error",
+        "type": "gaawe",
+        "parameter": [
+          { "key": "eventName", "type": "TEMPLATE", "value": "lead_form_error" },
+          { "key": "eventParameters", "type": "LIST", "list": [
+            { "type":"MAP","map":[{"key":"error_message","value":{"type":"TEMPLATE","value":"{{dlv - error_message}}"}}] }
+          ] }
+        ],
+        "firingTriggerId": ["4"]
+      },
+      {
+        "tagId": "14",
+        "name": "GA4 - additional_details_submit",
+        "type": "gaawe",
+        "parameter": [
+          { "key": "eventName", "type": "TEMPLATE", "value": "additional_details_submit" },
+          { "key": "eventParameters", "type": "LIST", "list": [
+            { "type":"MAP","map":[{"key":"has_phone","value":{"type":"TEMPLATE","value":"{{dlv - has_phone}}"}}] },
+            { "type":"MAP","map":[{"key":"has_website","value":{"type":"TEMPLATE","value":"{{dlv - has_website}}"}}] }
+          ] }
+        ],
+        "firingTriggerId": ["5"]
+      },
+      {
+        "tagId": "15",
+        "name": "GA4 - additional_details_success",
+        "type": "gaawe",
+        "parameter": [
+          { "key": "eventName", "type": "TEMPLATE", "value": "additional_details_success" },
+          { "key": "eventParameters", "type": "LIST", "list": [
+            { "type":"MAP","map":[{"key":"assessment_id","value":{"type":"TEMPLATE","value":"{{dlv - assessment_id}}"}}] }
+          ] }
+        ],
+        "firingTriggerId": ["6"]
+      },
+      {
+        "tagId": "16",
+        "name": "GA4 - additional_details_error",
+        "type": "gaawe",
+        "parameter": [
+          { "key": "eventName", "type": "TEMPLATE", "value": "additional_details_error" },
+          { "key": "eventParameters", "type": "LIST", "list": [
+            { "type":"MAP","map":[{"key":"error_message","value":{"type":"TEMPLATE","value":"{{dlv - error_message}}"}}] }
+          ] }
+        ],
+        "firingTriggerId": ["7"]
+      }
+    ]
+  }
+}
+
