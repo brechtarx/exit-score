@@ -23,3 +23,8 @@
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
+
+[[redirects]]
+  from = "/results/:id"
+  to = "/.netlify/functions/results-view?id=:id"
+  status = 200

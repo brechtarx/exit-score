@@ -574,6 +574,7 @@ async function createGmailDraft(assessment, report) {
     
     // Compose email content
     const subject = `Your Business Sale Readiness Report - ${assessment.score}% Score`;
+    const resultsLink = `https://score.arxbrokers.com/results/${assessment.id || ''}`;
     const htmlBody = `
 <!DOCTYPE html>
 <html>
@@ -601,6 +602,8 @@ async function createGmailDraft(assessment, report) {
         <div class="report">
             ${report.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}
         </div>
+        <p style="font-size:14px;color:#555">You (and our advisors) can view a simple breakdown of your results here:<br>
+        <a href="${resultsLink}">${resultsLink}</a></p>
         
         <p>This assessment provides valuable insights into your business's current sale readiness and actionable steps to enhance its value.</p>
         
@@ -829,6 +832,9 @@ Industry: ${assessment.industry || 'Not specified'}
 Revenue: ${assessment.revenue || 'Not provided'}
 Employees: ${assessment.employees || 'Not provided'}
 Location: ${assessment.zipcode || 'Not provided'}
+
+RESULTS LINK (PII omitted):
+${resultsLink}
 
 CONTACT INFO:
 Email: ${assessment.email}
