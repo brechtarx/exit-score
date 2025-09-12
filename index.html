@@ -297,6 +297,23 @@
             margin: 16px 0;
             display: none;
         }
+
+        /* Print styles: show results in clean layout */
+        @media print {
+            @page { margin: 20mm 16mm; }
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            header, .progress-bar, footer,
+            #welcome, #revenueSelection, #employeeSelection, #zipcodeSelection,
+            #leadCapture, #additionalDetails, #thankYou,
+            .question-screen, .no-print { display: none !important; }
+            #results { display: block !important; box-shadow: none !important; border: 0 !important; }
+            /* Use letterhead background for first page */
+            .print-letterhead { display: block !important; height: 140px; background: url('/assets/images/Stationery_All_arx_letterhead.png') no-repeat center top/contain; margin: 0 0 8mm 0; }
+            /* Hide the simple header when using the letterhead */
+            .print-header { display: none !important; }
+            .print-header img { height: 28px; }
+            .page-break { page-break-before: always; }
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen" tabindex="-1">
@@ -337,6 +354,20 @@
 
     <!-- Main Container -->
     <div class="max-w-3xl mx-auto px-4 pb-8 min-h-screen">
+        <!-- Print-only letterhead (first page) -->
+        <div id="printLetterhead" class="print-letterhead hidden"></div>
+        <!-- Print-only simple header (fallback if needed) -->
+        <div id="printHeader" class="print-header hidden">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <img src="/assets/images/arx_logo_Logo_basic_rich_black.png" alt="ARX">
+                    <div style="font-weight:800;color:#101620;">Exit Score Report</div>
+                </div>
+                <div style="text-align:right;color:#6b7280;font-size:12px;">
+                    ARX Business Brokers • sales@arxbrokers.com • (855) 858-2130
+                </div>
+            </div>
+        </div>
         
         <!-- Welcome Screen -->
         <div id="welcome" class="question-screen fade-in">
@@ -732,6 +763,7 @@
                     </a>
                     <div class="mt-6">
                         <button onclick="downloadPdf()" class="py-3 px-5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">Download PDF</button>
+                        <button onclick="printReport()" class="py-3 px-5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 ml-2">Print / Save as PDF</button>
                     </div>
                 </div>
                 
@@ -2290,7 +2322,20 @@
             document.getElementById('step3').querySelector('.w-2').classList.add('bg-gray-300');
             document.getElementById('step3').querySelector('.w-2').classList.remove('bg-green-500');
         }
-        
+
+        // Print helper: show results in print-friendly view
+        function printReport() {
+            try {
+                trackEvent('print_report', {
+                    score: parseInt(document.getElementById('scoreValue')?.textContent || '0') || 0,
+                    industry: businessInfo?.industry || ''
+                });
+            } catch (_) {}
+            // Ensure results are visible before printing
+            try { document.getElementById('results').classList.remove('hidden'); } catch(_){}
+            window.print();
+        }
+
         function updateProcessingStep(step) {
             if (step === 2) {
                 document.getElementById('step2').classList.remove('opacity-50');
