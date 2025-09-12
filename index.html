@@ -75,15 +75,42 @@
     <!-- Google reCAPTCHA v3 -->
     <script src="https://www.google.com/recaptcha/api.js?render=6LdrH68rAAAAADuJOKxj-FLpKB8fUNFX-I6mYeAA" async defer></script>
     
-    <!-- Google Tag Manager -->
+    <!-- GA4 (direct) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-23SV7KW5WM"></script>
     <script>
-      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-      })(window,document,'script','dataLayer','GTM-WVNR86SP');
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);} 
+      gtag('js', new Date());
+      gtag('config', 'G-23SV7KW5WM');
     </script>
-    <!-- End Google Tag Manager -->
+
+    <!-- Meta/LinkedIn IDs (direct) -->
+    <script>
+      window.META_PIXEL_ID = '690707790141192';
+      window.LINKEDIN_PARTNER_ID = '7910892';
+    </script>
+
+    <!-- Meta Pixel + LinkedIn Insight (conditional) -->
+    <script>
+      (function(){
+        if (window.META_PIXEL_ID) {
+          !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+          n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+          n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+          t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script',
+          'https://connect.facebook.net/en_US/fbevents.js');
+          fbq('init', window.META_PIXEL_ID);
+          fbq('track', 'PageView');
+        }
+        if (window.LINKEDIN_PARTNER_ID) {
+          window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+          window._linkedin_data_partner_ids.push(window.LINKEDIN_PARTNER_ID);
+          (function(){var s = document.getElementsByTagName('script')[0];
+            var b = document.createElement('script'); b.type='text/javascript'; b.async=true;
+            b.src='https://snap.licdn.com/li.lms-analytics/insight.min.js'; s.parentNode.insertBefore(b,s);})();
+        }
+      })();
+    </script>
 
     <!-- Modular JS -->
     <script src="/assets/js/analytics.js"></script>
@@ -273,9 +300,14 @@
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen" tabindex="-1">
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WVNR86SP" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
+    <!-- Meta Pixel (noscript fallback) -->
+    <noscript>
+      <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=690707790141192&ev=PageView&noscript=1" />
+    </noscript>
+    <!-- LinkedIn Insight noscript fallback -->
+    <noscript>
+      <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=7910892&fmt=gif" />
+    </noscript>
     <!-- Header -->
     <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div class="container max-w-6xl mx-auto px-4">
@@ -1118,22 +1150,42 @@
         // Analytics are provided by assets/js/analytics.js (trackEvent, trackFBEvent)
 
         // Initialize
-        document.addEventListener('DOMContentLoaded', async function() {
-            // Load questions from JSON first
-            await loadQuestions();
-            
-            // Track page view
-            trackEvent('page_view', {
-                page_title: 'Sales Readiness Assessment',
-                page_location: window.location.href
-            });
-            
-            // Try to restore saved progress
-            restoreProgress();
-            
-            // Set up engagement tracking
-            setupEngagementTracking();
+    document.addEventListener('DOMContentLoaded', async function() {
+        // Load questions from JSON first
+        await loadQuestions();
+        
+        // Track page view
+        trackEvent('page_view', {
+            page_title: 'Sales Readiness Assessment',
+            page_location: window.location.href
         });
+        
+        // Try to restore saved progress
+        restoreProgress();
+        
+        // Set up engagement tracking
+        setupEngagementTracking();
+
+        // Track consultation link clicks (e.g., SavvyCal)
+        document.addEventListener('click', function(e) {
+            const a = e.target.closest('a');
+            if (!a) return;
+            try {
+                const href = (a.getAttribute('href') || '').toLowerCase();
+                if (href.includes('savvycal.com')) {
+                    const score = parseInt(document.getElementById('scoreValue')?.textContent || '0') || 0;
+                    trackEvent('consultation_click', {
+                        href: a.href,
+                        text: (a.textContent || '').trim(),
+                        score: score,
+                        industry: businessInfo?.industry || ''
+                    });
+                    // Meta Pixel standard Contact event
+                    try { trackFBEvent('Contact', { value: 0, currency: 'USD' }); } catch(_) {}
+                }
+            } catch (_) {}
+        }, { capture: true });
+    });
         
         // Engagement tracking setup
         function setupEngagementTracking() {
@@ -2006,6 +2058,8 @@
                     score: parseInt(document.getElementById('scoreValue').textContent) || 0,
                     industry: businessInfo?.industry || ''
                 });
+                // Meta Pixel Lead event
+                try { trackFBEvent('Lead', { value: 0, currency: 'USD' }); } catch (e) {}
                 
                 // Step 3: Report preparation
                 setTimeout(() => updateProcessingStep(3), 500);
@@ -2108,6 +2162,8 @@
                 trackEvent('additional_details_success', {
                     assessment_id: window.submissionResult?.id || null
                 });
+                // Meta Pixel Lead event on step 2 as well
+                try { trackFBEvent('Lead', { value: 0, currency: 'USD' }); } catch (e) {}
                 
                 // Show success and move to thank you
                 setTimeout(() => {
