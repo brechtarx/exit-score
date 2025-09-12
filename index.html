@@ -2336,13 +2336,32 @@
                     return;
                 }
                 
-                // Restore state
-                currentCategoryIndex = progress.currentCategoryIndex || 0;
-                currentQuestionIndex = progress.currentQuestionIndex || 0;
+                // Restore state (indices may be stale across deploys; recompute from answers length)
+                currentCategoryIndex = 0;
+                currentQuestionIndex = 0;
                 answers = progress.answers || [];
                 businessInfo = progress.businessInfo || {};
                 assessmentStartTime = progress.assessmentStartTime || null;
                 currentQuestionNumber = progress.currentQuestionNumber || 0;
+
+                // Ensure indices align with answers count and current question structure
+                try {
+                    let answered = Array.isArray(answers) ? answers.length : 0;
+                    for (let i = 0; i < categories.length; i++) {
+                        const len = categories[i].questions.length;
+                        if (answered > len) {
+                            answered -= len;
+                            continue;
+                        }
+                        currentCategoryIndex = i;
+                        currentQuestionIndex = Math.max(0, Math.min(answered, len - 1));
+                        break;
+                    }
+                    if (answers.length >= totalQuestions) {
+                        currentCategoryIndex = categories.length - 1;
+                        currentQuestionIndex = categories[categories.length - 1].questions.length - 1;
+                    }
+                } catch (_) { /* keep defaults */ }
                 
                 // Show restoration notification and continue from saved point
                 if (answers.length > 0 || Object.keys(businessInfo).length > 0) {
@@ -2360,6 +2379,13 @@
                         document.getElementById('industry').value = businessInfo.industry;
                     }
                     
+                    // If all questions were already answered previously, show results immediately
+                    if (businessInfo.employees && answers.length >= totalQuestions) {
+                        document.getElementById('welcome').classList.add('hidden');
+                        calculateResults();
+                        return;
+                    }
+
                     // Resume from the appropriate screen
                     if (businessInfo.industry && !businessInfo.revenue) {
                         document.getElementById('welcome').classList.add('hidden');
