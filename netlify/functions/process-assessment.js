@@ -115,7 +115,7 @@ exports.handler = async (event, context) => {
     }
     
     // Email validation
-    const { validateEmail, verifyRecaptcha } = require('./lib/validation');
+    const { validateEmail } = require('./lib/validation');
     if (!validateEmail(assessment.email)) {
       return {
         statusCode: 400,
@@ -133,27 +133,7 @@ exports.handler = async (event, context) => {
       };
     }
     
-    // reCAPTCHA verification
-    if (!assessment.recaptcha_token) {
-      return {
-        statusCode: 400,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ error: 'reCAPTCHA verification required' })
-      };
-    }
-    
-    // Verify reCAPTCHA with Google
-    const recaptchaResult = await verifyRecaptcha(assessment.recaptcha_token);
-    if (!recaptchaResult.ok) {
-      return {
-        statusCode: 400,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          error: 'reCAPTCHA verification failed',
-          score: recaptchaResult.score || 0
-        })
-      };
-    }
+    // reCAPTCHA removed temporarily
     
     console.log(`Processing assessment for ${assessment.email} - v2024`);
 
@@ -493,10 +473,16 @@ function buildStructuredAssessmentData(assessment) {
         if (!responsesByCategory[category.name]) {
           responsesByCategory[category.name] = [];
         }
+        let label = null;
+        if (Array.isArray(question.options) && question.options.length) {
+          const opt = question.options.find(o => o.value === response.answer);
+          if (opt && opt.label) label = opt.label;
+        }
+        if (!label) label = response.answer === true ? 'Yes' : response.answer === false ? 'No' : (response.answer === null ? "Don't Know" : String(response.answer));
         responsesByCategory[category.name].push({
           id: response.question,
           text: question.text || `Question ${response.question + 1}`,
-          answer: response.answer === true ? 'Yes' : response.answer === false ? 'No' : 'Don\'t Know',
+          answer: label,
           weight: question.weight
         });
       }
@@ -535,11 +521,15 @@ function calculateCategoryScores(responses) {
       const response = responses.find(r => r.category === categoryIndex && r.question === questionIndex);
       if (response) {
         answeredQuestions++;
-        if (response.answer === true) {
-          categoryScore += question.weight; // 100% of points
-        } else if (response.answer === null) {
-          categoryScore += question.weight * 0.15; // 15% for "Don't Know"
+        let fraction = null;
+        if (Array.isArray(question.options) && question.options.length) {
+          const opt = question.options.find(o => o.value === response.answer);
+          if (opt && typeof opt.scoreFraction === 'number') fraction = opt.scoreFraction;
         }
+        if (fraction === null) {
+          fraction = (response.answer === true) ? 1 : (response.answer === null ? 0.15 : 0);
+        }
+        categoryScore += question.weight * fraction;
         // false answers get 0% (no points added)
       }
     });

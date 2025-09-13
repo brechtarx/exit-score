@@ -72,26 +72,7 @@
     }
     </script>
 
-    <!-- reCAPTCHA (v3 or Invisible). Default v3; switch to Invisible by setting RECAPTCHA_MODE='invisible' and providing a v2-invisible site key below. -->
-    <script>
-      window.RECAPTCHA_MODE = window.RECAPTCHA_MODE || 'v3'; // 'v3' | 'invisible'
-      window.RECAPTCHA_SITE_KEY = window.RECAPTCHA_SITE_KEY || '6LdrH68rAAAAADuJOKxj-FLpKB8fUNFX-I6mYeAA'; // replace with Invisible key when switching
-      (function loadRecaptcha(){
-        if (window.RECAPTCHA_MODE === 'invisible') {
-          var s=document.createElement('script');
-          s.src='https://www.google.com/recaptcha/api.js?render=explicit'; s.async=true; s.defer=true; document.head.appendChild(s);
-          window.addEventListener('DOMContentLoaded', function(){
-            var interval=setInterval(function(){ if (window.grecaptcha && grecaptcha.render) { clearInterval(interval);
-              var el=document.getElementById('recaptcha-container'); if (!el){ el=document.createElement('div'); el.id='recaptcha-container'; el.className='no-print'; document.body.appendChild(el);} 
-              try { window.recaptchaWidgetId = grecaptcha.render(el, { 'sitekey': window.RECAPTCHA_SITE_KEY, 'size': 'invisible', 'badge': 'bottomright' }); } catch(e){}
-            } }, 200);
-          });
-        } else {
-          var s=document.createElement('script');
-          s.src='https://www.google.com/recaptcha/api.js?render='+encodeURIComponent(window.RECAPTCHA_SITE_KEY); s.async=true; s.defer=true; document.head.appendChild(s);
-        }
-      })();
-    </script>
+    <!-- reCAPTCHA removed temporarily per request (no spam gate) -->
     
     <!-- GA4 (direct) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-23SV7KW5WM"></script>
@@ -323,13 +304,12 @@
             transition: background-color 150ms ease;
         }
 
-        /* Avoid reCAPTCHA overlap on mobile */
-        .grecaptcha-badge { right: 8px !important; bottom: calc(env(safe-area-inset-bottom, 0px) + 16px) !important; transform: scale(0.75); transform-origin: bottom right; }
-        .question-screen { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 32px) !important; }
+        /* Safe-area padding for bottom UI */
+        .question-screen { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 24px) !important; }
 
-        /* Hide overlay progress text on small screens; use label below dots instead */
-        /* Always keep legacy overlay counter hidden */
+        /* Hide overlay/global progress text */
         #progressText { display: none !important; }
+        #progressLabel { display: none !important; }
         @media (max-width: 640px) { #progressText { display: none !important; } }
 
         /* Header padding */
@@ -357,8 +337,7 @@
             #results .text-6xl { font-size: 36px !important; line-height: 1.1 !important; }
             #results #scoreInterpretation { margin: 6px 0 10px 0 !important; }
             #categoryBreakdown > div { margin: 6px 0 !important; padding: 8px 10px !important; }
-            /* Hide reCAPTCHA badge */
-            .grecaptcha-badge { display: none !important; }
+            /* No reCAPTCHA badge currently */
             /* Prominent ARX logo header */
             .print-letterhead { display: none !important; }
             .print-header { display: block !important; margin: 0 0 6mm 0; }
@@ -412,7 +391,7 @@
     </div>
 
     <!-- Main Container -->
-    <div class="max-w-3xl mx-auto px-4 pb-8 min-h-screen">
+    <div class="max-w-3xl mx-auto px-2 sm:px-4 pb-8 min-h-screen">
         <!-- Print-only letterhead (first page) -->
         <div id="printLetterhead" class="print-letterhead hidden"></div>
         <!-- Print-only simple header (fallback if needed) -->
@@ -573,49 +552,49 @@
                     This helps us provide more accurate recommendations for your business size.
                 </p>
                 <div class="space-y-3">
-                    <button onclick="selectRevenue('Under $500K', 250000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:border-green-500 focus:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none transition-all group">
+                    <button onclick="selectRevenue('Under $500K', 250000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:outline-none focus:ring-0 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">Under $500K</span>
                             <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectRevenue('$500K - $1M', 750000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:border-green-500 focus:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none transition-all group">
+                    <button onclick="selectRevenue('$500K - $1M', 750000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:outline-none focus:ring-0 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">$500K - $1M</span>
                             <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectRevenue('$1M - $2M', 1500000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:border-green-500 focus:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none transition-all group">
+                    <button onclick="selectRevenue('$1M - $2M', 1500000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:outline-none focus:ring-0 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">$1M - $2M</span>
                             <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectRevenue('$2M - $5M', 3500000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:border-green-500 focus:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none transition-all group">
+                    <button onclick="selectRevenue('$2M - $5M', 3500000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:outline-none focus:ring-0 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">$2M - $5M</span>
                             <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectRevenue('$5M - $10M', 7500000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:border-green-500 focus:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none transition-all group">
+                    <button onclick="selectRevenue('$5M - $10M', 7500000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:outline-none focus:ring-0 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">$5M - $10M</span>
                             <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectRevenue('$10M - $25M', 17500000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:border-green-500 focus:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none transition-all group">
+                    <button onclick="selectRevenue('$10M - $25M', 17500000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:outline-none focus:ring-0 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">$10M - $25M</span>
                             <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectRevenue('$25M - $50M', 37500000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:border-green-500 focus:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none transition-all group">
+                    <button onclick="selectRevenue('$25M - $50M', 37500000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:outline-none focus:ring-0 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">$25M - $50M</span>
                             <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectRevenue('Over $50M', 75000000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:border-green-500 focus:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none transition-all group">
+                    <button onclick="selectRevenue('Over $50M', 75000000)" class="revenue-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:outline-none focus:ring-0 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">Over $50M</span>
                             <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
@@ -639,43 +618,43 @@
                     Include yourself and any full-time, part-time, or contract workers.
                 </p>
                 <div class="space-y-3">
-                    <button onclick="selectEmployees('Just me', 1)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:border-green-500 focus:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none transition-all group">
+                    <button onclick="selectEmployees('Just me', 1)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:outline-none focus:ring-0 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">Just me (sole proprietor)</span>
                             <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectEmployees('2-5 employees', 3)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:border-green-500 focus:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none transition-all group">
+                    <button onclick="selectEmployees('2-5 employees', 3)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:outline-none focus:ring-0 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">2-5 employees</span>
                             <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectEmployees('6-10 employees', 8)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:border-green-500 focus:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none transition-all group">
+                    <button onclick="selectEmployees('6-10 employees', 8)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:outline-none focus:ring-0 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">6-10 employees</span>
                             <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectEmployees('11-25 employees', 18)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:border-green-500 focus:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none transition-all group">
+                    <button onclick="selectEmployees('11-25 employees', 18)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:outline-none focus:ring-0 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">11-25 employees</span>
                             <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectEmployees('26-50 employees', 38)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:border-green-500 focus:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none transition-all group">
+                    <button onclick="selectEmployees('26-50 employees', 38)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:outline-none focus:ring-0 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">26-50 employees</span>
                             <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectEmployees('51-100 employees', 75)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:border-green-500 focus:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none transition-all group">
+                    <button onclick="selectEmployees('51-100 employees', 75)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:outline-none focus:ring-0 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">51-100 employees</span>
                             <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
                         </div>
                     </button>
-                    <button onclick="selectEmployees('Over 100 employees', 150)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:border-green-500 focus:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none transition-all group">
+                    <button onclick="selectEmployees('Over 100 employees', 150)" class="employee-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:outline-none focus:ring-0 transition-all group">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900">Over 100 employees</span>
                             <div class="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-green-500 transition-colors"></div>
@@ -720,47 +699,7 @@
                 <h2 class="text-xl sm:text-2xl font-semibold text-slate-900 mb-8 leading-snug question-text">
                     Question goes here?
                 </h2>
-                <div class="space-y-3">
-                    <button onclick="answerQuestion(true, event)" class="answer-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 focus:border-green-500 focus:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none transition-all group">
-                        <div class="flex items-center pointer-events-none">
-                            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-green-100 group-hover:bg-green-200 flex items-center justify-center mr-4 flex-shrink-0 transition-colors">
-                                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                            </div>
-                            <div>
-                                <div class="font-semibold text-gray-900 text-base">Yes</div>
-                                <div class="text-sm text-gray-600 yes-description">Positive indicator</div>
-                            </div>
-                        </div>
-                    </button>
-                    <button onclick="answerQuestion(false, event)" class="answer-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-red-500 hover:bg-red-50 focus:border-red-500 focus:bg-red-50 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none transition-all group">
-                        <div class="flex items-center pointer-events-none">
-                            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-red-100 group-hover:bg-red-200 flex items-center justify-center mr-4 flex-shrink-0 transition-colors">
-                                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </div>
-                            <div>
-                                <div class="font-semibold text-gray-900 text-base">No</div>
-                                <div class="text-sm text-gray-600 no-description">Area for improvement</div>
-                            </div>
-                        </div>
-                    </button>
-                    <button onclick="answerQuestion(null, event)" class="answer-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-gray-400 hover:bg-gray-50 focus:border-gray-400 focus:bg-gray-50 focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:outline-none transition-all group">
-                        <div class="flex items-center pointer-events-none">
-                            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-100 group-hover:bg-gray-200 flex items-center justify-center mr-4 flex-shrink-0 transition-colors">
-                                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </div>
-                            <div>
-                                <div class="font-semibold text-gray-900 text-base">Not Sure / Not Applicable</div>
-                                <div class="text-sm text-gray-600">Skip this question</div>
-                            </div>
-                        </div>
-                    </button>
-                </div>
+                <div class="space-y-3" id="optionsContainer"></div>
                 <button onclick="goBack()" class="mt-6 text-gray-500 hover:text-gray-700 text-sm flex items-center transition-colors">
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
@@ -868,8 +807,7 @@
                         </div>
                     </div>
                     
-                    <!-- reCAPTCHA v3 (Invisible) -->
-                    <input type="hidden" id="recaptcha-token" name="recaptcha-token">
+                    <!-- No reCAPTCHA (temporarily removed) -->
                     
                     <button type="submit" id="submitBtn" class="btn-primary w-full py-4 px-6 rounded-lg text-white font-semibold text-lg mt-6">
                         <span id="submitBtnText">Get My Report →</span>
@@ -1372,6 +1310,7 @@
         }
         
         function selectRevenue(displayText, numericValue) {
+            if (document.activeElement) { try { document.activeElement.blur(); } catch(_){} }
             businessInfo.revenue = displayText;
             businessInfo.revenueNumeric = numericValue;
             
@@ -1413,6 +1352,7 @@
         }
         
         function selectEmployees(displayText, numericValue) {
+            if (document.activeElement) { try { document.activeElement.blur(); } catch(_){} }
             businessInfo.employees = displayText;
             businessInfo.employeesNumeric = numericValue;
             
@@ -1551,8 +1491,45 @@
             questionDiv.querySelector('.current-q').textContent = currentQuestionNumber;
             questionDiv.querySelector('.total-q').textContent = totalQuestions;
             questionDiv.querySelector('.question-text').textContent = question.text;
-            questionDiv.querySelector('.yes-description').textContent = question.yesText;
-            questionDiv.querySelector('.no-description').textContent = question.noText;
+            // Build options dynamically (default Yes/No/Not Sure)
+            try {
+                const opts = [];
+                // If schema ever adds question.options, prefer that; else derive from yes/no texts
+                if (Array.isArray(question.options) && question.options.length) {
+                    question.options.forEach(o => opts.push(o));
+                } else {
+                    opts.push({ value: true, label: 'Yes', description: question.yesText, tone: 'green' });
+                    opts.push({ value: false, label: 'No', description: question.noText, tone: 'red' });
+                    opts.push({ value: null, label: 'Not Sure / Not Applicable', description: 'Skip this question', tone: 'gray' });
+                }
+                const container = questionDiv.querySelector('#optionsContainer');
+                container.innerHTML = '';
+                const makeIcon = (tone) => {
+                    const wrap = document.createElement('div');
+                    wrap.className = `w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center mr-4 flex-shrink-0 transition-colors ${tone==='green'?'bg-green-100':'gray'===tone?'bg-gray-100':'bg-red-100'}`;
+                    wrap.innerHTML = tone==='green'
+                      ? '<svg class="w-5 h-5 sm:w-6 sm:h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>'
+                      : tone==='red'
+                        ? '<svg class="w-5 h-5 sm:w-6 sm:h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>'
+                        : '<svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+                    return wrap;
+                };
+                opts.forEach(o => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = `answer-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 transition-all group ${o.tone==='green'?'hover:border-green-500 hover:bg-green-50':o.tone==='red'?'hover:border-red-500 hover:bg-red-50':'hover:border-gray-400 hover:bg-gray-50'}`;
+                    btn.addEventListener('click', (ev)=>answerQuestion(o.value, ev));
+                    const inner = document.createElement('div');
+                    inner.className = 'flex items-center pointer-events-none';
+                    const icon = makeIcon(o.tone || 'gray');
+                    const text = document.createElement('div');
+                    text.innerHTML = `<div class="font-semibold text-gray-900 text-base">${o.label}</div><div class="text-sm text-gray-600">${o.description||''}</div>`;
+                    inner.appendChild(icon);
+                    inner.appendChild(text);
+                    btn.appendChild(inner);
+                    container.appendChild(btn);
+                });
+            } catch(_){}
             
             // Add to DOM
             const container = document.querySelector('.max-w-3xl');
@@ -1561,13 +1538,17 @@
                 return;
             }
             container.appendChild(questionDiv);
-            // Insert local (in-card) progress dots + count so desktop aligns to card width
+            // Ensure no residual focus state on new buttons (iOS Safari quirk)
+            try {
+                questionDiv.querySelectorAll('.answer-btn').forEach(btn => btn.blur());
+            } catch(_){}
+            // Insert local (in-card) progress dots (no numeric count)
             try {
                 const local = document.createElement('div');
                 local.className = 'px-2 pt-2 pb-1';
-                local.innerHTML = '<div class="flex items-center gap-1.5" id="localDots"></div><div class="text-xs text-gray-500 mt-1" id="localCount"></div>';
+                local.innerHTML = '<div class="flex items-center gap-1.5" id="localDots"></div>';
                 questionDiv.prepend(local);
-                renderProgressDotsInto(document.getElementById('localDots'), document.getElementById('localCount'));
+                renderProgressDotsInto(document.getElementById('localDots'), null);
                 // Hide global dots row on question screens
                 document.getElementById('progressDotsWrap')?.classList.add('hidden');
             } catch(_){}
@@ -1588,6 +1569,7 @@
             
             // Reset focus to prevent mobile highlight issue
             document.body.focus();
+            setTimeout(() => { try { document.body.focus(); } catch(_){} }, 0);
             
             // Scroll to top smoothly
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1636,7 +1618,7 @@
             trackEvent('assessment_answer', {
                 question_number: currentQuestionNumber,
                 category: categories[currentCategoryIndex].name,
-                answer: answer === true ? 'yes' : answer === false ? 'no' : 'skip'
+                answer: (answer === true ? 'yes' : (answer === false ? 'no' : (answer === null ? 'skip' : String(answer))))
             });
             
             // Track progress every 5 questions
@@ -1743,7 +1725,7 @@
             
             // Update local in-card progress UI if present; otherwise ignore
             if (currentQuestionNumber > 0) {
-                try { renderProgressDotsInto(document.getElementById('localDots'), document.getElementById('localCount')); } catch(_){}
+                try { renderProgressDotsInto(document.getElementById('localDots'), null); } catch(_){}
             } else {
                 try { document.getElementById('progressDots')?.classList.add('hidden'); } catch(_){}
             }
@@ -1786,10 +1768,18 @@
                     const answer = answers.find(a => 
                         a.category === catIndex && a.question === qIndex
                     );
-                    if (answer && answer.answer === true) {
-                        categoryScore += question.weight;
-                    } else if (answer && answer.answer === null) {
-                        categoryScore += question.weight * 0.15; // 15% for "Don't Know"
+                    if (answer) {
+                        // Use per-option scoring if defined
+                        let fraction = null;
+                        if (Array.isArray(question.options) && question.options.length) {
+                            const opt = question.options.find(o => o.value === answer.answer);
+                            if (opt && typeof opt.scoreFraction === 'number') fraction = opt.scoreFraction;
+                        }
+                        if (fraction === null) {
+                            // Fallback to legacy mapping
+                            fraction = (answer.answer === true) ? 1 : (answer.answer === null ? 0.15 : 0);
+                        }
+                        categoryScore += question.weight * fraction;
                     }
                 });
                 totalScore += categoryScore * category.weight;
@@ -1890,12 +1880,15 @@
                     );
                     
                     if (answer) {
-                        if (answer.answer === true) {
-                            categoryScore += question.weight;
-                        } else if (answer.answer === null) {
-                            categoryScore += question.weight * 0.15; // 15% for "Don't Know"
+                        let fraction = null;
+                        if (Array.isArray(question.options) && question.options.length) {
+                            const opt = question.options.find(o => o.value === answer.answer);
+                            if (opt && typeof opt.scoreFraction === 'number') fraction = opt.scoreFraction;
                         }
-                        // false answers get 0 points
+                        if (fraction === null) {
+                            fraction = (answer.answer === true) ? 1 : (answer.answer === null ? 0.15 : 0);
+                        }
+                        categoryScore += question.weight * fraction;
                     }
                 });
                 
@@ -2132,21 +2125,7 @@
                 return;
             }
             
-            // reCAPTCHA validation (supports v3 or Invisible)
-            let recaptchaResponse;
-            try {
-                if (window.RECAPTCHA_MODE === 'invisible' && typeof grecaptcha !== 'undefined' && typeof window.recaptchaWidgetId !== 'undefined') {
-                    recaptchaResponse = await grecaptcha.execute(window.recaptchaWidgetId);
-                } else {
-                    recaptchaResponse = await grecaptcha.execute(window.RECAPTCHA_SITE_KEY, { action: 'submit_assessment' });
-                }
-                trackEvent('recaptcha_completed', { mode: window.RECAPTCHA_MODE });
-            } catch (error) {
-                hideLoadingState();
-                trackEvent('recaptcha_failed', { error: error.message || 'Unknown error', mode: window.RECAPTCHA_MODE });
-                alert('reCAPTCHA verification failed. Please try again.');
-                return;
-            }
+            // No reCAPTCHA for now
             
             if (timeSpent < 30) {
                 hideLoadingState();
@@ -2172,7 +2151,7 @@
                 time_spent: timeSpent,
                 user_agent: navigator.userAgent,
                 referrer: document.referrer,
-                recaptcha_token: recaptchaResponse,
+                recaptcha_token: null,
                 ip_address: null // Will be set by server if needed
             };
             
