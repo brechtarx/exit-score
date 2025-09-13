@@ -16,26 +16,14 @@
           "text": "Are all critical business processes documented so someone else could follow them?",
           "weight": 0.22,
           "yesText": "Systems documented",
-          "noText": "Tribal knowledge",
-          "options": [
-            { "label": "Yes", "value": true, "description": "Playbook is written and used", "tone": "green", "icon": "check", "scoreFraction": 1 },
-            { "label": "Mostly", "value": "partial", "description": "90% there—just needs a tidy-up", "tone": "blue", "icon": "info", "scoreFraction": 0.5 },
-            { "label": "No", "value": false, "description": "Living in heads, not docs", "tone": "red", "icon": "x", "scoreFraction": 0 },
-            { "label": "Not Sure / N/A", "value": null, "description": "Skip this one", "tone": "gray", "icon": "question", "scoreFraction": 0.15 }
-          ]
+          "noText": "Tribal knowledge"
         },
         {
           "id": 3,
           "text": "Do you have at least one key employee who could manage daily operations?",
           "weight": 0.18,
           "yesText": "Management depth",
-          "noText": "Single person operation",
-          "options": [
-            { "label": "Yes", "value": true, "description": "Your MVP can run the show", "tone": "green", "icon": "check", "scoreFraction": 1 },
-            { "label": "Almost", "value": "partial", "description": "They’re close—needs some coaching", "tone": "blue", "icon": "info", "scoreFraction": 0.5 },
-            { "label": "No", "value": false, "description": "It’s still a one‑person band", "tone": "red", "icon": "x", "scoreFraction": 0 },
-            { "label": "Not Sure / N/A", "value": null, "description": "Skip this one", "tone": "gray", "icon": "question", "scoreFraction": 0.15 }
-          ]
+          "noText": "Single person operation"
         },
         {
           "id": 4,
@@ -69,13 +57,7 @@
           "text": "Has your revenue increased in at least 3 of the last 4 years?",
           "weight": 0.35,
           "yesText": "Consistent growth pattern",
-          "noText": "Inconsistent performance",
-          "options": [
-            { "label": "Yes", "value": true, "description": "A lovely, steady trend", "tone": "green", "icon": "check", "scoreFraction": 1 },
-            { "label": "Mostly", "value": "partial", "description": "One wobbly year—on the right track", "tone": "blue", "icon": "info", "scoreFraction": 0.5 },
-            { "label": "No", "value": false, "description": "Up, down, up, down", "tone": "red", "icon": "x", "scoreFraction": 0 },
-            { "label": "Not Sure / N/A", "value": null, "description": "Skip this one", "tone": "gray", "icon": "question", "scoreFraction": 0.15 }
-          ]
+          "noText": "Inconsistent performance"
         },
         {
           "id": 8,
@@ -115,13 +97,7 @@
           "text": "Do you have repeat customers or predictable revenue streams?",
           "weight": 0.25,
           "yesText": "Stable revenue model",
-          "noText": "Unpredictable revenue",
-          "options": [
-            { "label": "Yes", "value": true, "description": "Subscriptions, contracts, or steady regulars", "tone": "green", "icon": "check", "scoreFraction": 1 },
-            { "label": "Some", "value": "partial", "description": "A decent base, room to grow", "tone": "blue", "icon": "info", "scoreFraction": 0.5 },
-            { "label": "No", "value": false, "description": "Each month is a new adventure", "tone": "red", "icon": "x", "scoreFraction": 0 },
-            { "label": "Not Sure / N/A", "value": null, "description": "Skip this one", "tone": "gray", "icon": "question", "scoreFraction": 0.15 }
-          ]
+          "noText": "Unpredictable revenue"
         },
         {
           "id": 12,
@@ -169,13 +145,7 @@
           "text": "Are your financial records prepared by a bookkeeper or accountant?",
           "weight": 0.25,
           "yesText": "Professional records",
-          "noText": "DIY bookkeeping",
-          "options": [
-            { "label": "Yes", "value": true, "description": "Clean and ready for diligence", "tone": "green", "icon": "check", "scoreFraction": 1 },
-            { "label": "Mostly", "value": "partial", "description": "We tidy up quarterly‑ish", "tone": "blue", "icon": "info", "scoreFraction": 0.5 },
-            { "label": "No", "value": false, "description": "Spreadsheet sorcery only", "tone": "red", "icon": "x", "scoreFraction": 0 },
-            { "label": "Not Sure / N/A", "value": null, "description": "Skip this one", "tone": "gray", "icon": "question", "scoreFraction": 0.15 }
-          ]
+          "noText": "DIY bookkeeping"
         },
         {
           "id": 18,
@@ -223,13 +193,7 @@
           "text": "Can you charge similar or higher prices than your main competitors?",
           "weight": 0.36,
           "yesText": "Pricing power",
-          "noText": "Price competition pressure",
-          "options": [
-            { "label": "Yes", "value": true, "description": "Brand > discounting", "tone": "green", "icon": "check", "scoreFraction": 1 },
-            { "label": "Depends", "value": "partial", "description": "Win some, match some", "tone": "blue", "icon": "info", "scoreFraction": 0.5 },
-            { "label": "No", "value": false, "description": "We win on price only", "tone": "red", "icon": "x", "scoreFraction": 0 },
-            { "label": "Not Sure / N/A", "value": null, "description": "Skip this one", "tone": "gray", "icon": "question", "scoreFraction": 0.15 }
-          ]
+          "noText": "Price competition pressure"
         },
         {
           "id": 24,

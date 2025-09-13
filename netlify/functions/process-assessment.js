@@ -476,7 +476,7 @@ function buildStructuredAssessmentData(assessment) {
         let label = null;
         if (Array.isArray(question.options) && question.options.length) {
           const opt = question.options.find(o => o.value === response.answer);
-          if (opt && opt.label) label = opt.label;
+          if (opt && opt.label) label = (opt.value === 'partial') ? 'Partially' : opt.label;
         }
         if (!label) label = response.answer === true ? 'Yes' : response.answer === false ? 'No' : (response.answer === null ? "Don't Know" : String(response.answer));
         responsesByCategory[category.name].push({

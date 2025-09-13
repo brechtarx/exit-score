@@ -248,6 +248,11 @@
                 padding-right: 3rem;
             }
         }
+
+        /* Remove sticky hover states on touch devices */
+        @media (hover: none) and (pointer: coarse) {
+            .answer-btn:hover { background-color: transparent !important; border-color: #e5e7eb !important; }
+        }
         
         /* Active button state */
         .active\:scale-98:active {
@@ -692,7 +697,7 @@
             <div class="sm:bg-white sm:rounded-lg sm:border sm:border-gray-200 p-4 sm:p-8 mt-0 sm:mt-8 fade-in max-w-2xl mx-auto">
                 <div class="mb-6">
                     <span class="text-xs sm:text-sm text-hyperlink-blue font-bold uppercase tracking-wider category-label">Category</span>
-                    <div class="text-sm text-gray-500 mt-1">
+                    <div class="text-sm text-gray-500 mt-1 hidden sm:block">
                         Question <span class="current-q">1</span> of <span class="total-q">26</span>
                     </div>
                 </div>
@@ -1493,15 +1498,11 @@
             questionDiv.querySelector('.question-text').textContent = question.text;
             // Build options dynamically (default Yes/No/Not Sure)
             try {
-                const opts = [];
-                // If schema ever adds question.options, prefer that; else derive from yes/no texts
-                if (Array.isArray(question.options) && question.options.length) {
-                    question.options.forEach(o => opts.push(o));
-                } else {
-                    opts.push({ value: true, label: 'Yes', description: question.yesText, tone: 'green' });
-                    opts.push({ value: false, label: 'No', description: question.noText, tone: 'red' });
-                    opts.push({ value: null, label: 'Not Sure / Not Applicable', description: 'Skip this question', tone: 'gray' });
-                }
+                const opts = [
+                    { value: true, label: 'Yes', description: question.yesText, tone: 'green' },
+                    { value: false, label: 'No', description: question.noText, tone: 'red' },
+                    { value: null, label: 'Not Sure / Not Applicable', description: 'Skip this question', tone: 'gray' }
+                ];
                 const container = questionDiv.querySelector('#optionsContainer');
                 container.innerHTML = '';
                 const makeIcon = (tone) => {
@@ -1515,9 +1516,11 @@
                     return wrap;
                 };
                 opts.forEach(o => {
+                    // Normalize label for partial to keep UI consistent
+                    if (o && o.value === 'partial') { o.label = 'Partially'; }
                     const btn = document.createElement('button');
                     btn.type = 'button';
-                    btn.className = `answer-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 transition-all group ${o.tone==='green'?'hover:border-green-500 hover:bg-green-50':o.tone==='red'?'hover:border-red-500 hover:bg-red-50':'hover:border-gray-400 hover:bg-gray-50'}`;
+                    btn.className = `answer-btn w-full p-4 text-left rounded-xl border-2 border-gray-200 transition-all group`;
                     btn.addEventListener('click', (ev)=>answerQuestion(o.value, ev));
                     const inner = document.createElement('div');
                     inner.className = 'flex items-center pointer-events-none';
@@ -1546,7 +1549,7 @@
             try {
                 const local = document.createElement('div');
                 local.className = 'px-2 pt-2 pb-1';
-                local.innerHTML = '<div class="flex items-center gap-1.5" id="localDots"></div>';
+                local.innerHTML = '<div class="flex items-center justify-center gap-1.5" id="localDots"></div>';
                 questionDiv.prepend(local);
                 renderProgressDotsInto(document.getElementById('localDots'), null);
                 // Hide global dots row on question screens
