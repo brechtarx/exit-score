@@ -16,8 +16,12 @@ async function verifyRecaptcha(token) {
     body: params.toString()
   });
   const data = await resp.json();
-  return { ok: !!data.success && (data.score || 0) >= 0.5, score: data.score || 0 };
+  // Support both v3 (score present) and v2 invisible (no score)
+  if (!data.success) return { ok: false, score: data.score || 0 };
+  if (typeof data.score === 'number') {
+    return { ok: data.score >= 0.5, score: data.score };
+  }
+  return { ok: true, score: 0 };
 }
 
 module.exports = { validateEmail, verifyRecaptcha };
-

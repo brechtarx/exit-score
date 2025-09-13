@@ -72,8 +72,26 @@
     }
     </script>
 
-    <!-- Google reCAPTCHA v3 -->
-    <script src="https://www.google.com/recaptcha/api.js?render=6LdrH68rAAAAADuJOKxj-FLpKB8fUNFX-I6mYeAA" async defer></script>
+    <!-- reCAPTCHA (v3 or Invisible). Default v3; switch to Invisible by setting RECAPTCHA_MODE='invisible' and providing a v2-invisible site key below. -->
+    <script>
+      window.RECAPTCHA_MODE = window.RECAPTCHA_MODE || 'v3'; // 'v3' | 'invisible'
+      window.RECAPTCHA_SITE_KEY = window.RECAPTCHA_SITE_KEY || '6LdrH68rAAAAADuJOKxj-FLpKB8fUNFX-I6mYeAA'; // replace with Invisible key when switching
+      (function loadRecaptcha(){
+        if (window.RECAPTCHA_MODE === 'invisible') {
+          var s=document.createElement('script');
+          s.src='https://www.google.com/recaptcha/api.js?render=explicit'; s.async=true; s.defer=true; document.head.appendChild(s);
+          window.addEventListener('DOMContentLoaded', function(){
+            var interval=setInterval(function(){ if (window.grecaptcha && grecaptcha.render) { clearInterval(interval);
+              var el=document.getElementById('recaptcha-container'); if (!el){ el=document.createElement('div'); el.id='recaptcha-container'; el.className='no-print'; document.body.appendChild(el);} 
+              try { window.recaptchaWidgetId = grecaptcha.render(el, { 'sitekey': window.RECAPTCHA_SITE_KEY, 'size': 'invisible', 'badge': 'bottomright' }); } catch(e){}
+            } }, 200);
+          });
+        } else {
+          var s=document.createElement('script');
+          s.src='https://www.google.com/recaptcha/api.js?render='+encodeURIComponent(window.RECAPTCHA_SITE_KEY); s.async=true; s.defer=true; document.head.appendChild(s);
+        }
+      })();
+    </script>
     
     <!-- GA4 (direct) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-23SV7KW5WM"></script>
@@ -2119,23 +2137,18 @@
                 return;
             }
             
-            // reCAPTCHA v3 validation
+            // reCAPTCHA validation (supports v3 or Invisible)
             let recaptchaResponse;
             try {
-                recaptchaResponse = await grecaptcha.execute('6LdrH68rAAAAADuJOKxj-FLpKB8fUNFX-I6mYeAA', {action: 'submit_assessment'});
-                
-                // Track successful reCAPTCHA completion
-                trackEvent('recaptcha_completed', {
-                    action: 'submit_assessment'
-                });
+                if (window.RECAPTCHA_MODE === 'invisible' && typeof grecaptcha !== 'undefined' && typeof window.recaptchaWidgetId !== 'undefined') {
+                    recaptchaResponse = await grecaptcha.execute(window.recaptchaWidgetId);
+                } else {
+                    recaptchaResponse = await grecaptcha.execute(window.RECAPTCHA_SITE_KEY, { action: 'submit_assessment' });
+                }
+                trackEvent('recaptcha_completed', { mode: window.RECAPTCHA_MODE });
             } catch (error) {
                 hideLoadingState();
-                
-                // Track reCAPTCHA failure
-                trackEvent('recaptcha_failed', {
-                    error: error.message || 'Unknown error'
-                });
-                
+                trackEvent('recaptcha_failed', { error: error.message || 'Unknown error', mode: window.RECAPTCHA_MODE });
                 alert('reCAPTCHA verification failed. Please try again.');
                 return;
             }
