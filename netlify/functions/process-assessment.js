@@ -133,6 +133,19 @@ exports.handler = async (event, context) => {
       };
     }
     
+    // Require a complete assessment (all questions answered)
+    try {
+      const expectedTotalQuestions = (QUESTIONS_STRUCTURE?.categories || []).reduce((sum, c) => sum + ((c.questions || []).length), 0);
+      const responses = Array.isArray(assessment.responses) ? assessment.responses : [];
+      if (responses.length !== expectedTotalQuestions) {
+        return {
+          statusCode: 400,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ error: 'Incomplete assessment. Please answer all questions.' })
+        };
+      }
+    } catch (_) { /* if structure missing, do not block */ }
+    
     // reCAPTCHA removed temporarily
     
     console.log(`Processing assessment for ${assessment.email} - v2024`);
