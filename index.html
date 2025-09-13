@@ -368,8 +368,15 @@
             <div id="progressBar" class="progress-bar bg-hyperlink-blue h-full transition-all duration-300" style="width: 0%"></div>
         </div>
         <!-- Progress Text -->
-        <div id="progressText" class="absolute top-4 left-1/2 transform -translate-x-1/2 text-xs text-gray-700 font-semibold hidden">
-            <span id="progressCounter">0 of 26</span> • <span id="progressPercent">0%</span>
+        <div id="progressText" class="absolute top-4 left-1/2 transform -translate-x-1/2 text-xs text-gray-700 font-semibold hidden" aria-live="polite">
+            <span id="progressCounter">0 of 26</span>
+        </div>
+    </div>
+
+    <!-- Progress Dots (questions only) -->
+    <div id="progressDotsWrap" class="w-full bg-white/0">
+        <div id="progressDots" class="max-w-6xl mx-auto px-4 py-2 hidden overflow-x-auto">
+            <div id="progressDotsRow" class="flex items-center gap-1.5"></div>
         </div>
     </div>
 
@@ -1691,10 +1698,39 @@
             if (currentQuestionNumber > 0) {
                 progressText.classList.remove('hidden');
                 progressCounter.textContent = `${currentQuestionNumber} of ${totalQuestions}`;
-                const percent = Math.round(progress);
-                if (progressPercent) progressPercent.textContent = `${percent}%`;
+                renderProgressDots();
             } else {
                 progressText.classList.add('hidden');
+                try { document.getElementById('progressDots')?.classList.add('hidden'); } catch(_){}
+            }
+        }
+
+        // Render small progress dots (one per question)
+        function renderProgressDots() {
+            const wrap = document.getElementById('progressDots');
+            const row = document.getElementById('progressDotsRow');
+            if (!wrap || !row) return;
+            wrap.classList.remove('hidden');
+            if (row.childElementCount !== totalQuestions) {
+                row.innerHTML = '';
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'dot w-2.5 h-2.5 rounded-full bg-gray-300';
+                    row.appendChild(dot);
+                }
+            }
+            // Update states
+            for (let i = 0; i < totalQuestions; i++) {
+                const dot = row.children[i];
+                if (!dot) continue;
+                dot.classList.remove('bg-gray-300','bg-hyperlink-blue','bg-green-500');
+                const answered = i < answers.length;
+                const current = (i + 1) === currentQuestionNumber;
+                dot.classList.add(answered ? 'bg-hyperlink-blue' : 'bg-gray-300');
+                if (current) {
+                    dot.classList.remove('bg-hyperlink-blue');
+                    dot.classList.add('bg-green-500');
+                }
             }
         }
 
