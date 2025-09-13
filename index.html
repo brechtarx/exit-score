@@ -768,8 +768,8 @@
         <!-- Lead Capture Form -->
         <div id="leadCapture" class="hidden">
             <div class="sm:bg-white sm:rounded-xl sm:shadow-lg p-6 sm:p-8 mt-0 sm:mt-8 fade-in">
-                <h2 class="text-2xl font-bold text-slate-900 mb-2">Get Your 3 Most Critical Steps to Sell in the Next 6 Months</h2>
-                <p class="text-gray-600 mb-6">
+                <h2 id="leadHeading" class="text-2xl font-bold text-slate-900 mb-2">Get Your 3 Most Critical Steps to Sell in the Next 6 Months</h2>
+                <p id="leadDesc" class="text-gray-600 mb-6">
                     We'll send you a personalized action plan with your Business Sale Readiness Score and specific priorities based on your assessment.
                 </p>
                 <form id="leadForm" onsubmit="submitLeadForm(event)">
@@ -1822,6 +1822,8 @@
             document.getElementById('ctaSubhead').textContent = sub;
             const ctaBtn = document.getElementById('ctaButton');
             if (ctaBtn) ctaBtn.textContent = cta;
+            // Store CTA for carry-over to lead form
+            window.scoreCTA = { label: cta, sub };
             
             // Set company headline
             const companyName = businessInfo.company || 'Your Business';
@@ -1945,6 +1947,17 @@
             
             document.getElementById('results').classList.add('hidden');
             document.getElementById('leadCapture').classList.remove('hidden');
+            // Carry over CTA copy from the score page
+            try {
+                const label = window.scoreCTA?.label || 'Get My Report →';
+                const sub = window.scoreCTA?.sub || 'See exactly what to fix first to attract premium buyers.';
+                const headingEl = document.getElementById('leadHeading');
+                const descEl = document.getElementById('leadDesc');
+                const btnTextEl = document.getElementById('submitBtnText');
+                if (headingEl) headingEl.textContent = label;
+                if (descEl) descEl.textContent = sub;
+                if (btnTextEl) btnTextEl.textContent = label;
+            } catch (_) {}
             
             trackEvent('begin_lead_capture');
             
