@@ -332,8 +332,10 @@
         #progressText { display: none !important; }
         @media (max-width: 640px) { #progressText { display: none !important; } }
 
+        /* Header padding */
+        header .inner { min-height: 84px; padding: 10px 0; }
         /* Compact header when answering */
-        header.compact .inner { height: 56px !important; }
+        header.compact .inner { min-height: 64px !important; padding: 6px 0 !important; }
 
         /* Print styles: show results in clean layout */
         @media print {
@@ -379,7 +381,7 @@
     <!-- Header -->
     <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div class="container max-w-6xl mx-auto px-4">
-            <div class="flex items-center justify-between h-20 inner">
+            <div class="flex items-center justify-between inner">
                 <div class="flex items-center">
                     <img src="/arx_website_blueblack.webp" alt="ARX Business Brokers" style="height: 50px; width: auto;" loading="eager" decoding="async" width="150" height="50" onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='block';">
                     <div id="fallbackLogo" style="display:none;" class="logo-text text-2xl text-slate-900 lowercase font-bold">arx</div>
