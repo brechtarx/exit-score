@@ -724,11 +724,13 @@
                 <div class="text-6xl font-bold text-orange-600 my-8">
                     <span id="scoreValue">0</span>%
                 </div>
-                <div id="scoreInterpretation" class="text-lg text-gray-700 mb-6"></div>
+                <div id="scoreInterpretation" class="text-lg text-gray-700 mb-3"></div>
+                <div id="ctaSubhead" class="text-sm text-gray-600 mb-4"></div>
                 
-                <button onclick="showDetailedReport()" class="btn-primary w-full py-4 px-6 rounded-lg text-white font-semibold text-lg mb-6 no-print">
-                    Get My Complete Analysis →
+                <button id="ctaButton" onclick="showDetailedReport()" class="btn-primary w-full py-4 px-6 rounded-lg text-white font-semibold text-lg mb-2 no-print">
+                    Continue →
                 </button>
+                <div id="ctaMicro" class="text-xs text-gray-500 mb-6 text-center">Free, confidential. Advisor‑reviewed within 1 business day.</div>
                 
                 <h3 id="companyScoreHeadline" class="text-2xl font-bold text-slate-900 mb-6 text-center"></h3>
                 
@@ -739,36 +741,11 @@
                 <div class="bg-gray-50 rounded-lg p-6 mb-6 no-print">
                     <h3 class="text-xl font-semibold text-slate-900 mb-3">Your Complete Analysis Includes:</h3>
                     <ul class="space-y-2 text-gray-700 mb-4">
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            <span>Detailed breakdown of each assessment category with specific scores</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            <span>Industry-specific benchmarks and insights for your business sector</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            <span>Priority action plan to address your biggest opportunities</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            <span>Estimated timeline and investment required for improvements</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            <span>Potential valuation impact of implementing our recommendations</span>
-                        </li>
+                        <li class="flex items-start"><svg class="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>Top 3 value levers to lift sale price</span></li>
+                        <li class="flex items-start"><svg class="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>Risk heatmap and quick wins</span></li>
+                        <li class="flex items-start"><svg class="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>90‑day preparation plan by revenue range</span></li>
+                        <li class="flex items-start"><svg class="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>Buyer questions and talk tracks</span></li>
+                        <li class="flex items-start"><svg class="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>What to change before diligence</span></li>
                     </ul>
                 </div>
                 
@@ -1501,7 +1478,7 @@
                 const opts = [
                     { value: true, label: 'Yes', description: question.yesText, tone: 'green' },
                     { value: false, label: 'No', description: question.noText, tone: 'red' },
-                    { value: null, label: 'Not Sure / Not Applicable', description: 'Skip this question', tone: 'gray' }
+                    { value: null, label: 'Not Sure', description: 'Skip this question', tone: 'gray' }
                 ];
                 const container = questionDiv.querySelector('#optionsContainer');
                 container.innerHTML = '';
@@ -1817,19 +1794,33 @@
             }, 50);
             
             let interpretation = '';
-            if (score >= 80) {
-                interpretation = "Excellent! Your business is in the top quartile for sale readiness. You're positioned for a premium valuation.";
+            let cta = '';
+            let sub = '';
+            if (score >= 86) {
+                interpretation = 'Premium Readiness — positioned for competitive offers.';
+                cta = 'Get My Premium Seller Strategy →';
+                sub = 'Lock in premium price and avoid diligence surprises.';
+            } else if (score >= 76) {
+                interpretation = 'Strong Position — minor optimizations can boost price and speed.';
+                cta = 'Unlock My Optimization Plan →';
+                sub = 'See the final tweaks to maximize offers.';
             } else if (score >= 60) {
-                interpretation = "Good position! Your business is above average in sale readiness, with some areas for improvement.";
-            } else if (score >= 40) {
-                interpretation = "Average readiness. There are significant opportunities to improve your business value before selling.";
-            } else if (score >= 20) {
-                interpretation = "Below average readiness. Consider implementing improvements before going to market.";
+                interpretation = 'Above Average Readiness — solid base with clear opportunities.';
+                cta = 'Get My 3 Key Improvements →';
+                sub = 'See exactly what to fix first to attract premium buyers.';
+            } else if (score >= 45) {
+                interpretation = 'Below Average Readiness — buyers will flag risks that reduce price.';
+                cta = 'See My Priority Fixes →';
+                sub = 'Remove the issues that cause valuation discounts.';
             } else {
-                interpretation = "Your business needs significant improvements to be market-ready. Let's discuss a preparation strategy.";
+                interpretation = 'Significant Preparation Needed — avoid deal‑killers before going to market.';
+                cta = 'Get My Recovery Plan →';
+                sub = 'Fix foundational risks buyers penalize most.';
             }
-            
             document.getElementById('scoreInterpretation').textContent = interpretation;
+            document.getElementById('ctaSubhead').textContent = sub;
+            const ctaBtn = document.getElementById('ctaButton');
+            if (ctaBtn) ctaBtn.textContent = cta;
             
             // Set company headline
             const companyName = businessInfo.company || 'Your Business';
@@ -1844,7 +1835,7 @@
             // Track completion
             trackEvent('assessment_complete', {
                 score: score,
-                score_category: score >= 80 ? 'premium' : score >= 60 ? 'above_average' : score >= 40 ? 'average' : score >= 20 ? 'below_average' : 'needs_improvement',
+                score_category: score >= 86 ? 'premium' : score >= 76 ? 'strong' : score >= 60 ? 'above_average' : score >= 45 ? 'below_average' : 'needs_improvement',
                 custom_parameter_1: score,
                 custom_parameter_2: businessInfo.industry
             });
@@ -1896,12 +1887,15 @@
                 });
                 
                 const categoryPercentage = totalPossibleScore > 0 ? Math.round((categoryScore / totalPossibleScore) * 100) : 0;
-                
+                const status = categoryPercentage >= 80 ? {label:'Strong', cls:'text-green-600'} : (categoryPercentage >= 50 ? {label:'Moderate', cls:'text-amber-600'} : {label:'Needs Attention', cls:'text-red-600'});
                 breakdownHTML += `
                     <div class="border-l-4 border-hyperlink-blue pl-4 py-3 bg-gray-50 rounded-r-lg">
                         <div class="flex justify-between items-center mb-2">
                             <h4 class="font-semibold text-slate-900">${category.name}</h4>
-                            <span class="text-xl font-bold text-hyperlink-blue">${categoryPercentage}%</span>
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm font-medium ${status.cls}">${status.label}</span>
+                                <span class="text-xl font-bold text-hyperlink-blue">${categoryPercentage}%</span>
+                            </div>
                         </div>
                         <p class="text-sm text-gray-600">${categoryDescriptions[category.name] || 'Important factor in determining your business sale readiness.'}</p>
                     </div>
