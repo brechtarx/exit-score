@@ -605,7 +605,7 @@ async function createGmailDraft(assessment, report) {
         <div class="report">
             ${report.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}
         </div>
-        <p style="font-size:14px;color:#555">You (and our advisors) can view a simple breakdown of your results here:<br>
+        <p style="font-size:14px;color:#555">View your simple results summary (no personal details) here:<br>
         <a href="${resultsLink}">${resultsLink}</a></p>
         
         <p>This assessment provides valuable insights into your business's current sale readiness and actionable steps to enhance its value.</p>
@@ -837,7 +837,7 @@ Revenue: ${assessment.revenue || 'Not provided'}
 Employees: ${assessment.employees || 'Not provided'}
 Location: ${assessment.zipcode || 'Not provided'}
 
-RESULTS LINK (PII omitted):
+RESULTS LINK (no personal details):
 ${resultsLink}
 
 CONTACT INFO:

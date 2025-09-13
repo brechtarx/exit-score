@@ -73,7 +73,17 @@ function buildPrompt(assessment, QUESTIONS_STRUCTURE) {
     return `### ${cat.name} (${score}%)\n${template.opening}\n\nFocus: ${template.focus}`;
   }).join('\n\n');
 
-  return `You are an expert business valuation analyst helping business owners understand their exit readiness. Create a detailed, actionable report based on this Exit Score Assessment.
+  const greedFear = assessment.score >= 86
+    ? 'Emphasize how to lock in a premium price, reduce time to close, and avoid diligence surprises.'
+    : assessment.score >= 76
+      ? 'Highlight minor optimizations that improve price and speed, and how to stage quick wins before going to market.'
+      : assessment.score >= 60
+        ? 'Focus on the 2–3 highest‑leverage improvements that increase buyer demand and valuation; show how to sequence them.'
+        : assessment.score >= 45
+          ? 'Call out risks that buyers penalize, how they discount valuation, and what to fix first to remove objections.'
+          : 'Address the biggest deal‑killers first. Explain how these issues show up in diligence, and provide a practical recovery plan.';
+
+  return `You are an expert M&A advisor creating a persuasive, owner‑friendly report that turns this Exit Score into clear actions.
 
 BUSINESS INFORMATION:
 Company: ${assessment.company?.includes('Company') ? `${assessment.name}'s ${assessment.industry || 'Business'}` : assessment.company}
@@ -86,17 +96,16 @@ ${categorySection}
 DETAILED RESPONSES:
 ${structuredData}
 
-Create a professional, actionable report with these sections:
-- Executive Summary (2-3 paragraphs; owner-friendly language)
-- Category Analysis (one section per category with context, risks, and opportunities)
-- Top 3 Priorities (specific, time-bound, and practical)
-- Recommendations for each "No" or "Don't Know" response (steps, tools, and owners)
-- Expected Valuation Impact ranges from improvements (qualitative)
-- Suggested 6–12 month action plan broken down by timeframe
-- Industry-specific considerations relevant to the stated industry
-- Clear call-to-action for consultation with ARX Business Brokers
+Create a practical, outcome‑focused report with these sections:
+- Executive Snapshot: one tight page with (1) overall score context, (2) Top 3 Value Levers with why they move price, (3) Risk Heatmap by category (Strong/Moderate/Needs Attention), and (4) positioning guidance. ${greedFear}
+- Category Cards: for each category, explain what buyers look for, your strengths/risks from the responses, and concrete improvement steps.
+- 90‑Day Preparation Plan: week‑by‑week actions prioritized for impact and speed, tailored to the revenue range; specify owners and milestones.
+- Buyer Questions & Talk Tracks: the questions buyers will ask given these scores and strong, credible answers the owner can use.
+- Valuation Impact Narrative: how the top fixes can expand buyer pool and affect likely valuation ranges qualitatively.
+- What To Change Before Diligence: the 3–5 fixes to complete pre‑process to prevent discounts or re‑trades.
+- Industry Lens: any sector‑specific angles to watch for, plus proof points to include.
 
-Tone: professional and approachable. Focus on actionable advice rather than just describing problems. Aim for 1000-1500 words total.
+Tone: decisive, consultative, and practical. Use plain language and bullet‑friendly formatting. Aim for 900–1300 words total.
 
 ${categories.length ? categories.map((cat, i) => `
 ${getCategoryOpeningTemplate(cat.name, Math.round((categoryBreakdown[cat.name]?.score || 0) * 100)).opening}
@@ -106,27 +115,27 @@ Focus Area: ${getCategoryOpeningTemplate(cat.name, Math.round((categoryBreakdown
 function getCategoryOpeningTemplate(categoryName, score) {
   const templates = {
     "Risk of Change of Ownership": {
-      opening: `The risk of change of ownership is often the biggest concern in any buyer's mind. Your ${score}% score indicates ${score >= 75 ? 'excellent preparation for ownership transition' : score >= 50 ? 'moderate readiness with some areas needing attention' : 'significant work needed to reduce owner dependency'}. This category heavily influences your business valuation because buyers need confidence that the business can thrive under new ownership.`,
+      opening: `The risk of change of ownership is often the biggest concern in any buyer's mind. Your ${score}% score indicates ${score >= 80 ? 'excellent preparation for ownership transition' : score >= 50 ? 'moderate readiness with some areas needing attention' : 'significant work needed to reduce owner dependency'}. This category heavily influences valuation because buyers need confidence the business can thrive under new ownership.`,
       focus: "Reducing owner dependency and proving the business can thrive under new ownership"
     },
     "Company Growth": {
-      opening: `Your company's growth trajectory directly impacts buyer interest and valuation multiples. At ${score}%, your growth story ${score >= 75 ? 'demonstrates strong momentum that buyers actively seek' : score >= 50 ? 'shows promise but may benefit from more consistent patterns' : 'needs strengthening to attract premium buyers'}. Buyers typically pay higher multiples for businesses with predictable, sustainable growth.`,
+      opening: `Your company's growth trajectory directly impacts buyer interest and valuation multiples. At ${score}%, your growth story ${score >= 80 ? 'shows strong momentum buyers actively seek' : score >= 50 ? 'shows promise but needs more consistent patterns' : 'needs strengthening to attract premium buyers'}. Buyers pay higher multiples for predictable, sustainable growth.`,
       focus: "Demonstrating consistent revenue growth and future growth potential"
     },
     "Industry Growth": {
-      opening: `Industry dynamics significantly influence your business's attractiveness to buyers. Your ${score}% score reflects ${score >= 75 ? 'positioning in a favorable industry environment' : score >= 50 ? 'mixed industry conditions that require strategic positioning' : 'challenging industry headwinds that need to be addressed'}. Buyers evaluate not just your company's performance, but also the long-term viability of your market.`,
+      opening: `Industry dynamics significantly influence buyer appetite. Your ${score}% score reflects ${score >= 80 ? 'a favorable environment' : score >= 50 ? 'mixed conditions that require smart positioning' : 'headwinds that must be addressed'}. Buyers weigh both company performance and long‑term market viability.`,
       focus: "Positioning your business favorably within industry trends and market conditions"
     },
     "Market Demand": {
-      opening: `Market demand characteristics determine how easily a buyer can operate and grow your business post-acquisition. Your ${score}% score indicates ${score >= 75 ? 'strong market positioning with sustainable competitive advantages' : score >= 50 ? 'reasonable market position with room for improvement' : 'market vulnerabilities that could concern potential buyers'}. This affects both buyer interest and the premium they're willing to pay.`,
+      opening: `Market demand determines how easily a buyer can run and grow the business post‑acquisition. Your ${score}% score indicates ${score >= 80 ? 'strong positioning with durable advantages' : score >= 50 ? 'a workable position with upside' : 'vulnerabilities that will concern buyers'}.`,
       focus: "Building sustainable competitive advantages and market resilience"
     },
     "Company Rating": {
-      opening: `Financial integrity and operational professionalism are fundamental to buyer confidence. Your ${score}% score shows ${score >= 75 ? 'excellent financial practices that facilitate due diligence' : score >= 50 ? 'generally sound practices with some areas for improvement' : 'financial and operational practices that need significant attention'}. Clean, professional operations directly impact valuation and deal completion probability.`,
+      opening: `Financial integrity and operational professionalism are fundamental to buyer confidence. Your ${score}% score shows ${score >= 80 ? 'excellent practices that speed diligence' : score >= 50 ? 'generally sound practices with clear improvements available' : 'areas that will trigger discounts or delays'}.`,
       focus: "Ensuring financial transparency and operational professionalism"
     },
     "Competitiveness": {
-      opening: `Your competitive position determines your business's defensibility and growth potential under new ownership. At ${score}%, your competitive standing ${score >= 75 ? 'demonstrates strong market advantages that buyers value highly' : score >= 50 ? 'shows reasonable positioning with opportunities to strengthen advantages' : 'indicates competitive vulnerabilities that may concern buyers'}. Strong competitive positioning supports higher valuations and buyer confidence.`,
+      opening: `Competitive position drives defensibility and growth potential. At ${score}%, your standing ${score >= 80 ? 'shows advantages buyers value' : score >= 50 ? 'is serviceable with clear opportunities to strengthen' : 'reveals vulnerabilities that reduce buyer confidence'}.`,
       focus: "Strengthening competitive advantages and market differentiation"
     }
   };

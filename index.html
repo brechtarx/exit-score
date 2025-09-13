@@ -817,9 +817,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                     </div>
-                    <h2 class="text-2xl font-bold text-slate-900 mb-2">Great! Your Report is Ready</h2>
+                    <h2 class="text-2xl font-bold text-slate-900 mb-2">Last Step: Personalize Your Report</h2>
                     <p class="text-gray-600 mb-4">
-                        For the most personalized and accurate evaluation, please provide a few additional details about your business.
+                        Add these details so we can tailor your 90‑day plan, buyer questions, and valuation guidance to your business. We never share your information.
                     </p>
                 </div>
                 
@@ -832,28 +832,29 @@
                     <div class="space-y-4">
                         <div>
                             <label for="companyInputStep2" class="block text-sm font-medium text-gray-700 mb-1">Company Name *</label>
-                            <input type="text" id="companyInputStep2" name="company" autocomplete="organization" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                            <input type="text" id="companyInputStep2" name="company" autocomplete="organization" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" placeholder="Acme Services, LLC">
+                            <p class="text-xs text-gray-500 mt-1">Appears on your report; used to tailor guidance.</p>
                         </div>
                         <div>
-                            <label for="phoneInputStep2" class="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+                            <label for="phoneInputStep2" class="block text-sm font-medium text-gray-700 mb-1">Best Phone *</label>
                             <input type="tel" name="phone" id="phoneInputStep2" placeholder="(555) 123-4567" autocomplete="tel" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                            <p class="text-xs text-gray-500 mt-1">Only used for your report or questions—never shared.</p>
                         </div>
                         <div>
                             <label for="websiteInputStep2" class="block text-sm font-medium text-gray-700 mb-1">Company Website *</label>
                             <input type="url" id="websiteInputStep2" name="website" placeholder="https://yourcompany.com" autocomplete="url" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                            <p class="text-xs text-gray-500 mt-1">Helps us align advice to your market and buyers.</p>
                         </div>
                     </div>
                     
                     <button type="submit" id="submitBtn2" class="btn-primary w-full py-4 px-6 rounded-lg text-white font-semibold text-lg mt-6">
-                        <span id="submitBtnText2">Complete My Profile →</span>
+                        <span id="submitBtnText2">Finish and Send My Report →</span>
                         <span id="submitBtnLoading2" class="hidden">
                             <div class="loading-spinner"></div>
                             Updating Your Profile...
                         </span>
                     </button>
-                    <p class="text-sm text-gray-500 mt-4 text-center">
-                        <strong>Optional:</strong> Skip this step and we'll send your report with the information provided above.
-                    </p>
+                    <p class="text-sm text-gray-500 mt-4 text-center">Private and confidential. We never sell or share your information.</p>
                     <button type="button" onclick="skipAdditionalDetails()" class="w-full py-2 px-4 text-gray-600 hover:text-gray-800 text-sm mt-2 underline">
                         Skip - Send My Report Now
                     </button>
