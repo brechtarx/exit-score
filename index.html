@@ -305,6 +305,16 @@
             transition: background-color 150ms ease;
         }
 
+        /* Avoid reCAPTCHA overlap on mobile */
+        .grecaptcha-badge { right: 8px !important; bottom: calc(env(safe-area-inset-bottom, 0px) + 80px) !important; transform: scale(0.85); transform-origin: bottom right; }
+        .question-screen { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 96px) !important; }
+
+        /* Hide overlay progress text on small screens; use label below dots instead */
+        @media (max-width: 640px) { #progressText { display: none !important; } }
+
+        /* Compact header when answering */
+        header.compact .inner { height: 56px !important; }
+
         /* Print styles: show results in clean layout */
         @media print {
             @page { margin: 12mm 14mm; }
@@ -349,7 +359,7 @@
     <!-- Header -->
     <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div class="container max-w-6xl mx-auto px-4">
-            <div class="flex items-center justify-between h-20">
+            <div class="flex items-center justify-between h-20 inner">
                 <div class="flex items-center">
                     <img src="/arx_website_blueblack.webp" alt="ARX Business Brokers" style="height: 50px; width: auto;" loading="eager" decoding="async" width="150" height="50" onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='block';">
                     <div id="fallbackLogo" style="display:none;" class="logo-text text-2xl text-slate-900 lowercase font-bold">arx</div>
@@ -378,6 +388,7 @@
         <div id="progressDots" class="max-w-6xl mx-auto px-4 py-2 hidden overflow-x-auto">
             <div id="progressDotsRow" class="flex items-center gap-1.5"></div>
         </div>
+        <div id="progressLabel" class="max-w-6xl mx-auto px-4 text-xs text-gray-600 font-medium pb-1"></div>
     </div>
 
     <!-- Main Container -->
@@ -1447,6 +1458,12 @@
             
             // Show requested screen
             document.getElementById(screenId).classList.remove('hidden');
+
+            // Expand header on non-question screens
+            if (screenId === 'welcome' || screenId === 'revenueSelection' || screenId === 'employeeSelection' || screenId === 'zipcodeSelection') {
+                try { document.querySelector('header')?.classList.remove('compact'); } catch(_){}
+                try { document.getElementById('progressDots')?.classList.add('hidden'); } catch(_){}
+            }
         }
 
         function showQuestion() {
@@ -1524,6 +1541,10 @@
                 return;
             }
             container.appendChild(questionDiv);
+            // Compact header on question screens
+            try { document.querySelector('header')?.classList.add('compact'); } catch(_){}
+            // Show progress dots
+            try { document.getElementById('progressDots')?.classList.remove('hidden'); renderProgressDots(); } catch(_){}
             
             // Track question view
             trackEvent('question_view', {
@@ -1715,7 +1736,7 @@
                 row.innerHTML = '';
                 for (let i = 1; i <= totalQuestions; i++) {
                     const dot = document.createElement('div');
-                    dot.className = 'dot w-2.5 h-2.5 rounded-full bg-gray-300';
+                    dot.className = 'dot w-3 h-3 sm:w-2.5 sm:h-2.5 rounded-full bg-gray-300';
                     row.appendChild(dot);
                 }
             }
@@ -1732,6 +1753,10 @@
                     dot.classList.add('bg-green-500');
                 }
             }
+            // Update textual label below dots
+            try {
+                document.getElementById('progressLabel').textContent = `${currentQuestionNumber} of ${totalQuestions}`;
+            } catch(_){}
         }
 
         function calculateResults() {
