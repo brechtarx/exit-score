@@ -306,8 +306,8 @@
         }
 
         /* Avoid reCAPTCHA overlap on mobile */
-        .grecaptcha-badge { right: 8px !important; bottom: calc(env(safe-area-inset-bottom, 0px) + 80px) !important; transform: scale(0.85); transform-origin: bottom right; }
-        .question-screen { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 96px) !important; }
+        .grecaptcha-badge { right: 8px !important; bottom: calc(env(safe-area-inset-bottom, 0px) + 16px) !important; transform: scale(0.75); transform-origin: bottom right; }
+        .question-screen { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 32px) !important; }
 
         /* Hide overlay progress text on small screens; use label below dots instead */
         @media (max-width: 640px) { #progressText { display: none !important; } }
@@ -377,15 +377,13 @@
         <div class="max-w-6xl mx-auto">
             <div id="progressBar" class="progress-bar bg-hyperlink-blue h-full transition-all duration-300" style="width: 0%"></div>
         </div>
-        <!-- Progress Text -->
-        <div id="progressText" class="absolute top-4 left-1/2 transform -translate-x-1/2 text-xs text-gray-700 font-semibold hidden" aria-live="polite">
-            <span id="progressCounter">0 of 26</span>
-        </div>
+        <!-- Progress Text (hidden on all screens now; we use in-card label) -->
+        <div id="progressText" class="hidden" aria-live="polite"><span id="progressCounter">0 of 26</span></div>
     </div>
 
     <!-- Progress Dots (questions only) -->
-    <div id="progressDotsWrap" class="w-full bg-white/0">
-        <div id="progressDots" class="max-w-6xl mx-auto px-4 py-2 hidden overflow-x-auto">
+    <div id="progressDotsWrap" class="w-full bg-white/0 hidden">
+        <div id="progressDots" class="max-w-6xl mx-auto px-4 py-2 overflow-x-auto">
             <div id="progressDotsRow" class="flex items-center gap-1.5"></div>
         </div>
         <div id="progressLabel" class="max-w-6xl mx-auto px-4 text-xs text-gray-600 font-medium pb-1"></div>
@@ -1541,10 +1539,20 @@
                 return;
             }
             container.appendChild(questionDiv);
+            // Insert local (in-card) progress dots + count so desktop aligns to card width
+            try {
+                const local = document.createElement('div');
+                local.className = 'px-2 pt-2 pb-1';
+                local.innerHTML = '<div class="flex items-center gap-1.5" id="localDots"></div><div class="text-xs text-gray-500 mt-1" id="localCount"></div>';
+                questionDiv.prepend(local);
+                renderProgressDotsInto(document.getElementById('localDots'), document.getElementById('localCount'));
+                // Hide global dots row on question screens
+                document.getElementById('progressDotsWrap')?.classList.add('hidden');
+            } catch(_){}
             // Compact header on question screens
             try { document.querySelector('header')?.classList.add('compact'); } catch(_){}
-            // Show progress dots
-            try { document.getElementById('progressDots')?.classList.remove('hidden'); renderProgressDots(); } catch(_){}
+            // Keep global dots hidden
+            try { document.getElementById('progressDots')?.classList.add('hidden'); } catch(_){}
             
             // Track question view
             trackEvent('question_view', {
@@ -1719,7 +1727,8 @@
             if (currentQuestionNumber > 0) {
                 progressText.classList.remove('hidden');
                 progressCounter.textContent = `${currentQuestionNumber} of ${totalQuestions}`;
-                renderProgressDots();
+                // Update local progress UI if present; otherwise ignore
+                try { renderProgressDotsInto(document.getElementById('localDots'), document.getElementById('localCount')); } catch(_){}
             } else {
                 progressText.classList.add('hidden');
                 try { document.getElementById('progressDots')?.classList.add('hidden'); } catch(_){}
@@ -1727,11 +1736,9 @@
         }
 
         // Render small progress dots (one per question)
-        function renderProgressDots() {
-            const wrap = document.getElementById('progressDots');
-            const row = document.getElementById('progressDotsRow');
+        function renderProgressDotsInto(row, countEl) {
+            if (!row) return;
             if (!wrap || !row) return;
-            wrap.classList.remove('hidden');
             if (row.childElementCount !== totalQuestions) {
                 row.innerHTML = '';
                 for (let i = 1; i <= totalQuestions; i++) {
@@ -1754,9 +1761,7 @@
                 }
             }
             // Update textual label below dots
-            try {
-                document.getElementById('progressLabel').textContent = `${currentQuestionNumber} of ${totalQuestions}`;
-            } catch(_){}
+            if (countEl) countEl.textContent = `${currentQuestionNumber} of ${totalQuestions}`;
         }
 
         function calculateResults() {
