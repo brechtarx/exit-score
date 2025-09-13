@@ -328,6 +328,8 @@
         .question-screen { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 32px) !important; }
 
         /* Hide overlay progress text on small screens; use label below dots instead */
+        /* Always keep legacy overlay counter hidden */
+        #progressText { display: none !important; }
         @media (max-width: 640px) { #progressText { display: none !important; } }
 
         /* Compact header when answering */
@@ -1737,18 +1739,10 @@
             const progress = 50 + questionProgress;
             document.getElementById('progressBar').style.width = progress + '%';
             
-            // Update progress text
-            const progressText = document.getElementById('progressText');
-            const progressCounter = document.getElementById('progressCounter');
-            const progressPercent = document.getElementById('progressPercent');
-            
+            // Update local in-card progress UI if present; otherwise ignore
             if (currentQuestionNumber > 0) {
-                progressText.classList.remove('hidden');
-                progressCounter.textContent = `${currentQuestionNumber} of ${totalQuestions}`;
-                // Update local progress UI if present; otherwise ignore
                 try { renderProgressDotsInto(document.getElementById('localDots'), document.getElementById('localCount')); } catch(_){}
             } else {
-                progressText.classList.add('hidden');
                 try { document.getElementById('progressDots')?.classList.add('hidden'); } catch(_){}
             }
         }
@@ -1756,7 +1750,6 @@
         // Render small progress dots (one per question)
         function renderProgressDotsInto(row, countEl) {
             if (!row) return;
-            if (!wrap || !row) return;
             if (row.childElementCount !== totalQuestions) {
                 row.innerHTML = '';
                 for (let i = 1; i <= totalQuestions; i++) {
