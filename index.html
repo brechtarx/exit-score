@@ -298,6 +298,13 @@
             display: none;
         }
 
+        /* Subtle pressed feedback for answer buttons (JS adds .flash briefly) */
+        .answer-btn.flash {
+            border-color: #22c55e !important; /* green-500 */
+            background-color: #ecfdf5 !important; /* green-50 */
+            transition: background-color 150ms ease;
+        }
+
         /* Print styles: show results in clean layout */
         @media print {
             @page { margin: 12mm 14mm; }
@@ -356,13 +363,13 @@
     </header>
 
     <!-- Progress Bar -->
-    <div class="bg-gray-200 h-2 relative">
+    <div class="bg-gray-200 h-3 relative">
         <div class="max-w-6xl mx-auto">
             <div id="progressBar" class="progress-bar bg-hyperlink-blue h-full transition-all duration-300" style="width: 0%"></div>
         </div>
         <!-- Progress Text -->
-        <div id="progressText" class="absolute top-3 left-1/2 transform -translate-x-1/2 text-xs text-gray-600 font-medium hidden">
-            <span id="progressCounter">0 of 26</span> questions completed
+        <div id="progressText" class="absolute top-4 left-1/2 transform -translate-x-1/2 text-xs text-gray-700 font-semibold hidden">
+            <span id="progressCounter">0 of 26</span> • <span id="progressPercent">0%</span>
         </div>
     </div>
 
@@ -1341,6 +1348,8 @@
             event.target.closest('.revenue-btn').classList.add('border-green-500', 'bg-green-50');
             event.target.closest('.revenue-btn').querySelector('.w-6').classList.add('bg-green-500');
             event.target.closest('.revenue-btn').querySelector('.w-6').classList.remove('border-gray-300');
+            // Haptics
+            try { if (navigator.vibrate) navigator.vibrate(10); } catch(_){}
             
             // Auto-advance after selection
             setTimeout(() => {
@@ -1380,6 +1389,8 @@
             event.target.closest('.employee-btn').classList.add('border-green-500', 'bg-green-50');
             event.target.closest('.employee-btn').querySelector('.w-6').classList.add('bg-green-500');
             event.target.closest('.employee-btn').querySelector('.w-6').classList.remove('border-gray-300');
+            // Haptics
+            try { if (navigator.vibrate) navigator.vibrate(10); } catch(_){}
             
             // Auto-advance after selection
             setTimeout(() => {
@@ -1408,6 +1419,7 @@
             
             businessInfo.zipcode = zipcode;
             zipInput.classList.remove('border-red-500');
+            try { if (navigator.vibrate) navigator.vibrate(10); } catch(_){}
             
             // Track zipcode completion
             trackEvent('zipcode_selection_complete', {
@@ -1542,6 +1554,15 @@
             if (document.activeElement) {
                 document.activeElement.blur();
             }
+            // Brief visual feedback and haptics
+            try {
+                const btn = event && (event.currentTarget || event.target.closest('.answer-btn'));
+                if (btn) {
+                    btn.classList.add('flash');
+                    setTimeout(() => btn.classList.remove('flash'), 180);
+                }
+                if (navigator.vibrate) navigator.vibrate(10);
+            } catch(_){}
             
             // Store answer
             answers.push({
@@ -1665,10 +1686,13 @@
             // Update progress text
             const progressText = document.getElementById('progressText');
             const progressCounter = document.getElementById('progressCounter');
+            const progressPercent = document.getElementById('progressPercent');
             
             if (currentQuestionNumber > 0) {
                 progressText.classList.remove('hidden');
                 progressCounter.textContent = `${currentQuestionNumber} of ${totalQuestions}`;
+                const percent = Math.round(progress);
+                if (progressPercent) progressPercent.textContent = `${percent}%`;
             } else {
                 progressText.classList.add('hidden');
             }
